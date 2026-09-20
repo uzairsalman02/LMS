@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 // Global singleton in memory: persists across all Next.js client-side page navigations
 let globalSidebarCollapsed: boolean = false;
 let isInitialized = false;
+let hasHydratedOnce = false;
 
 function initGlobalState(): boolean {
   if (typeof window !== "undefined" && !isInitialized) {
@@ -35,12 +36,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onOpenAITutor,
 }) => {
   const pathname = usePathname();
-  // Initialize state synchronously so there is zero flash/flicker on page transitions
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => initGlobalState());
+
+  // On initial SSR hydration, start with false to match server HTML exactly.
+  // On all subsequent client-side page transitions, initialize directly with globalSidebarCollapsed.
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(() => {
+    if (hasHydratedOnce) {
+      return globalSidebarCollapsed;
+    }
+    return false;
+  });
+
   const [hoveredTitle, setHoveredTitle] = useState<string | null>(null);
 
-  // Sync state if changed in another event or window
+  // Sync state on initial mount & handle cross-tab/window events
   useEffect(() => {
+    if (!hasHydratedOnce) {
+      hasHydratedOnce = true;
+      const initial = initGlobalState();
+      setIsCollapsed(initial);
+    }
+
     const handleSync = () => {
       try {
         const saved = localStorage.getItem("lms_sidebar_collapsed");
@@ -130,6 +145,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     <>
       <aside
         id="sidebar"
+        suppressHydrationWarning
         className={`fixed inset-y-0 left-0 z-40 bg-white transform ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-all duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar border-none shadow-none ${
@@ -137,7 +153,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }`}
       >
         <div className={`space-y-3 pt-2 ${isCollapsed ? "px-1" : "px-3"}`}>
-          {/* Sleek Minimal Toggle (No awkward captions, no borders) */}
+          {/* Sleek Minimal Toggle */}
           {isCollapsed ? (
             <div className="hidden md:flex flex-col items-center pt-1 pb-0.5">
               <button
