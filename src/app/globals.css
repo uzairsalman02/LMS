@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Jameel Noori Nastaleeq';
+  src: local('Jameel Noori Nastaleeq'),
+       local('Jameel Noori Nastaleeq Regular'),
+       local('JameelNooriNastaleeq'),
+       url('https://cdn.jsdelivr.net/gh/tariq-abdullah/urdu-web-font-CDN/JameelNooriNastaleeq.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'jameel-noori-nastaleeq';
+  src: local('Jameel Noori Nastaleeq'),
+       local('Jameel Noori Nastaleeq Regular'),
+       local('JameelNooriNastaleeq'),
+       url('https://cdn.jsdelivr.net/gh/tariq-abdullah/urdu-web-font-CDN/JameelNooriNastaleeq.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-brand-50: #f0fdf4;
+  --color-brand-100: #dcfce7;
+  --color-brand-500: #22c55e;
+  --color-brand-600: #16a34a;
+  --color-brand-700: #15803d;
+
+  --color-practice-50: #fff1f2;
+  --color-practice-100: #ffe4e6;
+  --color-practice-300: #fda4af;
+  --color-practice-400: #fb7185;
+  --color-practice-500: #f43f5e;
+  --color-practice-600: #e11d48;
+  --color-practice-700: #be123c;
+  --color-practice-800: #9f1239;
+  --color-practice-900: #881337;
+
+  --color-exam-50: #eef2ff;
+  --color-exam-100: #e0e7ff;
+  --color-exam-300: #a5b4fc;
+  --color-exam-500: #6366f1;
+  --color-exam-600: #4f46e5;
+  --color-exam-700: #4338ca;
+
+  --color-revision-50: #f0f9ff;
+  --color-revision-100: #e0f2fe;
+  --color-revision-200: #bae6fd;
+  --color-revision-500: #0ea5e9;
+  --color-revision-600: #0284c7;
+  --color-revision-700: #0369a1;
+  --color-revision-800: #075985;
+
+  --color-bookmark-50: #fffbeb;
+  --color-bookmark-100: #fef3c7;
+  --color-bookmark-200: #fde68a;
+  --color-bookmark-500: #f59e0b;
+  --color-bookmark-600: #d97706;
+  --color-bookmark-700: #b45309;
+  --color-bookmark-800: #92400e;
+
+  --color-progress-50: #f0fdfa;
+  --color-progress-100: #ccfbf1;
+  --color-progress-200: #99f6e4;
+  --color-progress-500: #14b8a6;
+  --color-progress-600: #0d9488;
+  --color-progress-700: #0f766e;
+
+  --color-profile-50: #f0fdf4;
+  --color-profile-100: #dcfce7;
+  --color-profile-600: #16a34a;
+  --color-profile-700: #15803d;
+
+  --font-nastaleeq: 'Jameel Noori Nastaleeq', 'jameel-noori-nastaleeq', 'Noto Nastaliq Urdu', serif;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #1e293b;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #ffffff;
+  color: #1e293b;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* System-wide Jameel Noori Nastaleeq Urdu Font Rules */
+.font-nastaleeq,
+.font-urdu,
+.urdu-text,
+:lang(ur),
+[lang="ur"],
+[dir="rtl"] p,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] li,
+[dir="rtl"] blockquote {
+  font-family: 'Jameel Noori Nastaleeq', 'jameel-noori-nastaleeq', 'Noto Nastaliq Urdu', serif !important;
+}
+
+.font-nastaleeq,
+[dir="rtl"] p {
+  line-height: 2.1 !important;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media print {
+  header, #sidebar, #right-panel, #backdrop, #right-backdrop, .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}

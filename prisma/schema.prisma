@@ -1,0 +1,650 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AIConversation {
+  id        String      @id
+  title     String?
+  userId    String
+  topicId   String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  Topic     Topic?      @relation(fields: [topicId], references: [id])
+  User      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  AIMessage AIMessage[]
+
+  @@index([topicId])
+  @@index([userId])
+}
+
+model AIMessage {
+  id             String           @id
+  conversationId String
+  sender         AIMessage_sender @default(USER)
+  content        String           @db.LongText
+  createdAt      DateTime         @default(now())
+  AIConversation AIConversation   @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+}
+
+model Achievement {
+  id              String            @id
+  code            String            @unique
+  title           String
+  description     String            @db.Text
+  icon            String?
+  points          Int               @default(10)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  UserAchievement UserAchievement[]
+}
+
+model Attempt {
+  id            String          @id
+  testId        String
+  userId        String
+  status        Attempt_status  @default(IN_PROGRESS)
+  score         Int             @default(0)
+  maxScore      Int             @default(0)
+  startedAt     DateTime        @default(now())
+  completedAt   DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime
+  Test          Test            @relation(fields: [testId], references: [id], onDelete: Cascade)
+  User          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  AttemptAnswer AttemptAnswer[]
+  Mistake       Mistake[]
+
+  @@index([status])
+  @@index([testId])
+  @@index([userId])
+}
+
+model AttemptAnswer {
+  id               String   @id
+  attemptId        String
+  questionId       String
+  selectedOptionId String?
+  typedAnswer      String?  @db.LongText
+  marksObtained    Int      @default(0)
+  isCorrect        Boolean  @default(false)
+  aiFeedback       Json?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime
+  Attempt          Attempt  @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  Question         Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+  @@index([isCorrect])
+  @@index([questionId])
+}
+
+model Board {
+  id          String      @id
+  name        String      @unique
+  code        String      @unique
+  description String?     @db.Text
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime
+  Class       Class[]
+  PastPaper   PastPaper[]
+}
+
+model Bookmark {
+  id          String     @id
+  userId      String
+  questionId  String?
+  lessonId    String?
+  pastPaperId String?
+  createdAt   DateTime   @default(now())
+  Lesson      Lesson?    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  PastPaper   PastPaper? @relation(fields: [pastPaperId], references: [id], onDelete: Cascade)
+  Question    Question?  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  User        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, questionId, lessonId, pastPaperId])
+  @@index([lessonId])
+  @@index([pastPaperId])
+  @@index([questionId])
+  @@index([userId])
+}
+
+model Chapter {
+  id            String     @id
+  title         String
+  chapterNumber Int
+  description   String?    @db.Text
+  subjectId     String
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime
+  Subject       Subject    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  Question      Question[]
+  Topic         Topic[]
+
+  @@unique([subjectId, chapterNumber])
+  @@index([subjectId])
+}
+
+model Class {
+  id        String      @id
+  name      String
+  code      String
+  boardId   String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime
+  Board     Board       @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  PastPaper PastPaper[]
+  Subject   Subject[]
+
+  @@unique([boardId, code])
+  @@index([boardId])
+}
+
+model ContentSource {
+  id                 String                           @id
+  sourceType         ContentSource_sourceType
+  title              String
+  url                String?                          @db.Text
+  publisher          String?
+  className          String?
+  subject            String?
+  year               Int?
+  accessedAt         DateTime?
+  verificationStatus ContentSource_verificationStatus @default(UNVERIFIED)
+  createdAt          DateTime                         @default(now())
+  updatedAt          DateTime
+  Flashcard          Flashcard[]
+  PastPaper          PastPaper[]
+  Question           Question[]
+
+  @@index([sourceType])
+  @@index([verificationStatus])
+}
+
+model Flashcard {
+  id                 String                       @id
+  front              String                       @db.Text
+  back               String                       @db.LongText
+  hint               String?                      @db.Text
+  topicId            String
+  published          Boolean                      @default(false)
+  verificationStatus Flashcard_verificationStatus @default(UNVERIFIED)
+  contentSourceId    String?
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime
+  ContentSource      ContentSource?               @relation(fields: [contentSourceId], references: [id])
+  Topic              Topic                        @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  FlashcardReview    FlashcardReview[]
+
+  @@index([contentSourceId])
+  @@index([published])
+  @@index([topicId])
+  @@index([verificationStatus])
+}
+
+model FlashcardReview {
+  id             String    @id
+  userId         String
+  flashcardId    String
+  mastered       Boolean   @default(false)
+  reviewCount    Int       @default(1)
+  lastReviewedAt DateTime  @default(now())
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime
+  Flashcard      Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+  User           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, flashcardId])
+  @@index([flashcardId])
+  @@index([mastered])
+  @@index([userId])
+}
+
+model InteractiveExample {
+  id        String   @id
+  title     String
+  type      String
+  topicId   String
+  lessonId  String?
+  config    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  Lesson    Lesson?  @relation(fields: [lessonId], references: [id])
+  Topic     Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId])
+  @@index([topicId])
+  @@index([type])
+}
+
+model Lesson {
+  id                 String               @id
+  title              String
+  topicId            String
+  published          Boolean              @default(false)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime
+  Bookmark           Bookmark[]
+  InteractiveExample InteractiveExample[]
+  Topic              Topic                @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  LessonBlock        LessonBlock[]
+
+  @@index([published])
+  @@index([topicId])
+}
+
+model LessonBlock {
+  id        String           @id
+  lessonId  String
+  order     Int
+  type      LessonBlock_type @default(TEXT)
+  content   String           @db.LongText
+  createdAt DateTime         @default(now())
+  updatedAt DateTime
+  Lesson    Lesson           @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@index([lessonId, order])
+}
+
+model Mistake {
+  id         String   @id
+  userId     String
+  questionId String
+  attemptId  String?
+  notes      String?  @db.Text
+  resolved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  Attempt    Attempt? @relation(fields: [attemptId], references: [id])
+  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([attemptId])
+  @@index([questionId])
+  @@index([userId, resolved])
+}
+
+model PastPaper {
+  id                 String                       @id
+  title              String
+  year               Int
+  session            String
+  paperType          String?
+  fileKey            String
+  fileUrl            String
+  totalMarks         Int                          @default(75)
+  durationMinutes    Int                          @default(150)
+  published          Boolean                      @default(false)
+  verificationStatus PastPaper_verificationStatus @default(UNVERIFIED)
+  boardId            String
+  classId            String
+  contentSourceId    String?
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime
+  Bookmark           Bookmark[]
+  Board              Board                        @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  Class              Class                        @relation(fields: [classId], references: [id], onDelete: Cascade)
+  ContentSource      ContentSource?               @relation(fields: [contentSourceId], references: [id])
+  PastPaperQuestion  PastPaperQuestion[]
+
+  @@index([boardId, classId, year])
+  @@index([classId], map: "PastPaper_classId_fkey")
+  @@index([contentSourceId])
+  @@index([published])
+  @@index([verificationStatus])
+}
+
+model PastPaperQuestion {
+  id             String    @id
+  pastPaperId    String
+  questionId     String
+  questionNumber String
+  section        String?
+  marks          Int       @default(1)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime
+  PastPaper      PastPaper @relation(fields: [pastPaperId], references: [id], onDelete: Cascade)
+  Question       Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([pastPaperId, questionId])
+  @@index([pastPaperId])
+  @@index([questionId])
+}
+
+model Progress {
+  id             String   @id
+  userId         String
+  topicId        String
+  completed      Boolean  @default(false)
+  score          Int      @default(0)
+  lastAccessedAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime
+  Topic          Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  User           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, topicId])
+  @@index([topicId])
+  @@index([userId])
+}
+
+model Question {
+  id                                                                String                      @id
+  text                                                              String                      @db.LongText
+  type                                                              Question_type               @default(MCQ)
+  difficulty                                                        Question_difficulty         @default(MEDIUM)
+  marks                                                             Int                         @default(1)
+  answer                                                            String?                     @db.LongText
+  explanation                                                       String?                     @db.LongText
+  published                                                         Boolean                     @default(false)
+  verificationStatus                                                Question_verificationStatus @default(UNVERIFIED)
+  chapterId                                                         String
+  topicId                                                           String
+  contentSourceId                                                   String?
+  repeatedFromId                                                    String?
+  createdAt                                                         DateTime                    @default(now())
+  updatedAt                                                         DateTime
+  AttemptAnswer                                                     AttemptAnswer[]
+  Bookmark                                                          Bookmark[]
+  Mistake                                                           Mistake[]
+  PastPaperQuestion                                                 PastPaperQuestion[]
+  Chapter                                                           Chapter                     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  ContentSource                                                     ContentSource?              @relation(fields: [contentSourceId], references: [id])
+  Question                                                          Question?                   @relation("QuestionToQuestion", fields: [repeatedFromId], references: [id])
+  other_Question                                                    Question[]                  @relation("QuestionToQuestion")
+  Topic                                                             Topic                       @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  QuestionOption                                                    QuestionOption[]
+  RepeatVerification_RepeatVerification_matchedQuestionIdToQuestion RepeatVerification[]        @relation("RepeatVerification_matchedQuestionIdToQuestion")
+  RepeatVerification_RepeatVerification_questionIdToQuestion        RepeatVerification[]        @relation("RepeatVerification_questionIdToQuestion")
+  TestQuestion                                                      TestQuestion[]
+  QuestionTag                                                       QuestionTag[]
+
+  @@index([chapterId])
+  @@index([contentSourceId])
+  @@index([difficulty])
+  @@index([published])
+  @@index([repeatedFromId])
+  @@index([topicId])
+  @@index([type])
+  @@index([verificationStatus])
+}
+
+model QuestionOption {
+  id         String   @id
+  questionId String
+  text       String   @db.Text
+  isCorrect  Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId, order])
+}
+
+model QuestionTag {
+  id        String     @id
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  updatedAt DateTime
+  Question  Question[]
+}
+
+model RepeatVerification {
+  id                                                      String    @id
+  questionId                                              String
+  matchedQuestionId                                       String
+  confidenceScore                                         Float
+  verifiedByAdmin                                         Boolean   @default(false)
+  adminId                                                 String?
+  notes                                                   String?   @db.Text
+  verifiedAt                                              DateTime?
+  createdAt                                               DateTime  @default(now())
+  updatedAt                                               DateTime
+  User                                                    User?     @relation(fields: [adminId], references: [id])
+  Question_RepeatVerification_matchedQuestionIdToQuestion Question  @relation("RepeatVerification_matchedQuestionIdToQuestion", fields: [matchedQuestionId], references: [id], onDelete: Cascade)
+  Question_RepeatVerification_questionIdToQuestion        Question  @relation("RepeatVerification_questionIdToQuestion", fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, matchedQuestionId])
+  @@index([adminId])
+  @@index([matchedQuestionId])
+  @@index([questionId])
+  @@index([verifiedByAdmin])
+}
+
+model Subject {
+  id        String    @id
+  name      String
+  code      String
+  classId   String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  Chapter   Chapter[]
+  Class     Class     @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@unique([classId, code])
+  @@index([classId])
+}
+
+model Test {
+  id              String         @id
+  title           String
+  type            Test_type      @default(PRACTICE)
+  durationMinutes Int?
+  totalMarks      Int            @default(0)
+  userId          String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime
+  Attempt         Attempt[]
+  User            User?          @relation(fields: [userId], references: [id])
+  TestQuestion    TestQuestion[]
+
+  @@index([type])
+  @@index([userId])
+}
+
+model TestQuestion {
+  id         String   @id
+  testId     String
+  questionId String
+  order      Int      @default(0)
+  marks      Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime
+  Question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  Test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  @@unique([testId, questionId])
+  @@index([questionId])
+  @@index([testId, order])
+}
+
+model Topic {
+  id                 String               @id
+  title              String
+  topicNumber        Int
+  chapterId          String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime
+  AIConversation     AIConversation[]
+  Flashcard          Flashcard[]
+  InteractiveExample InteractiveExample[]
+  Lesson             Lesson[]
+  Progress           Progress[]
+  Question           Question[]
+  Chapter            Chapter              @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  TopicLearnContent  TopicLearnContent?
+
+  @@unique([chapterId, topicNumber])
+  @@index([chapterId])
+}
+
+model TopicLearnContent {
+  id                    String   @id @default(cuid())
+  topicId               String   @unique
+  
+  // Card 1: Definition & Exam Rubrics
+  definitionEnglish     String   @db.Text
+  definitionUrdu        String   @db.Text
+  rubricKeywords        Json
+  easyExplanationEnglish String?  @db.Text
+  easyExplanationUrdu    String?  @db.Text
+  
+  // Card 2: Real-World Analogy & Example
+  realWorldEnglish      String   @db.Text
+  realWorldUrdu         String   @db.Text
+  realWorldDiagramUrl   String?  @db.Text
+  realWorldDiagramTitle String?
+  realWorldDiagramData  Json?
+  
+  // Card 3: Technical Diagram OR Code Example
+  contentType           String   @default("DIAGRAM") // "DIAGRAM" | "CODE"
+  technicalTitle        String?
+  diagramUrl            String?  @db.Text
+  diagramCaption        String?  @db.Text
+  codeSnippet           String?  @db.LongText
+  codeLanguage          String?  @default("cpp")
+  codeExplanation       String?  @db.Text
+  
+  // Card 4: Animated / Interactive Sandbox (Optional)
+  hasInteractive        Boolean  @default(false)
+  interactiveTitle      String?
+  interactiveType       String?
+  interactiveConfig     Json?
+  
+  // Card 5: Board Exam Question & How to Solve
+  examQuestion          String   @db.Text
+  boardReference        String?
+  markingScheme         Json
+  solutionGuidance      String   @db.LongText
+  
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  Topic                 Topic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@index([topicId])
+}
+
+model User {
+  id                 String               @id
+  email              String               @unique
+  username           String?              @unique
+  passwordHash       String
+  name               String?
+  role               User_role            @default(STUDENT)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime
+  AIConversation     AIConversation[]
+  Attempt            Attempt[]
+  Bookmark           Bookmark[]
+  FlashcardReview    FlashcardReview[]
+  Mistake            Mistake[]
+  Progress           Progress[]
+  RepeatVerification RepeatVerification[]
+  Test               Test[]
+  UserAchievement    UserAchievement[]
+
+  @@index([role])
+}
+
+model UserAchievement {
+  id            String      @id
+  userId        String
+  achievementId String
+  unlockedAt    DateTime    @default(now())
+  Achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  User          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([achievementId])
+  @@index([userId])
+}
+
+enum ContentSource_sourceType {
+  OFFICIAL_SYLLABUS
+  OFFICIAL_TEXTBOOK
+  PAST_PAPER
+  SUPPLEMENTARY
+  AI_GENERATED
+}
+
+enum AIMessage_sender {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum Question_type {
+  MCQ
+  SHORT
+  LONG
+  NUMERICAL
+  PROGRAMMING
+}
+
+enum Test_type {
+  PRACTICE
+  EXAM
+}
+
+enum Attempt_status {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum LessonBlock_type {
+  TEXT
+  CODE
+  CALLOUT
+  INTERACTIVE
+  IMAGE
+  KEY_TAKEAWAY
+}
+
+enum Question_difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum User_role {
+  STUDENT
+  ADMIN
+}
+
+enum Flashcard_verificationStatus {
+  UNVERIFIED
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+enum Question_verificationStatus {
+  UNVERIFIED
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+enum ContentSource_verificationStatus {
+  UNVERIFIED
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+enum PastPaper_verificationStatus {
+  UNVERIFIED
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
