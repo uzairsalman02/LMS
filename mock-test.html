@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Exam Room - Computer Science (11th Standard)</title>
+    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <script src="assets/js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Urdu Nastaleeq Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Jameel Noori Nastaleeq Font Integration -->
+    <style>
+        @font-face {
+            font-family: 'jameel-noori-nastaleeq';
+            src: url('https://cdn.jsdelivr.net/gh/tariq-abdullah/urdu-web-font-CDN/JameelNooriNastaleeq.woff') format('woff');
+            font-display: swap;
+        }
+        .font-nastaleeq {
+            font-family: 'jameel-noori-nastaleeq', serif;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+
+    </head>
+<body data-lms-page="mock-test" class="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen relative">
+
+    <!-- Top Navigation Header Bar (Borderless & Pure White) -->
+    <header class="bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Left Corner: App Logo & Title -->
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 bg-gradient-to-tr from-practice-500 to-rose-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-practice-500/20">
+                    CS
+                </div>
+                <div>
+                    <span class="font-bold text-base tracking-tight text-slate-900 block leading-tight">Mock Exam Room</span>
+                    <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Unit 1, 2, 3 Practice Test</span>
+                </div>
+            </div>
+
+            <!-- Center: Live Running Timer -->
+            <div class="flex items-center space-x-2 bg-rose-50 border border-rose-200 px-4 py-2 rounded-2xl text-rose-700 shadow-2xs">
+                <i class="fa-solid fa-clock animate-pulse"></i>
+                <span class="text-xs font-bold font-mono">Time Remaining: <span id="timer" class="text-sm">29:45</span></span>
+            </div>
+
+            <!-- Right Side: Submit Exam Button -->
+            <div class="flex items-center space-x-2.5">
+                <button onclick="if(confirm('Are you sure you want to submit the exam and generate your official report?')) window.location.href='progress-report.html';" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-sm cursor-pointer flex items-center space-x-1.5">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Submit Exam</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex max-w-[1440px] w-full mx-auto relative">
+
+        <!-- Left Sidebar Navigation (Borderless & Pure White) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar">
+            <div class="p-4 space-y-5 pt-6">
+                
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Exam Navigation</p>
+                    <div class="space-y-1">
+                        <a href="practice.html" title="Exit Exam" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-right-from-bracket w-4 text-center"></i>
+                            <span>Exit Exam Mode</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Stats inside Sidebar -->
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 space-y-2">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Exam Status</p>
+                    <div class="flex justify-between text-xs font-medium text-slate-700">
+                        <span>Answered:</span>
+                        <span class="font-bold text-emerald-600">3 / 20</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-medium text-slate-700">
+                        <span>Marked for Review:</span>
+                        <span class="font-bold text-amber-600">1</span>
+                    </div>
+                    <div class="flex justify-between text-xs font-medium text-slate-700">
+                        <span>Unattempted:</span>
+                        <span class="font-bold text-slate-500">16</span>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 hidden md:block">
+                <div class="bg-gradient-to-r from-slate-50 to-indigo-50/50 p-3 rounded-2xl border border-indigo-100/60 shadow-sm">
+                    <p class="text-[11px] text-indigo-900 font-bold">Secure Test Environment</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">Board Standard Compliance</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Backdrop for Mobile Left Sidebar -->
+        <div id="backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden md:hidden"></div>
+
+        <!-- Main Content Area: Active Question Box (White Background) -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
+            
+            <div class="max-w-3xl mx-auto space-y-6 w-full">
+                
+                <!-- Question Progress Bar Header -->
+                <div class="flex items-center justify-between bg-slate-50/80 p-4 rounded-3xl border border-slate-100">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Question 3 of 20</span>
+                    <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded-full">Unit 3: OOP in C++</span>
+                </div>
+
+                <!-- Active Question Container -->
+                <div class="bg-gradient-to-br from-slate-50 via-slate-50/40 to-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+                    <h2 class="text-base sm:text-lg font-bold text-slate-900 leading-relaxed">
+                        Q3: Which keyword is mandatory in C++ to achieve run-time polymorphism through base class pointers?
+                    </h2>
+
+                    <!-- Options Grid -->
+                    <div class="space-y-3">
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border border-slate-200 hover:border-practice-400 hover:bg-practice-50/30 bg-white cursor-pointer transition shadow-2xs">
+                            <input type="radio" name="q3" class="w-4 h-4 text-practice-600 border-slate-300 focus:ring-practice-500">
+                            <span class="text-xs sm:text-sm font-semibold text-slate-700">A) static</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border-2 border-practice-500 bg-practice-50/60 cursor-pointer transition shadow-2xs">
+                            <input type="radio" name="q3" checked class="w-4 h-4 text-practice-600 border-slate-300 focus:ring-practice-500">
+                            <span class="text-xs sm:text-sm font-bold text-practice-900">B) virtual</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border border-slate-200 hover:border-practice-400 hover:bg-practice-50/30 bg-white cursor-pointer transition shadow-2xs">
+                            <input type="radio" name="q3" class="w-4 h-4 text-practice-600 border-slate-300 focus:ring-practice-500">
+                            <span class="text-xs sm:text-sm font-semibold text-slate-700">C) override</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-4 rounded-2xl border border-slate-200 hover:border-practice-400 hover:bg-practice-50/30 bg-white cursor-pointer transition shadow-2xs">
+                            <input type="radio" name="q3" class="w-4 h-4 text-practice-600 border-slate-300 focus:ring-practice-500">
+                            <span class="text-xs sm:text-sm font-semibold text-slate-700">D) inline</span>
+                        </label>
+                    </div>
+
+                    <!-- Question Bottom Control Actions -->
+                    <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-4 border-t border-slate-100">
+                        <button class="w-full sm:w-auto bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold px-4 py-2.5 rounded-xl text-xs transition border border-amber-200 cursor-pointer">
+                            <i class="fa-solid fa-flag mr-1"></i> Mark for Review & Next
+                        </button>
+                        <div class="flex items-center space-x-2 w-full sm:w-auto">
+                            <button class="flex-1 sm:flex-none bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold px-4 py-2.5 rounded-xl text-xs transition cursor-pointer">
+                                Previous
+                            </button>
+                            <button class="flex-1 sm:flex-none bg-practice-600 hover:bg-practice-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition shadow-md shadow-practice-600/20 cursor-pointer">
+                                Save & Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Borderless Center Copyright Footer -->
+            <footer class="py-6 text-center text-xs text-slate-400 font-medium mt-8">
+                <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science.</p>
+            </footer>
+
+        </main>
+
+        <!-- Right Side Panel: Question Palette / Navigator (Borderless & Pure White) -->
+        <aside id="right-panel" class="fixed inset-y-0 right-0 z-40 w-80 bg-white transform translate-x-full lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out px-5 pt-4 pb-5 overflow-y-auto no-scrollbar flex flex-col space-y-4 shadow-xl lg:shadow-none">
+            
+            <div class="flex justify-between items-center lg:hidden pb-1">
+                <span class="font-bold text-slate-800 text-sm">Question Palette</span>
+                <button id="close-right-panel" title="Close Drawer" class="text-slate-400 hover:text-slate-600 text-sm font-bold">Close ✕</button>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-900 text-sm">Question Palette</h3>
+                <span class="text-[10px] font-bold text-practice-700 bg-practice-50 px-2.5 py-0.5 rounded-full">20 MCQs</span>
+            </div>
+
+            <!-- Palette Status Legend -->
+            <div class="grid grid-cols-2 gap-2 text-[10px] font-semibold text-slate-600 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span><span>Answered (3)</span></div>
+                <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-slate-200 inline-block"></span><span>Unattempted (16)</span></div>
+                <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span><span>Review (1)</span></div>
+                <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-practice-600 inline-block"></span><span>Current (Q3)</span></div>
+            </div>
+
+            <!-- Question Number Grid -->
+            <div class="grid grid-cols-5 gap-2 pt-2">
+                <button class="w-11 h-11 rounded-xl bg-emerald-500 text-white font-bold text-xs flex items-center justify-center shadow-2xs hover:opacity-90">1</button>
+                <button class="w-11 h-11 rounded-xl bg-emerald-500 text-white font-bold text-xs flex items-center justify-center shadow-2xs hover:opacity-90">2</button>
+                <button class="w-11 h-11 rounded-xl bg-practice-600 text-white font-bold text-xs flex items-center justify-center shadow-md ring-2 ring-practice-300">3</button>
+                <button class="w-11 h-11 rounded-xl bg-amber-500 text-white font-bold text-xs flex items-center justify-center shadow-2xs hover:opacity-90">4</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">5</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">6</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">7</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">8</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">9</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">10</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">11</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">12</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">13</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">14</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">15</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">16</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">17</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">18</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">19</button>
+                <button class="w-11 h-11 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs flex items-center justify-center border border-slate-200 hover:bg-slate-200">20</button>
+            </div>
+
+        </aside>
+
+        <!-- Backdrop for Mobile Right Panel -->
+        <div id="right-backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden lg:hidden"></div>
+
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-100 z-40 flex justify-around py-3 px-2 shadow-lg">
+        <a href="practice.html" title="Exit" class="flex flex-col items-center text-rose-600">
+            <i class="fa-solid fa-right-from-bracket text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Exit</span>
+        </a>
+        <button onclick="if(confirm('Are you sure you want to submit the exam and generate your official report?')) window.location.href='progress-report.html';" class="flex flex-col items-center text-emerald-600">
+            <i class="fa-solid fa-check text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Submit</span>
+        </button>
+        <button id="mobile-profile-tab" title="Palette" class="flex flex-col items-center text-slate-400">
+            <i class="fa-solid fa-list-check text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Palette</span>
+        </button>
+    </nav>
+
+    <!-- JavaScript for Mobile Toggles, Timer & Question Palette -->
+    <script>
+        const rightPanelBtn = document.getElementById('right-panel-btn');
+        const mobileProfileTab = document.getElementById('mobile-profile-tab');
+        const rightPanel = document.getElementById('right-panel');
+        const rightBackdrop = document.getElementById('right-backdrop');
+        const closeRightPanel = document.getElementById('close-right-panel');
+
+        function toggleRightPanel() {
+            rightPanel.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+        }
+
+        if (mobileProfileTab) mobileProfileTab.addEventListener('click', toggleRightPanel);
+        if (closeRightPanel) closeRightPanel.addEventListener('click', toggleRightPanel);
+        if (rightBackdrop) rightBackdrop.addEventListener('click', toggleRightPanel);
+
+        // Live Timer Countdown
+        let remainingSeconds = 29 * 60 + 45;
+        const timerEl = document.getElementById('timer');
+        if (timerEl) {
+            setInterval(() => {
+                if (remainingSeconds > 0) {
+                    remainingSeconds--;
+                    const mins = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+                    const secs = String(remainingSeconds % 60).padStart(2, '0');
+                    timerEl.textContent = `${mins}:${secs}`;
+                }
+            }, 1000);
+        }
+
+        // Palette interactive selection
+        document.querySelectorAll('#right-panel .grid-cols-5 button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const qNum = btn.textContent.trim();
+                const qHeader = document.querySelector('main .max-w-3xl span.font-bold.text-slate-500');
+                if (qHeader) qHeader.textContent = `Question ${qNum} of 20`;
+                
+                // Highlight active button
+                document.querySelectorAll('#right-panel .grid-cols-5 button').forEach(b => {
+                    b.classList.remove('ring-2', 'ring-practice-300');
+                });
+                btn.classList.add('ring-2', 'ring-practice-300');
+            });
+        });
+    </script>
+    <!-- LMS Core Prototype Script -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

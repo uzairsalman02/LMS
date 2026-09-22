@@ -1,0 +1,8 @@
+/* Application shell rules shared by all LMS screens. Tailwind utility classes
+   remain in use while the project progressively moves to compiled CSS. */
+.lms-page-shell { min-height: 100vh; }
+.lms-content { min-width: 0; }
+
+@media print {
+  header, #sidebar, #right-panel, #backdrop, #right-backdrop { display: none !important; }
+}

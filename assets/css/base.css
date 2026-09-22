@@ -1,0 +1,15 @@
+@import url('./layout.css');
+
+:root {
+  --lms-brand-50: #f0fdf4;
+  --lms-brand-500: #22c55e;
+  --lms-brand-600: #16a34a;
+  --lms-brand-700: #15803d;
+}
+
+html { scroll-behavior: smooth; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+[data-lms-page] { min-height: 100vh; }

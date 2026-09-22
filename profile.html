@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile Hub - Computer Science (11th Standard)</title>
+    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <script src="assets/js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body data-lms-page="profile" class="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Top Navigation Header Bar -->
+    <header class="bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+            <div class="flex items-center space-x-3">
+                <button id="menu-btn" title="Toggle Navigation Menu"
+                    class="text-slate-500 hover:text-slate-700 md:hidden focus:outline-none relative group">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="w-9 h-9 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-emerald-500/20">
+                        CS
+                    </div>
+                    <div>
+                        <span class="font-bold text-base tracking-tight text-slate-900 block leading-tight">Computer
+                            Science</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">11th
+                            Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                <div class="relative w-full group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" placeholder="Search profile settings, credentials..."
+                        class="w-full bg-slate-50 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2 text-sm focus:bg-white focus:border-brand-500 focus:outline-none shadow-sm transition-all">
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2.5 relative">
+                <button id="support-btn" title="Support"
+                    class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-semibold transition cursor-pointer">
+                    <i class="fa-solid fa-circle-question text-slate-500"></i>
+                    <span>Support</span>
+                </button>
+                <button title="Logout Account"
+                    class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 text-xs font-semibold transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+                <button id="right-panel-btn" title="View Profile Panel"
+                    class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center font-semibold text-slate-700 text-xs shadow-sm lg:hidden ml-1">
+                    US
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex max-w-[1440px] w-full mx-auto relative">
+
+        <!-- Left Sidebar Navigation -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar">
+            <div class="p-4 space-y-5 pt-6">
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Main</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" title="Overview"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-house w-4 text-center"></i>
+                            <span>Overview</span>
+                        </a>
+                        <a href="learn.html" title="Learn"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-book-open w-4 text-center"></i>
+                            <span>Learn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Practice & Test
+                    </p>
+                    <div class="space-y-1">
+                        <a href="past-papers.html" title="Past Papers"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                            <span>Past Papers</span>
+                        </a>
+                        <a href="practice.html" title="Practice"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-rose-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
+                            <span>Practice</span>
+                        </a>
+                        <a href="exam-mode.html" title="Exam Mode"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-indigo-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-laptop-code w-4 text-center"></i>
+                            <span>Exam Mode</span>
+                        </a>
+                        <a href="mistakes.html" title="Mistakes"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i>
+                            <span>Mistakes</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tools &
+                        Tracking</p>
+                    <div class="space-y-1">
+                        <a href="progress.html" title="Progress"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-teal-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-chart-line w-4 text-center"></i>
+                            <span>Progress</span>
+                        </a>
+                        <a href="revision.html" title="Revision"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-rotate-right w-4 text-center"></i>
+                            <span>Revision</span>
+                        </a>
+                        <a href="bookmark.html" title="Bookmark"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 font-medium text-sm transition">
+                            <i class="fa-solid fa-bookmark w-4 text-center"></i>
+                            <span>Bookmark</span>
+                        </a>
+                        <a href="#" title="AI Tutor"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-robot w-4 text-center"></i>
+                            <span>AI Tutor</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Account</p>
+                    <div class="space-y-1">
+                        <!-- Active Profile Link -->
+                        <a href="profile.html" title="Profile"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl bg-profile-50 text-profile-700 font-medium text-sm transition">
+                            <i class="fa-solid fa-user w-4 text-center"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="settings.html" title="Settings"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 font-medium text-sm transition">
+                            <i class="fa-solid fa-gear w-4 text-center"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="p-4 hidden md:block">
+                <div
+                    class="bg-gradient-to-r from-slate-50 to-indigo-50/50 p-3 rounded-2xl border border-indigo-100/60 shadow-sm">
+                    <p class="text-[11px] text-indigo-900 font-bold">Capacitor Native Ready</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">iOS & Android Build Support</p>
+                </div>
+            </div>
+        </aside>
+
+        <div id="backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden md:hidden"></div>
+
+        <!-- Main Content Area (Clean & No Top Banner) -->
+        <main
+            class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
+
+            <div class="space-y-6">
+
+                <!-- Page Title Header -->
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-5 rounded-3xl border border-slate-100">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
+                            <span>Account</span>
+                            <span>/</span>
+                            <span class="text-profile-600">Student Profile</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Student Account & Performance Profile
+                        </h1>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-emerald-100 text-emerald-700 font-bold text-xs px-3.5 py-2 rounded-xl">Verified
+                            Student Active</span>
+                    </div>
+                </div>
+
+                <!-- Info Cards with Syllabus Covered %, Exam Readiness, Active Bookmarks, and Level -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Card 1: Syllabus Covered % -->
+                    <div
+                        class="bg-gradient-to-br from-slate-50 via-teal-50/30 to-white p-5 rounded-3xl border border-teal-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span
+                                class="text-[10px] font-bold text-teal-600 uppercase tracking-wider block mb-1">Syllabus
+                                Covered</span>
+                            <h3 class="text-2xl font-bold text-teal-700">75%</h3>
+                            <span class="text-[11px] text-teal-600 font-medium">12 of 16 chapters</span>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-lg shadow-inner">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Exam Readiness -->
+                    <div
+                        class="bg-gradient-to-br from-slate-50 via-indigo-50/30 to-white p-5 rounded-3xl border border-indigo-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block mb-1">Exam
+                                Readiness</span>
+                            <h3 class="text-2xl font-bold text-indigo-700">78%</h3>
+                            <span class="text-[11px] text-indigo-600 font-medium">Board simulation index</span>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-lg shadow-inner">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Active Bookmarks -->
+                    <div
+                        class="bg-gradient-to-br from-slate-50 via-amber-50/30 to-white p-5 rounded-3xl border border-amber-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span
+                                class="text-[10px] font-bold text-amber-600 uppercase tracking-wider block mb-1">Active
+                                Bookmarks</span>
+                            <h3 class="text-2xl font-bold text-amber-700">18</h3>
+                            <span class="text-[11px] text-amber-600 font-medium">Saved topics & MCQs</span>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-lg shadow-inner">
+                            <i class="fa-solid fa-bookmark"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Level -->
+                    <div
+                        class="bg-gradient-to-br from-slate-50 via-purple-50/30 to-white p-5 rounded-3xl border border-purple-200/80 shadow-sm flex items-center justify-between">
+                        <div>
+                            <span
+                                class="text-[10px] font-bold text-purple-600 uppercase tracking-wider block mb-1">Student
+                                Level</span>
+                            <h3 class="text-2xl font-bold text-purple-700">Level 4</h3>
+                            <span class="text-[11px] text-purple-600 font-medium">Tested out of 5 levels</span>
+                        </div>
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-lg shadow-inner">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clean & Detailed Profile Information Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <!-- Left 2 Cols: Personal Bio & Academic Details -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-sm">
+                            <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                                <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider">Personal &
+                                    Academic Credentials</h3>
+                                <button onclick="alert('Profile edit mode unlocked!')"
+                                    class="text-xs font-bold text-profile-600 hover:text-profile-700 bg-profile-50 px-3 py-1 rounded-xl transition cursor-pointer">
+                                    <i class="fa-solid fa-pen mr-1"></i> Edit Info
+                                </button>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                <div>
+                                    <span class="text-slate-400 font-semibold block uppercase text-[10px]">Full
+                                        Name</span>
+                                    <span class="font-bold text-slate-800 text-sm">Uzair Salman</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 font-semibold block uppercase text-[10px]">Date of
+                                        Birth</span>
+                                    <span class="font-bold text-slate-800 text-sm">October 24, 1989</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 font-semibold block uppercase text-[10px]">Email
+                                        Address</span>
+                                    <span class="font-bold text-slate-800 text-sm">uzair.salman@edustack.edu.pk</span>
+                                </div>
+                                <div>
+                                    <span class="text-slate-400 font-semibold block uppercase text-[10px]">Contact
+                                        Number</span>
+                                    <span class="font-bold text-slate-800 text-sm">+92 300 1234567</span>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <span class="text-slate-400 font-semibold block uppercase text-[10px]">Institution /
+                                        Campus</span>
+                                    <span class="font-bold text-slate-800 text-sm">University of Education, Jauharabad
+                                        Campus</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Achievements Showcase -->
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-sm">
+                            <h3
+                                class="font-bold text-slate-900 text-sm uppercase tracking-wider border-b border-slate-200/80 pb-3">
+                                Unlocked Achievements</h3>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center text-xs">
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/60 space-y-2 shadow-2xs">
+                                    <div
+                                        class="w-10 h-10 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-base">
+                                        <i class="fa-solid fa-crown"></i>
+                                    </div>
+                                    <span class="font-bold text-slate-800 block">C++ Master</span>
+                                    <span class="text-[10px] text-slate-400 block">Unit 3 Completed</span>
+                                </div>
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/60 space-y-2 shadow-2xs">
+                                    <div
+                                        class="w-10 h-10 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-base">
+                                        <i class="fa-solid fa-bolt"></i>
+                                    </div>
+                                    <span class="font-bold text-slate-800 block">Quick Solver</span>
+                                    <span class="text-[10px] text-slate-400 block">Under 15 mins test</span>
+                                </div>
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/60 space-y-2 shadow-2xs">
+                                    <div
+                                        class="w-10 h-10 mx-auto rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-base">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </div>
+                                    <span class="font-bold text-slate-800 block">Exam Pro</span>
+                                    <span class="text-[10px] text-slate-400 block">75 Marks Simulation</span>
+                                </div>
+                                <div class="bg-white p-4 rounded-2xl border border-slate-200/60 space-y-2 shadow-2xs">
+                                    <div
+                                        class="w-10 h-10 mx-auto rounded-full bg-sky-100 text-sky-600 flex items-center justify-center text-base">
+                                        <i class="fa-solid fa-fire"></i>
+                                    </div>
+                                    <span class="font-bold text-slate-800 block">12-Day Streak</span>
+                                    <span class="text-[10px] text-slate-400 block">Consistent login</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Col: Security & ID Card -->
+                    <div class="space-y-6">
+                        <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-sm">
+                            <h3
+                                class="font-bold text-slate-900 text-sm uppercase tracking-wider border-b border-slate-200/80 pb-3">
+                                Security & Access</h3>
+                            <div class="space-y-3 text-xs">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-slate-700">Two-Factor Auth</span>
+                                    <span
+                                        class="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-0.5 rounded-full text-[10px]">Enabled</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="font-medium text-slate-700">Password Status</span>
+                                    <span class="text-slate-500">Updated 2mo ago</span>
+                                </div>
+                                <button onclick="alert('Password reset link sent to email.')"
+                                    class="w-full bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold py-2 rounded-xl transition shadow-2xs cursor-pointer">
+                                    Change Password
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Col: Printable Student Card Widget -->
+                        <div class="space-y-6">
+                            <div
+                                class="bg-gradient-to-br from-profile-50/60 to-purple-50/30 p-6 rounded-3xl border border-profile-100 space-y-4 shadow-sm text-center">
+                                <div class="flex items-center justify-between">
+                                    <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider">Printable
+                                        Student Card</h4>
+                                    <span
+                                        class="text-[10px] font-bold text-profile-700 bg-white px-2 py-0.5 rounded-full border border-profile-200">Official</span>
+                                </div>
+
+                                <!-- Mini ID Card Preview Box -->
+                                <div
+                                    class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm text-left space-y-3 relative overflow-hidden">
+                                    <div
+                                        class="absolute top-0 right-0 w-16 h-16 bg-profile-500/10 rounded-bl-full pointer-events-none">
+                                    </div>
+                                    <div class="flex items-center space-x-3">
+                                        <div
+                                            class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white font-bold text-base shadow-sm">
+                                            US
+                                        </div>
+                                        <div>
+                                            <h5 class="font-extrabold text-slate-900 text-xs">Uzair Salman</h5>
+                                            <p class="text-[10px] text-slate-500 font-medium">11th Standard • CS</p>
+                                            <p class="text-[9px] text-profile-600 font-mono font-bold mt-0.5">ID:
+                                                CS-11-2026-04</p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px]">
+                                        <span class="text-slate-400">Valid: 2026-2027</span>
+                                        <span class="font-mono font-bold text-slate-700">||| | | ||||</span>
+                                    </div>
+                                </div>
+
+                                <a href="student-card.html" target="_blank"
+                                    class="w-full bg-profile-600 hover:bg-profile-700 text-white font-bold py-3 rounded-xl text-xs transition shadow-md shadow-profile-600/20 flex items-center justify-center space-x-2 cursor-pointer inline-block">
+                                    <i class="fa-solid fa-print"></i>
+                                    <span>Print Student Card</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <footer class="py-6 text-center text-xs text-slate-400 font-medium mt-8">
+                <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer
+                    Science.</p>
+            </footer>
+
+        </main>
+
+        <!-- Right Side Panel -->
+        <aside id="right-panel"
+            class="fixed inset-y-0 right-0 z-40 w-80 bg-white transform translate-x-full lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out px-5 pt-3 pb-5 overflow-y-auto no-scrollbar flex flex-col space-y-4 shadow-xl lg:shadow-none border:none">
+
+            <div class="flex justify-between items-center lg:hidden pb-1">
+                <span class="font-bold text-slate-800 text-sm">Profile & Schedule</span>
+                <button id="close-right-panel" title="Close Profile Panel"
+                    class="text-slate-400 hover:text-slate-600 text-sm font-bold">Close ✕</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-3xl flex flex-col items-center text-center relative group">
+                <div class="relative mb-2 mt-0.5">
+                    <div title="Uzair Salman - Active Student"
+                        class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 p-1 shadow-md cursor-pointer">
+                        <div
+                            class="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden text-slate-600 font-bold text-lg">
+                            US
+                        </div>
+                    </div>
+                    <span
+                        class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                </div>
+                <h3 class="font-bold text-slate-900 text-sm">Uzair Salman</h3>
+                <p class="text-[11px] font-medium text-slate-500 mt-0.5">11th Computer Science • 2026</p>
+            </div>
+
+            <div
+                class="bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-pink-500/10 border border-purple-100/80 p-3.5 rounded-3xl shadow-sm backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-2.5">
+                    <div class="flex items-center space-x-2">
+                        <div
+                            class="w-7 h-7 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center text-xs shadow-md shadow-purple-500/30">
+                            🏆
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-xs">Achievements</h4>
+                            <p class="text-[10px] text-purple-700 font-semibold">3 Badges Unlocked</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5">
+                    <div
+                        class="bg-white/90 border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm">
+                        <div
+                            class="w-7 h-7 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-sm mb-1">
+                            💻</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Coding Ace</span>
+                    </div>
+                    <div
+                        class="bg-white/90 border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm">
+                        <div
+                            class="w-7 h-7 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm mb-1">
+                            💡</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Problem Solver</span>
+                    </div>
+                    <div
+                        class="bg-white/90 border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm">
+                        <div
+                            class="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm mb-1">
+                            🚀</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Fast Coder</span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-gradient-to-br from-rose-50/60 to-pink-50/30 border border-rose-100 p-3.5 rounded-3xl shadow-sm">
+                <div class="flex items-center space-x-2 text-rose-700 font-bold text-xs mb-1">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Upcoming Deadline</span>
+                </div>
+                <p class="text-xs text-slate-600 font-medium">OOP Practical Lab Assignment due tomorrow at 11:59 PM.</p>
+            </div>
+
+        </aside>
+
+        <div id="right-backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden lg:hidden"></div>
+
+    </div>
+
+    <!-- Script for Toggling Sidebars -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+
+        const rightPanelBtn = document.getElementById('right-panel-btn');
+        const rightPanel = document.getElementById('right-panel');
+        const rightBackdrop = document.getElementById('right-backdrop');
+        const closeRightPanel = document.getElementById('close-right-panel');
+
+        function toggleLeftSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function toggleRightPanel() {
+            rightPanel.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+        }
+
+        menuBtn.addEventListener('click', toggleLeftSidebar);
+        backdrop.addEventListener('click', toggleLeftSidebar);
+        rightPanelBtn.addEventListener('click', toggleRightPanel);
+        closeRightPanel.addEventListener('click', toggleRightPanel);
+        rightBackdrop.addEventListener('click', toggleRightPanel);
+    </script>
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>

@@ -662,7 +662,7 @@ export function LearnClient({ chapters, initialTopicId, studentName }: LearnClie
   return (
     <StudentShell rightPanel={rightPanel} rightPanelIcon="fa-list-check" rightPanelLabel="Course Syllabus">
       <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
-        <div className="space-y-6 max-w-5xl mx-auto w-full transition-all duration-300">
+        <div className="space-y-6 max-w-4xl mx-auto w-full">
           {/* Breadcrumb & Unit Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-4 sm:p-5 rounded-3xl border border-slate-100">
             <div>

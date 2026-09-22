@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="assets/css/base.css">
+    <script src="assets/js/tailwind-config.js"></script>
+<title>Learn Hub - Computer Science (11th Standard)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        @font-face {
+            font-family: 'jameel-noori-nastaleeq';
+            src: url('https://cdn.jsdelivr.net/gh/tariq-abdullah/urdu-web-font-CDN/JameelNooriNastaleeq.woff') format('woff');
+            font-display: swap;
+        }
+        .font-nastaleeq {
+            font-family: 'jameel-noori-nastaleeq', serif;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+
+    </head>
+<body data-lms-page="learn" class="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen relative">
+
+    <header class="bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <div class="flex items-center space-x-3">
+                <button id="menu-btn" title="Toggle Navigation Menu" class="text-slate-500 hover:text-slate-700 md:hidden focus:outline-none relative group">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                    <span class="absolute top-full left-0 mt-1.5 hidden group-hover:block bg-slate-900 text-white text-[10px] font-semibold px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-50">Menu</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-emerald-500/20">
+                        CS
+                    </div>
+                    <div>
+                        <span class="font-bold text-base tracking-tight text-slate-900 block leading-tight">Computer Science</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">11th Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                <div class="relative w-full group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" title="Search lessons, topics, or explanations..." placeholder="Search lessons, topics, or explanations..." class="w-full bg-slate-50 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2 text-sm focus:bg-white focus:border-brand-500 focus:outline-none shadow-sm transition-all">
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2.5 relative">
+                <button id="support-btn" title="Support & Developer Info" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-xs font-semibold transition relative group cursor-pointer">
+                    <i class="fa-solid fa-circle-question text-slate-500"></i>
+                    <span>Support</span>
+                </button>
+
+                <div id="support-modal" class="hidden absolute top-full right-16 mt-2 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 z-50">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider">Developer & Support</h4>
+                        </div>
+                        <button id="close-modal" class="text-slate-400 hover:text-slate-600 text-xs font-bold px-1.5 py-0.5 rounded-lg cursor-pointer">✕</button>
+                    </div>
+
+                    <div class="py-3 space-y-2.5 text-xs text-slate-600">
+                        <p><strong class="text-slate-800">Developer:</strong> Uzair Salman</p>
+                        <p><strong class="text-slate-800">Support Email:</strong> support@edustack.edu.pk</p>
+                        <p><strong class="text-slate-800">Contact Number:</strong> +92 300 1234567</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <a href="#" title="Open Student User Guide" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-book text-[10px]"></i>
+                            <span>User Guide</span>
+                        </a>
+                        <span class="text-[10px] text-slate-400 font-medium">v2.4.0 Stable</span>
+                    </div>
+                </div>
+
+                <button title="Logout Account" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 text-xs font-semibold transition relative group">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+
+                <button id="right-panel-btn" title="View Topics Drawer" class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center font-semibold text-slate-700 text-xs shadow-sm lg:hidden ml-1 relative group">
+                    <i class="fa-solid fa-list-check"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 flex max-w-[1440px] w-full mx-auto relative">
+
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar">
+            <div class="p-4 space-y-5 pt-6">
+                
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Main</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" title="Overview" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-50 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-house w-4 text-center"></i>
+                            <span>Overview</span>
+                        </a>
+                        <a href="learn.html" title="Learn" class="flex items-center space-x-3 px-3 py-2 rounded-xl bg-sky-50 text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-book-open w-4 text-center"></i>
+                            <span>Learn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Practice & Test</p>
+                    <div class="space-y-1">
+                        <a href="past-papers.html" title="Past Papers" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                            <span>Past Papers</span>
+                        </a>
+                        <a href="practice.html" title="Practice" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-rose-50 hover:text-rose-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
+                            <span>Practice</span>
+                        </a>
+                        <a href="exam-mode.html" title="Exam Mode" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-laptop-code w-4 text-center"></i>
+                            <span>Exam Mode</span>
+                        </a>
+                        <a href="mistakes.html" title="Mistakes" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i>
+                            <span>Mistakes</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tools & Tracking</p>
+                    <div class="space-y-1">
+                        <a href="progress.html" title="Progress" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-teal-50 hover:text-teal-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-chart-line w-4 text-center"></i>
+                            <span>Progress</span>
+                        </a>
+                        <a href="revision.html" title="Revision" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-rotate-right w-4 text-center"></i>
+                            <span>Revision</span>
+                        </a>
+                        <a href="bookmark.html" title="Bookmark" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-bookmark w-4 text-center"></i>
+                            <span>Bookmark</span>
+                        </a>
+                        <a href="#" title="AI Tutor" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-robot w-4 text-center"></i>
+                            <span>AI Tutor</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Account</p>
+                    <div class="space-y-1">
+                        <a href="profile.html" title="Profile" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-user w-4 text-center"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="settings.html" title="Settings" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-800 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-gear w-4 text-center"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="p-4 hidden md:block">
+                <div class="bg-gradient-to-r from-slate-50 to-indigo-50/50 p-3 rounded-2xl border border-indigo-100/60 shadow-sm" title="Capacitor 8.0 Cross-Platform Runtime">
+                    <p class="text-[11px] text-indigo-900 font-bold">Capacitor Native Ready</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">iOS & Android Build Support</p>
+                </div>
+            </div>
+        </aside>
+
+        <div id="backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden md:hidden"></div>
+
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
+            
+            <div class="space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-5 rounded-3xl border border-slate-100">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
+                            <span>Unit 3: Object-Oriented Programming</span>
+                            <span>/</span>
+                            <span class="text-sky-600">Topic 3.4</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Understanding Polymorphism in C++</h1>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button title="Bookmark this lesson" class="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold px-3.5 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-bookmark text-amber-500"></i>
+                            <span>Bookmark</span>
+                        </button>
+                        <button title="Mark as Completed" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center space-x-1.5 shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-check text-[10px]"></i>
+                            <span>Mark Complete</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="relative bg-gradient-to-br from-slate-50 via-sky-50/40 to-emerald-50/30 rounded-3xl p-6 sm:p-10 text-slate-800 shadow-xl border border-slate-200/80 min-h-[440px] flex flex-col justify-between overflow-hidden">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-200/60 pb-4">
+                        <div class="flex items-center space-x-2">
+                            <span id="card-badge" class="px-2.5 py-1 bg-sky-100 text-sky-700 font-bold text-xs rounded-lg uppercase tracking-wider border border-sky-200">Card 1 of 6</span>
+                            <span id="card-category" class="text-xs text-slate-500 font-semibold">Definition & Rubrics</span>
+                        </div>
+                        <div class="flex space-x-1">
+                            <span class="w-2 h-2 rounded-full bg-sky-600 indicator-dot"></span>
+                            <span class="w-2 h-2 rounded-full bg-slate-300 indicator-dot"></span>
+                            <span class="w-2 h-2 rounded-full bg-slate-300 indicator-dot"></span>
+                            <span class="w-2 h-2 rounded-full bg-slate-300 indicator-dot"></span>
+                            <span class="w-2 h-2 rounded-full bg-slate-300 indicator-dot"></span>
+                            <span class="w-2 h-2 rounded-full bg-slate-300 indicator-dot"></span>
+                        </div>
+                    </div>
+
+                    <div id="card-body" class="py-6 space-y-4">
+                        </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-slate-200/60">
+                        <button id="prev-btn" onclick="prevCard()" class="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center space-x-2 shadow-sm cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                            <span>Previous Card</span>
+                        </button>
+                        <span id="card-counter" class="text-xs text-slate-500 font-mono font-bold">1 / 6</span>
+                        <button id="next-btn" onclick="nextCard()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center space-x-2 shadow-md shadow-sky-600/20 cursor-pointer">
+                            <span>Next Card</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-2">
+                    <button title="Previous Topic" class="border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold px-4 py-2.5 rounded-xl transition flex items-center space-x-2 shadow-sm cursor-pointer">
+                        <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                        <span>Previous: Topic 3.3</span>
+                    </button>
+                    <button title="Next Topic" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center space-x-2 shadow-md shadow-sky-600/20 cursor-pointer">
+                        <span>Next: Topic 3.5</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </button>
+                </div>
+            </div>
+
+            <footer class="py-6 text-center text-xs text-slate-400 font-medium mt-8">
+                <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science.</p>
+            </footer>
+
+        </main>
+
+        <aside id="right-panel" class="fixed inset-y-0 right-0 z-40 w-80 bg-white transform translate-x-full lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out px-5 pt-4 pb-5 overflow-y-auto no-scrollbar flex flex-col space-y-4 shadow-xl lg:shadow-none">
+            
+            <div class="flex justify-between items-center lg:hidden pb-1">
+                <span class="font-bold text-slate-800 text-sm">Course Chapters</span>
+                <button id="close-right-panel" title="Close Drawer" class="text-slate-400 hover:text-slate-600 text-sm font-bold">Close ✕</button>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-900 text-sm">Course Syllabus</h3>
+                <span class="text-[10px] font-bold text-sky-700 bg-sky-100 px-2.5 py-0.5 rounded-full">All Chapters</span>
+            </div>
+
+            <div class="space-y-3">
+                
+                <div class="border border-slate-200/80 rounded-2xl p-3 bg-slate-50/50">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleChapter('unit2-topics')">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">✓</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">Unit 2: Control Structures</h4>
+                                <p class="text-[10px] text-emerald-600 font-medium">Completed (5/5 Topics)</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform" id="icon-unit2"></i>
+                    </div>
+                    <div id="unit2-topics" class="hidden mt-2 pt-2 border-t border-slate-200/60 space-y-1.5">
+                        <a href="#" class="block p-2 rounded-xl bg-white text-[11px] font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">2.1 If-Else Statements & Switch</a>
+                        <a href="#" class="block p-2 rounded-xl bg-white text-[11px] font-medium text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 transition">2.2 Loops (For, While, Do-While)</a>
+                    </div>
+                </div>
+
+                <div class="border border-sky-200 rounded-2xl p-3 bg-sky-50/30 shadow-xs">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleChapter('unit3-topics')">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-lg bg-sky-600 text-white flex items-center justify-center text-xs font-bold">3</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-900">Unit 3: Object-Oriented Prog.</h4>
+                                <p class="text-[10px] text-sky-600 font-semibold">In Progress (4/6 Topics)</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-up text-sky-600 text-xs transition-transform" id="icon-unit3"></i>
+                    </div>
+                    <div id="unit3-topics" class="mt-2 pt-2 border-t border-sky-100 space-y-1.5">
+                        <a href="#" class="flex items-center justify-between p-2 rounded-xl bg-white text-[11px] font-bold text-emerald-700 shadow-2xs">
+                            <span>3.1 Classes & Objects</span>
+                            <i class="fa-solid fa-check text-[10px]"></i>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 rounded-xl bg-white text-[11px] font-bold text-emerald-700 shadow-2xs">
+                            <span>3.2 Constructors & Destructors</span>
+                            <i class="fa-solid fa-check text-[10px]"></i>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 rounded-xl bg-white text-[11px] font-bold text-emerald-700 shadow-2xs">
+                            <span>3.3 Inheritance Basics</span>
+                            <i class="fa-solid fa-check text-[10px]"></i>
+                        </a>
+                        <a href="#" class="flex items-center justify-between p-2 rounded-xl bg-sky-600 text-white text-[11px] font-bold shadow-sm">
+                            <span>3.4 Polymorphism in C++</span>
+                            <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                        </a>
+                        <a href="#" class="block p-2 rounded-xl bg-white text-[11px] font-medium text-slate-600 hover:bg-sky-50 transition">3.5 Abstract Classes</a>
+                        <a href="#" class="block p-2 rounded-xl bg-white text-[11px] font-medium text-slate-600 hover:bg-sky-50 transition">3.6 Virtual Functions & VTABLE</a>
+                    </div>
+                </div>
+
+                <div class="border border-slate-200/80 rounded-2xl p-3 bg-slate-50/50">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleChapter('unit4-topics')">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">4</span>
+                            <div>
+                                <h4 class="text-xs font-bold text-slate-800">Unit 4: Data Structures</h4>
+                                <p class="text-[10px] text-slate-400 font-medium">Upcoming (0/5 Topics)</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-down text-slate-400 text-xs transition-transform" id="icon-unit4"></i>
+                    </div>
+                    <div id="unit4-topics" class="hidden mt-2 pt-2 border-t border-slate-200/60 space-y-1.5">
+                        <a href="#" class="block p-2 rounded-xl bg-white text-[11px] font-medium text-slate-500 hover:bg-slate-100 transition">4.1 Arrays & Pointers in C++</a>
+                        <a href="#" class="block p-2 rounded-xl bg-white text-[11px] font-medium text-slate-500 hover:bg-slate-100 transition">4.2 Binary File Streams & I/O</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-purple-500/10 border border-purple-100 p-4 rounded-3xl mt-2">
+                <div class="flex items-center space-x-2.5 mb-2">
+                    <div class="w-7 h-7 rounded-xl bg-purple-600 text-white flex items-center justify-center text-xs shadow-md"><i class="fa-solid fa-robot"></i></div>
+                    <h4 class="font-bold text-slate-900 text-xs">AI Tutor Assistance</h4>
+                </div>
+                <p class="text-[11px] text-slate-600 mb-3">Struggling to understand Virtual Functions? Ask AI for a quick analogy.</p>
+                <button title="Ask AI Tutor" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-xl text-xs transition shadow-sm cursor-pointer">
+                    Ask AI about Polymorphism
+                </button>
+            </div>
+        </aside>
+
+        <div id="right-backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden lg:hidden"></div>
+
+    </div>
+
+    <div id="completion-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-lg w-full p-6 sm:p-8 text-center animate-in fade-in zoom-in duration-200">
+            <div class="w-16 h-16 rounded-full bg-amber-100 text-amber-500 flex items-center justify-center text-3xl mx-auto mb-3 shadow-md shadow-amber-500/20 animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900 mb-1">Topic Completed Successfully!</h3>
+            <p class="text-xs text-slate-500 mb-6">Great job, Uzair! You have successfully mastered Unit 3, Topic 3.4 (Polymorphism in C++).</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <a href="dashboard.html" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl text-[11px] transition shadow-md shadow-emerald-600/20 flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+                <button onclick="nextTopicAction()" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2.5 px-3 rounded-xl text-[11px] transition shadow-md shadow-sky-600/20 flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>Next Topic</span>
+                </button>
+                <button onclick="closeCompletionModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-3 rounded-xl text-[11px] transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Repeat</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+     <!-- Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-100 z-40 flex justify-around py-3 px-2 shadow-lg">
+        <a href="dashboard.html" title="Overview" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Overview</span>
+        </a>
+        <a href="learn.html" title="Learn" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Learn</span>
+        </a>
+        <a href="past-papers.html" title="Past Papers" class="flex flex-col items-center text-purple-600">
+            <i class="fa-solid fa-file-lines text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Papers</span>
+        </a>
+        <a href="#" id="mobile-profile-tab" title="Filters Drawer" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-filter text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Filter</span>
+        </a>
+    </nav>
+
+    <script>
+        // Toggle Chapters in Right Panel
+        function toggleChapter(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+        }
+
+        const cardsData = [
+            {
+                badge: "Card 1 of 6",
+                category: "Definition & Core Rubric Keywords",
+                content: `
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-2">1. Formal Definition & Board Rubric Keywords</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-2">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                            <span class="text-[10px] uppercase tracking-wider text-sky-600 font-bold block mb-1">English Definition</span>
+                            <p class="text-xs text-slate-700 leading-relaxed">Polymorphism is an OOP feature that enables objects of different classes to respond to the same message/function call in unique ways based on <strong class="text-slate-900">Run-time</strong> or <strong class="text-slate-900">Compile-time</strong> resolution.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm" dir="rtl">
+                            <span class="text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-1">اردو تعریف</span>
+                            <p class="font-nastaleeq text-base sm:text-lg text-slate-800 leading-loose">پولیمارفزم (Polymorphism) اوپ (OOP) کی ایک ایسی خصوصیت ہے جس کے تحت مختلف کلاسز کے آبجیکٹس ایک ہی فنکشن کال پر رن ٹائم یا کمپائل ٹائم بائنڈنگ کی بنیاد پر مختلف ردعمل ظاہر کرتے ہیں۔</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3">
+                        <div class="flex items-center space-x-2 text-slate-700 font-bold text-xs mb-2">
+                            <i class="fa-solid fa-key text-amber-500"></i>
+                            <span>Board Exam Rubric Keywords</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            <span class="inline-flex items-center space-x-1.5 px-3 py-1 bg-white border border-sky-200 text-sky-700 rounded-full text-xs font-medium shadow-2xs">
+                                <i class="fa-solid fa-check text-[9px] text-sky-500"></i>
+                                <span>Run-time</span>
+                            </span>
+                            <span class="inline-flex items-center space-x-1.5 px-3 py-1 bg-white border border-emerald-200 text-emerald-700 rounded-full text-xs font-medium shadow-2xs">
+                                <i class="fa-solid fa-check text-[9px] text-emerald-500"></i>
+                                <span>Compile-time</span>
+                            </span>
+                            <span class="inline-flex items-center space-x-1.5 px-3 py-1 bg-white border border-purple-200 text-purple-700 rounded-full text-xs font-medium shadow-2xs">
+                                <i class="fa-solid fa-check text-[9px] text-purple-500"></i>
+                                <span>Virtual Function</span>
+                            </span>
+                            <span class="inline-flex items-center space-x-1.5 px-3 py-1 bg-white border border-amber-200 text-amber-800 rounded-full text-xs font-medium shadow-2xs">
+                                <i class="fa-solid fa-check text-[9px] text-amber-500"></i>
+                                <span>Method Overriding</span>
+                            </span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 italic mt-2">Examiner looks for exact technical keywords during paper checking. Make sure these terms appear in your answer.</p>
+                    </div>
+                `
+            },
+            {
+                badge: "Card 2 of 6",
+                category: "Real-World Explanation & Analogy",
+                content: `
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">2. Real-World Explanation & Analogy</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-3">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
+                            <span class="text-[10px] uppercase tracking-wider text-sky-600 font-bold block mb-1">English Analogy</span>
+                            <p class="text-xs text-slate-700 leading-relaxed">Consider a person who plays multiple roles: at office an employee, at home a parent, and at sports ground a player. The message is "Act", but the response behavior differs based on context.</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm" dir="rtl">
+                            <span class="text-[10px] uppercase tracking-wider text-emerald-600 font-bold block mb-1">روزمرہ کی مثال (اردو)</span>
+                            <p class="font-nastaleeq text-base sm:text-lg text-slate-800 leading-loose">ایک انسان کی مثال لیں جو مختلف کردار ادا کرتا ہے: دفتر میں ملازم، گھر میں والدین، اور کھیل کے میدان میں کھلاڑی۔ حکم ایک ہی ہے مگر عمل ماحول کے لحاظ سے بدل جاتا ہے۔</p>
+                        </div>
+                    </div>
+                `
+            },
+            {
+                badge: "Card 3 of 6",
+                category: "Visual Architecture & Diagram",
+                content: `
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">3. Topic Diagram & Structure</h2>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200/80 text-center space-y-4 my-3 shadow-sm">
+                        <div class="inline-block px-4 py-2 bg-sky-50 text-sky-700 rounded-xl font-mono text-xs border border-sky-200 font-bold">Base Class: Shape (draw())</div>
+                        <div class="text-slate-400 text-xs"><i class="fa-solid fa-arrow-down"></i> Inherits to</div>
+                        <div class="flex justify-center gap-3">
+                            <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-xl font-mono text-xs border border-emerald-200 font-bold">Circle::draw()</span>
+                            <span class="px-3 py-1.5 bg-purple-50 text-purple-700 rounded-xl font-mono text-xs border border-purple-200 font-bold">Rectangle::draw()</span>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2">Dynamic binding resolves which draw() method executes at runtime!</p>
+                    </div>
+                `
+            },
+            {
+                badge: "Card 4 of 6",
+                category: "C++ Syntax Example",
+                content: `
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">4. Code Implementation Example</h2>
+                    <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 font-mono text-xs text-slate-200 overflow-x-auto my-3 leading-relaxed shadow-sm">
+                        <span class="text-purple-400">class</span> <span class="text-blue-400">Printer</span> {<br>
+                        &nbsp;&nbsp;<span class="text-purple-400">public:</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400">virtual</span> <span class="text-purple-400">void</span> <span class="text-emerald-400">printDoc</span>() { cout &lt;&lt; <span class="text-amber-300">"Printing Generic Doc"</span>; }<br>
+                        };<br><br>
+                        <span class="text-purple-400">class</span> <span class="text-blue-400">PDFPrinter</span> : <span class="text-purple-400">public</span> Printer {<br>
+                        &nbsp;&nbsp;<span class="text-purple-400">public:</span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">void</span> <span class="text-emerald-400">printDoc</span>() <span class="text-blue-400">override</span> { cout &lt;&lt; <span class="text-amber-300">"Printing PDF Format"</span>; }<br>
+                        };
+                    </div>
+                `
+            },
+            {
+                badge: "Card 5 of 6",
+                category: "Interactive Visualization / Animation",
+                content: `
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">5. Interactive Animation Sandbox</h2>
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/80 text-center space-y-4 my-3 shadow-sm">
+                        <div class="w-14 h-14 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center text-2xl mx-auto shadow-inner">
+                            <i class="fa-solid fa-cube animate-bounce"></i>
+                        </div>
+                        <p class="text-xs text-slate-600">Click below to simulate virtual table pointer resolution in memory.</p>
+                        <button onclick="alert('VTABLE Pointer resolved successfully to derived class object!')" class="bg-sky-600 hover:bg-sky-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-md cursor-pointer">
+                            Run Memory Simulation 🚀
+                        </button>
+                    </div>
+                `
+            },
+            {
+                badge: "Card 6 of 6",
+                category: "Board Exam Style Question & Pattern",
+                content: `
+                    <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">6. Board Exam Style Question</h2>
+                    <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl space-y-2 my-3 text-left shadow-sm">
+                        <span class="text-[10px] uppercase tracking-wider text-rose-600 font-bold block">Past Paper Question (BISE 2024)</span>
+                        <p class="text-xs font-bold text-slate-900">Q: Differentiate between Compile-time and Run-time polymorphism with suitable C++ code examples. (5 Marks)</p>
+                        <hr class="border-rose-200 my-2">
+                        <span class="text-[10px] uppercase tracking-wider text-emerald-700 font-bold block">Marking Scheme Breakdown:</span>
+                        <ul class="text-[11px] text-slate-700 list-disc list-inside space-y-1">
+                            <li>Correct definitions with rubric keywords (1 Mark)</li>
+                            <li>Function Overloading vs Overriding distinction (2 Marks)</li>
+                            <li>Valid C++ syntax example with Virtual keyword (2 Marks)</li>
+                        </ul>
+                    </div>
+                `
+            }
+        ];
+
+        let currentCardIndex = 0;
+
+        function renderCard() {
+            const card = cardsData[currentCardIndex];
+            document.getElementById('card-badge').innerText = card.badge;
+            document.getElementById('card-category').innerText = card.category;
+            document.getElementById('card-body').innerHTML = card.content;
+            document.getElementById('card-counter').innerText = `${currentCardIndex + 1} / ${cardsData.length}`;
+            
+            document.getElementById('prev-btn').disabled = currentCardIndex === 0;
+            document.getElementById('next-btn').innerHTML = currentCardIndex === cardsData.length - 1 ? 
+                `<span>Finish Lesson</span> <i class="fa-solid fa-check text-[10px]"></i>` : 
+                `<span>Next Card</span> <i class="fa-solid fa-arrow-right text-[10px]"></i>`;
+
+            const dots = document.querySelectorAll('.indicator-dot');
+            dots.forEach((dot, idx) => {
+                if (idx === currentCardIndex) {
+                    dot.classList.remove('bg-slate-300', 'w-2');
+                    dot.classList.add('bg-sky-600', 'w-4');
+                } else {
+                    dot.classList.remove('bg-sky-600', 'w-4');
+                    dot.classList.add('bg-slate-300', 'w-2');
+                }
+            });
+        }
+
+        function nextCard() {
+            if (currentCardIndex < cardsData.length - 1) {
+                currentCardIndex++;
+                renderCard();
+            } else {
+                document.getElementById('completion-modal').classList.remove('hidden');
+            }
+        }
+
+        function prevCard() {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                renderCard();
+            }
+        }
+
+        function closeCompletionModal() {
+            document.getElementById('completion-modal').classList.add('hidden');
+            currentCardIndex = 0;
+            renderCard();
+        }
+
+        function nextTopicAction() {
+            alert('Loading next topic: Topic 3.5 (Abstract Classes & Interfaces)...');
+            closeCompletionModal();
+        }
+
+        window.onload = renderCard;
+
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+
+        const rightPanelBtn = document.getElementById('right-panel-btn');
+        const mobileProfileTab = document.getElementById('mobile-profile-tab');
+        const rightPanel = document.getElementById('right-panel');
+        const rightBackdrop = document.getElementById('right-backdrop');
+        const closeRightPanel = document.getElementById('close-right-panel');
+
+        const supportBtn = document.getElementById('support-btn');
+        const supportModal = document.getElementById('support-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        function toggleLeftSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function toggleRightPanel() {
+            rightPanel.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+        }
+
+        supportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            supportModal.classList.toggle('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            supportModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!supportModal.contains(e.target) && !supportBtn.contains(e.target)) {
+                supportModal.classList.add('hidden');
+            }
+        });
+
+        menuBtn.addEventListener('click', toggleLeftSidebar);
+        backdrop.addEventListener('click', toggleLeftSidebar);
+
+        rightPanelBtn.addEventListener('click', toggleRightPanel);
+        mobileProfileTab.addEventListener('click', toggleRightPanel);
+        closeRightPanel.addEventListener('click', toggleRightPanel);
+        rightBackdrop.addEventListener('click', toggleRightPanel);
+    </script>
+    <!-- LMS Core Prototype Script -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

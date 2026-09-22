@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Dashboard - Computer Science (11th Standard)</title>
+    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <script src="assets/js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body data-lms-page="dashboard" class="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Top Navigation Header Bar -->
+    <header class="bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Left Corner: App Logo & Mobile Menu Button -->
+            <div class="flex items-center space-x-3">
+                <button id="menu-btn" title="Toggle Navigation Menu" class="text-slate-500 hover:text-slate-700 md:hidden focus:outline-none relative group">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                    <span class="absolute top-full left-0 mt-1.5 hidden group-hover:block bg-slate-900 text-white text-[10px] font-semibold px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-50">Menu</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-emerald-500/20">
+                        CS
+                    </div>
+                    <div>
+                        <span class="font-bold text-base tracking-tight text-slate-900 block leading-tight">Computer Science</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">11th Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                <div class="relative w-full group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" title="Search chapters, topics, or past papers..." placeholder="Search chapters, topics, or past papers..." class="w-full bg-slate-50 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2 text-sm focus:bg-white focus:border-brand-500 focus:outline-none shadow-sm transition-all">
+                </div>
+            </div>
+
+            <!-- Right Side: Support Modal Trigger & Logout -->
+            <div class="flex items-center space-x-2.5 relative">
+                <!-- Support Button with Caption -->
+                <button id="support-btn" title="Support & Developer Info" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-xs font-semibold transition relative group cursor-pointer">
+                    <i class="fa-solid fa-circle-question text-slate-500"></i>
+                    <span>Support</span>
+                </button>
+
+                <!-- Support Popover Modal Box -->
+                <div id="support-modal" class="hidden absolute top-full right-16 mt-2 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 z-50">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider">Developer & Support</h4>
+                        </div>
+                        <button id="close-modal" class="text-slate-400 hover:text-slate-600 text-xs font-bold px-1.5 py-0.5 rounded-lg">✕</button>
+                    </div>
+
+                    <div class="py-3 space-y-2.5 text-xs text-slate-600">
+                        <p><strong class="text-slate-800">Developer:</strong> Uzair Salman</p>
+                        <p><strong class="text-slate-800">Support Email:</strong> support@edustack.edu.pk</p>
+                        <p><strong class="text-slate-800">Contact Number:</strong> +92 300 1234567</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <a href="#" title="Open Student User Guide" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-book text-[10px]"></i>
+                            <span>User Guide</span>
+                        </a>
+                        <span class="text-[10px] text-slate-400 font-medium">v2.4.0 Stable</span>
+                    </div>
+                </div>
+
+                <!-- Logout Button with Caption -->
+                <button title="Logout Account" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 text-xs font-semibold transition relative group">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+
+                <!-- Mobile Right Panel Trigger -->
+                <button id="right-panel-btn" title="View Profile & Schedule" class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center font-semibold text-slate-700 text-xs shadow-sm lg:hidden ml-1 relative group">
+                    US
+                    <span class="absolute top-full right-0 mt-1.5 hidden group-hover:block bg-slate-900 text-white text-[10px] font-semibold px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-50">Profile</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex max-w-[1440px] w-full mx-auto relative">
+
+        <!-- Left Sidebar Navigation (Linked) -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar">
+            <div class="p-4 space-y-5 pt-6">
+                
+                <!-- Section 1: Main -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Main</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" title="Overview" class="flex items-center space-x-3 px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-house w-4 text-center"></i>
+                            <span>Overview</span>
+                        </a>
+                        <!-- Linked to Learn Page -->
+                        <a href="learn.html" title="Learn" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-book-open w-4 text-center"></i>
+                            <span>Learn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 2: Assessment & Practice -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Practice & Test</p>
+                    <div class="space-y-1">
+                        <a href="past-papers.html" title="Past Papers" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                            <span>Past Papers</span>
+                        </a>
+                        <a href="practice.html" title="Practice" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-rose-50 hover:text-rose-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
+                            <span>Practice</span>
+                        </a>
+                        <a href="exam-mode.html" title="Exam Mode" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-laptop-code w-4 text-center"></i>
+                            <span>Exam Mode</span>
+                        </a>
+                        <a href="mistakes.html" title="Mistakes" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i>
+                            <span>Mistakes</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 3: Analytics & Study Tools -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tools & Tracking</p>
+                    <div class="space-y-1">
+                        <a href="progress.html" title="Progress" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-teal-50 hover:text-teal-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-chart-line w-4 text-center"></i>
+                            <span>Progress</span>
+                        </a>
+                        <a href="revision.html" title="Revision" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-rotate-right w-4 text-center"></i>
+                            <span>Revision</span>
+                        </a>
+                        <a href="bookmark.html" title="Bookmark" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-bookmark w-4 text-center"></i>
+                            <span>Bookmark</span>
+                        </a>
+                        <a href="#" title="AI Tutor" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-robot w-4 text-center"></i>
+                            <span>AI Tutor</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 4: Account Preferences -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Account</p>
+                    <div class="space-y-1">
+                        <a href="profile.html" title="Profile" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-user w-4 text-center"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="settings.html" title="Settings" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-800 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-gear w-4 text-center"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 hidden md:block">
+                <div class="bg-gradient-to-r from-slate-50 to-indigo-50/50 p-3 rounded-2xl border border-indigo-100/60 shadow-sm" title="Capacitor 8.0 Cross-Platform Runtime">
+                    <p class="text-[11px] text-indigo-900 font-bold">Capacitor Native Ready</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">iOS & Android Build Support</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Backdrop for Mobile Left Sidebar -->
+        <div id="backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
+            
+            <div>
+                <!-- Mobile Search Bar -->
+                <div class="mb-6 md:hidden">
+                    <div class="relative w-full">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-search"></i>
+                        </span>
+                        <input type="text" placeholder="Search chapters, topics..." class="w-full bg-slate-50 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:bg-white focus:border-brand-500 focus:outline-none shadow-sm">
+                    </div>
+                </div>
+
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-emerald-500/10 mb-6 relative overflow-hidden">
+                    <div class="absolute right-0 bottom-0 translate-x-4 translate-y-4 opacity-10 pointer-events-none">
+                        <i class="fa-solid fa-laptop-code text-9xl"></i>
+                    </div>
+                    <div class="relative z-10 max-w-xl">
+                        <div class="flex flex-wrap items-center gap-2 mb-2">
+                            <span class="bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">11th Computer Science</span>
+                            <span class="text-emerald-50 text-xs">• Last studied on Sept 15, 2026</span>
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-bold mt-2">Welcome back, Uzair! Ready to code?</h1>
+                        <p class="text-emerald-50 text-sm mt-1">You left off at <strong class="text-white font-semibold">Unit 3: Object-Oriented Programming (Topic 3.4 - Polymorphism)</strong>.</p>
+                        <!-- Button links to Learn page -->
+                        <a href="learn.html" title="Resume Learning" class="mt-5 inline-flex items-center space-x-2 bg-white text-emerald-800 hover:bg-emerald-50 font-medium px-5 py-2.5 rounded-xl text-sm shadow-lg shadow-black/5 transition cursor-pointer">
+                            <span>Resume: Unit 3 (Topic 3.4)</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Dual Widgets Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-8">
+                    
+                    <!-- Widget 1: Course Activities -->
+                    <div class="lg:col-span-4 bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Course Activities</h3>
+                        </div>
+                        <div class="my-5 flex flex-col items-center justify-center">
+                            <div class="relative w-32 h-32 sm:w-36 sm:h-36 rounded-full flex items-center justify-center shadow-sm" style="background: conic-gradient(#3b82f6 0% 75%, #f1f5f9 75% 100%);">
+                                <div class="w-24 h-24 sm:w-28 sm:h-28 bg-white rounded-full flex flex-col items-center justify-center shadow-inner">
+                                    <span class="text-xl sm:text-2xl font-extrabold text-blue-600">75%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap items-center justify-around pt-3 border-t border-slate-100 gap-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3.5 h-3.5 rounded-full bg-blue-600 shadow-sm flex-shrink-0"></span>
+                                <span class="text-xs font-bold text-slate-700">Process</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3.5 h-3.5 rounded-full bg-slate-100 border border-slate-200 flex-shrink-0"></span>
+                                <span class="text-xs font-semibold text-slate-400">In process</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget 2: Level & Detailed Metrics Grid -->
+                    <div class="lg:col-span-8 bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-sm flex flex-col justify-between">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-base">Level</h3>
+                                <div class="flex flex-wrap items-baseline gap-2 mt-1">
+                                    <span class="text-2xl sm:text-3xl font-black text-slate-900">Level 4</span>
+                                    <span class="text-xs font-medium text-slate-400">Tested on 15 Sep 2026 (Out of 5 Levels)</span>
+                                </div>
+                            </div>
+                            <a href="configure-test.html" title="Retake Assessment Test" class="border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold px-4 py-2 rounded-2xl transition flex items-center justify-center space-x-1.5 shadow-sm cursor-pointer self-start sm:self-auto">
+                                <i class="fa-solid fa-play text-[10px] text-slate-500"></i>
+                                <span>Test again</span>
+                            </a>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-2">
+                            <div class="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100">
+                                <div class="flex justify-between items-center text-xs font-bold mb-2">
+                                    <span class="text-slate-700">Covered Topics</span>
+                                    <span class="text-emerald-600">32 / 45</span>
+                                </div>
+                                <div class="w-full bg-emerald-100 h-2.5 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full rounded-full" style="width: 71%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100">
+                                <div class="flex justify-between items-center text-xs font-bold mb-2">
+                                    <span class="text-slate-700">Mistakes / Error Rate</span>
+                                    <span class="text-rose-600">12% Errors</span>
+                                </div>
+                                <div class="w-full bg-rose-100 h-2.5 rounded-full overflow-hidden">
+                                    <div class="bg-rose-500 h-full rounded-full" style="width: 12%;"></div>
+                                </div>
+                            </div>
+
+                            <div class="bg-slate-50/80 p-3.5 rounded-2xl border border-slate-100 sm:col-span-2">
+                                <div class="flex justify-between items-center text-xs font-bold mb-2">
+                                    <span class="text-slate-700">Attempted Practice Tests</span>
+                                    <span class="text-purple-600">18 / 25 Mocks</span>
+                                </div>
+                                <div class="w-full bg-purple-100 h-2.5 rounded-full overflow-hidden">
+                                    <div class="bg-purple-600 h-full rounded-full" style="width: 72%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Section Header -->
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-slate-900">Course Syllabus & Chapters</h2>
+                    <a href="learn.html" title="View complete syllabus breakdown" class="text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition">View All Chapters</a>
+                </div>
+
+                <!-- Chapters & Practice Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    
+                    <!-- Card 1: Unit 3 (OOP Concepts) - Links to Learn page -->
+                    <a href="learn.html" title="Open Unit 3 Modules" class="bg-gradient-to-br from-sky-50/70 to-blue-50/40 p-5 rounded-3xl border border-sky-100 hover:border-sky-300 transition shadow-sm hover:shadow-md flex flex-col justify-between group">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-2.5 py-1 bg-sky-100 text-sky-700 font-bold text-xs rounded-lg">Unit 3</span>
+                                <span class="text-xs text-sky-600/70 font-semibold">6 Topics</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-base group-hover:text-sky-700 transition">Object-Oriented Programming in C++</h3>
+                            <p class="text-slate-600 text-xs mt-1">Classes, Objects, Inheritance, Polymorphism & Encapsulation.</p>
+                        </div>
+                        <div class="mt-5">
+                            <div class="flex justify-between text-xs font-bold text-sky-800 mb-1">
+                                <span>Progress</span>
+                                <span>75%</span>
+                            </div>
+                            <div class="w-full bg-sky-200/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-sky-500 h-full rounded-full" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 2: Unit 4 (Data Structures) -->
+                    <a href="learn.html" title="Open Unit 4 Modules" class="bg-gradient-to-br from-purple-50/70 to-fuchsia-50/40 p-5 rounded-3xl border border-purple-100 hover:border-purple-300 transition shadow-sm hover:shadow-md cursor-pointer flex flex-col justify-between group block">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-2.5 py-1 bg-purple-100 text-purple-700 font-bold text-xs rounded-lg">Unit 4</span>
+                                <span class="text-xs text-purple-600/70 font-semibold">5 Topics</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-base group-hover:text-purple-700 transition">Data Structures & File Handling</h3>
+                            <p class="text-slate-600 text-xs mt-1">Arrays, Pointers, Binary Files, and Stream Operations.</p>
+                        </div>
+                        <div class="mt-5">
+                            <div class="flex justify-between text-xs font-bold text-purple-800 mb-1">
+                                <span>Progress</span>
+                                <span>40%</span>
+                            </div>
+                            <div class="w-full bg-purple-200/60 h-2 rounded-full overflow-hidden">
+                                <div class="bg-purple-500 h-full rounded-full" style="width: 40%;"></div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Card 3: Practice & Revision Hub -->
+                    <div title="Open Practice & Revision Exams Hub" class="bg-gradient-to-br from-rose-50/75 to-pink-50/40 p-5 rounded-3xl border border-rose-100 hover:border-rose-300 transition shadow-sm hover:shadow-md flex flex-col justify-between sm:col-span-2">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center space-x-2">
+                                    <span class="w-7 h-7 rounded-xl bg-rose-500 text-white flex items-center justify-center text-xs shadow-md shadow-rose-500/20">💻</span>
+                                    <span class="px-2.5 py-1 bg-rose-100 text-rose-700 font-bold text-xs rounded-lg">Exam Prep</span>
+                                </div>
+                                <span class="text-xs text-rose-600/80 font-semibold">15 Coding & Theory Mocks</span>
+                            </div>
+                            <h3 class="font-bold text-slate-900 text-base">Computer Science Practice & Revision Hub</h3>
+                            <p class="text-slate-600 text-xs mt-1">Attempt topical programming tests, output-based questions, and review board-pattern mark schemes.</p>
+                        </div>
+                        <div class="mt-5 flex flex-col sm:flex-row sm:items-center justify-between pt-3 border-t border-rose-100/60 gap-3">
+                            <div class="flex items-center space-x-2 text-xs font-bold text-slate-600">
+                                <i class="fa-solid fa-clock-rotate-left text-rose-500"></i>
+                                <span>Test Your Programming Logic</span>
+                            </div>
+                            <a href="practice.html" title="Start Practice Exam Now" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-md shadow-rose-600/20 transition flex items-center justify-center space-x-1.5 cursor-pointer">
+                                <span>Attempt Exam</span>
+                                <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Copyright Footer -->
+            <footer class="py-6 text-center text-xs text-slate-400 font-medium">
+                <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science.</p>
+            </footer>
+
+        </main>
+
+        <!-- Right Side Panel -->
+        <aside id="right-panel" class="fixed inset-y-0 right-0 z-40 w-80 bg-white transform translate-x-full lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out px-5 pt-3 pb-5 overflow-y-auto no-scrollbar flex flex-col space-y-4 shadow-xl lg:shadow-none">
+            
+            <div class="flex justify-between items-center lg:hidden pb-1">
+                <span class="font-bold text-slate-800 text-sm">Profile & Schedule</span>
+                <button id="close-right-panel" title="Close Profile Panel" class="text-slate-400 hover:text-slate-600 text-sm font-bold">Close ✕</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-3xl flex flex-col items-center text-center relative group">
+                <div class="absolute top-2 right-2">
+                    <a href="profile.html" title="Edit Student Profile" class="w-7 h-7 rounded-full bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-800 flex items-center justify-center text-[11px] transition border border-slate-100">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                </div>
+                <div class="relative mb-2 mt-0.5">
+                    <a href="profile.html" title="Uzair Salman - Active Student Profile" class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 p-1 shadow-md cursor-pointer block">
+                        <div class="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden text-slate-600 font-bold text-lg">
+                            US
+                        </div>
+                    </a>
+                    <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                </div>
+                <h3 class="font-bold text-slate-900 text-sm">Uzair Salman</h3>
+                <p class="text-[11px] font-medium text-slate-500 mt-0.5">11th Computer Science • 2026</p>
+            </div>
+
+            <!-- Achievements Widget -->
+            <div class="bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-pink-500/10 border border-purple-100/80 p-3.5 rounded-3xl shadow-sm backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-2.5">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-7 h-7 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center text-xs shadow-md shadow-purple-500/30">
+                            🏆
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-xs">Achievements</h4>
+                            <p class="text-[10px] text-purple-700 font-semibold">3 Badges Unlocked</p>
+                        </div>
+                    </div>
+                    <a href="profile.html" title="View all student achievements" class="text-[10px] font-bold text-purple-600 hover:text-purple-700 bg-purple-100/60 px-2 py-0.5 rounded-xl transition">View All</a>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5">
+                    <div title="Coding Ace Badge Unlocked" class="bg-white/90 hover:bg-white border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm hover:scale-[1.03] transition-all cursor-pointer group">
+                        <div class="w-7 h-7 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-sm mb-1 shadow-inner">💻</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Coding Ace</span>
+                    </div>
+                    <div title="Problem Solver Badge Unlocked" class="bg-white/90 hover:bg-white border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm hover:scale-[1.03] transition-all cursor-pointer group">
+                        <div class="w-7 h-7 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm mb-1 shadow-inner">💡</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Problem Solver</span>
+                    </div>
+                    <div title="Fast Coder Badge Unlocked" class="bg-white/90 hover:bg-white border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm hover:scale-[1.03] transition-all cursor-pointer group">
+                        <div class="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm mb-1 shadow-inner">🚀</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Fast Coder</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Widget -->
+            <div class="bg-gradient-to-b from-indigo-50/40 to-white p-3.5 rounded-3xl border border-indigo-100/70 shadow-sm">
+                <div class="flex items-center justify-between mb-3">
+                    <h4 class="font-bold text-slate-800 text-xs">September 2026</h4>
+                    <div class="flex space-x-1">
+                        <button title="Previous Month" class="w-6 h-6 rounded-lg hover:bg-indigo-100/60 flex items-center justify-center text-indigo-600 text-xs transition"><i class="fa-solid fa-chevron-left"></i></button>
+                        <button title="Next Month" class="w-6 h-6 rounded-lg hover:bg-indigo-100/60 flex items-center justify-center text-indigo-600 text-xs transition"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-indigo-400 mb-1.5">
+                    <span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span>
+                </div>
+                <div class="grid grid-cols-7 gap-1 text-center text-[11px]">
+                    <div class="py-0.5 text-slate-300">31</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">1</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">2</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">3</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">4</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">5</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">6</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">7</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">8</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">9</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">10</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">11</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">12</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">13</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">14</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">15</div>
+                    <div class="py-0.5 bg-indigo-600 text-white font-bold rounded-lg shadow-sm shadow-indigo-500/30 cursor-pointer">16</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">17</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">18</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">19</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">20</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">21</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">22</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">23</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">24</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">25</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">26</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">27</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">28</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">29</div>
+                    <div class="py-0.5 text-slate-700 hover:bg-indigo-50 rounded-lg cursor-pointer">30</div>
+                    <div class="py-0.5 text-slate-300">1</div>
+                    <div class="py-0.5 text-slate-300">2</div>
+                    <div class="py-0.5 text-slate-300">3</div>
+                    <div class="py-0.5 text-slate-300">4</div>
+                </div>
+            </div>
+
+            <!-- Upcoming Deadline -->
+            <div title="Upcoming Assignment Deadline" class="bg-gradient-to-br from-rose-50/60 to-pink-50/30 border border-rose-100 p-3.5 rounded-3xl shadow-sm cursor-pointer">
+                <div class="flex items-center space-x-2 text-rose-700 font-bold text-xs mb-1">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Upcoming Deadline</span>
+                </div>
+                <p class="text-xs text-slate-600 font-medium">OOP Practical Lab Assignment due tomorrow at 11:59 PM.</p>
+            </div>
+
+        </aside>
+
+        <!-- Backdrop for Mobile Right Panel -->
+        <div id="right-backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden lg:hidden"></div>
+
+    </div>
+
+     <!-- Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-100 z-40 flex justify-around py-3 px-2 shadow-lg">
+        <a href="dashboard.html" title="Overview" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Overview</span>
+        </a>
+        <a href="learn.html" title="Learn" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Learn</span>
+        </a>
+        <a href="past-papers.html" title="Past Papers" class="flex flex-col items-center text-purple-600">
+            <i class="fa-solid fa-file-lines text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Papers</span>
+        </a>
+        <a href="#" id="mobile-profile-tab" title="Filters Drawer" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-filter text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Filter</span>
+        </a>
+    </nav>
+
+    <!-- JavaScript for Toggling Sidebars and Support Modal -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+
+        const rightPanelBtn = document.getElementById('right-panel-btn');
+        const mobileProfileTab = document.getElementById('mobile-profile-tab');
+        const rightPanel = document.getElementById('right-panel');
+        const rightBackdrop = document.getElementById('right-backdrop');
+        const closeRightPanel = document.getElementById('close-right-panel');
+
+        const supportBtn = document.getElementById('support-btn');
+        const supportModal = document.getElementById('support-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        function toggleLeftSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function toggleRightPanel() {
+            rightPanel.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+        }
+
+        supportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            supportModal.classList.toggle('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            supportModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!supportModal.contains(e.target) && !supportBtn.contains(e.target)) {
+                supportModal.classList.add('hidden');
+            }
+        });
+
+        menuBtn.addEventListener('click', toggleLeftSidebar);
+        backdrop.addEventListener('click', toggleLeftSidebar);
+
+        rightPanelBtn.addEventListener('click', toggleRightPanel);
+        mobileProfileTab.addEventListener('click', toggleRightPanel);
+        closeRightPanel.addEventListener('click', toggleRightPanel);
+        rightBackdrop.addEventListener('click', toggleRightPanel);
+    </script>
+    <!-- LMS Core Prototype Script -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paper Viewer - Computer Science (11th Standard)</title>
+    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <script src="assets/js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Urdu Nastaleeq Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Jameel Noori Nastaleeq Font Integration -->
+    <style>
+        @font-face {
+            font-family: 'jameel-noori-nastaleeq';
+            src: url('https://cdn.jsdelivr.net/gh/tariq-abdullah/urdu-web-font-CDN/JameelNooriNastaleeq.woff') format('woff');
+            font-display: swap;
+        }
+        .font-nastaleeq {
+            font-family: 'jameel-noori-nastaleeq', serif;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+
+    </head>
+<body data-lms-page="view-paper" class="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen relative">
+
+    <!-- Top Navigation Header Bar -->
+    <header class="bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Left Corner: App Logo & Mobile Menu Button -->
+            <div class="flex items-center space-x-3">
+                <button id="menu-btn" title="Toggle Navigation Menu" class="text-slate-500 hover:text-slate-700 md:hidden focus:outline-none relative group">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-emerald-500/20">
+                        CS
+                    </div>
+                    <div>
+                        <span class="font-bold text-base tracking-tight text-slate-900 block leading-tight">Computer Science</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">11th Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                <div class="relative w-full group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" placeholder="Search questions in this paper..." class="w-full bg-slate-50 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2 text-sm focus:bg-white focus:border-brand-500 focus:outline-none shadow-sm transition-all">
+                </div>
+            </div>
+
+            <!-- Right Side: Support Modal Trigger & Logout -->
+            <div class="flex items-center space-x-2.5 relative">
+                <!-- Support Button with Caption -->
+                <button id="support-btn" title="Support & Developer Info" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-xs font-semibold transition relative group cursor-pointer">
+                    <i class="fa-solid fa-circle-question text-slate-500"></i>
+                    <span>Support</span>
+                </button>
+
+                <!-- Support Popover Modal Box -->
+                <div id="support-modal" class="hidden absolute top-full right-16 mt-2 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 z-50">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider">Developer & Support</h4>
+                        </div>
+                        <button id="close-modal" class="text-slate-400 hover:text-slate-600 text-xs font-bold px-1.5 py-0.5 rounded-lg cursor-pointer">✕</button>
+                    </div>
+
+                    <div class="py-3 space-y-2.5 text-xs text-slate-600">
+                        <p><strong class="text-slate-800">Developer:</strong> Uzair Salman</p>
+                        <p><strong class="text-slate-800">Support Email:</strong> support@edustack.edu.pk</p>
+                        <p><strong class="text-slate-800">Contact Number:</strong> +92 300 1234567</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <a href="#" title="Open Student User Guide" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-book text-[10px]"></i>
+                            <span>User Guide</span>
+                        </a>
+                        <span class="text-[10px] text-slate-400 font-medium">v2.4.0 Stable</span>
+                    </div>
+                </div>
+
+                <!-- Logout Button with Caption -->
+                <button title="Logout Account" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 text-xs font-semibold transition relative group">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+
+                <!-- Mobile Drawer Trigger -->
+                <button id="right-panel-btn" title="View Question Index" class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center font-semibold text-slate-700 text-xs shadow-sm lg:hidden ml-1 relative group">
+                    <i class="fa-solid fa-list-check"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex max-w-[1440px] w-full mx-auto relative">
+
+        <!-- Left Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar">
+            <div class="p-4 space-y-5 pt-6">
+                
+                <!-- Section 1: Main -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Main</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" title="Overview" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-50 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-house w-4 text-center"></i>
+                            <span>Overview</span>
+                        </a>
+                        <a href="learn.html" title="Learn" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-book-open w-4 text-center"></i>
+                            <span>Learn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 2: Assessment & Practice -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Practice & Test</p>
+                    <div class="space-y-1">
+                        <!-- Active Past Papers Link -->
+                        <a href="past-papers.html" title="Past Papers" class="flex items-center space-x-3 px-3 py-2 rounded-xl bg-purple-50 text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                            <span>Past Papers</span>
+                        </a>
+                        <a href="practice.html" title="Practice" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-rose-50 hover:text-rose-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
+                            <span>Practice</span>
+                        </a>
+                        <a href="exam-mode.html" title="Exam Mode" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-laptop-code w-4 text-center"></i>
+                            <span>Exam Mode</span>
+                        </a>
+                        <a href="mistakes.html" title="Mistakes" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i>
+                            <span>Mistakes</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 3: Analytics & Study Tools -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tools & Tracking</p>
+                    <div class="space-y-1">
+                        <a href="progress.html" title="Progress" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-teal-50 hover:text-teal-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-chart-line w-4 text-center"></i>
+                            <span>Progress</span>
+                        </a>
+                        <a href="revision.html" title="Revision" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-rotate-right w-4 text-center"></i>
+                            <span>Revision</span>
+                        </a>
+                        <a href="bookmark.html" title="Bookmark" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-bookmark w-4 text-center"></i>
+                            <span>Bookmark</span>
+                        </a>
+                        <a href="#" title="AI Tutor" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-robot w-4 text-center"></i>
+                            <span>AI Tutor</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 4: Account Preferences -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Account</p>
+                    <div class="space-y-1">
+                        <a href="profile.html" title="Profile" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-user w-4 text-center"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="settings.html" title="Settings" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-800 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-gear w-4 text-center"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 hidden md:block">
+                <div class="bg-gradient-to-r from-slate-50 to-indigo-50/50 p-3 rounded-2xl border border-indigo-100/60 shadow-sm" title="Capacitor 8.0 Cross-Platform Runtime">
+                    <p class="text-[11px] text-indigo-900 font-bold">Capacitor Native Ready</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">iOS & Android Build Support</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Backdrop for Mobile Left Sidebar -->
+        <div id="backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden md:hidden"></div>
+
+        <!-- Main Content Area: Solved Paper Viewer -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
+            
+            <div class="space-y-6">
+                <!-- Back Link & Paper Meta Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-5 rounded-3xl border border-slate-100">
+                    <div class="space-y-1">
+                        <a href="past-papers.html" title="Back to Archive" class="text-xs font-bold text-purple-600 hover:text-purple-700 flex items-center space-x-1 mb-1">
+                            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                            <span>Back to Past Papers Archive</span>
+                        </a>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">BISE Lahore • Annual 2025 (Morning)</h1>
+                        <p class="text-xs text-slate-500">11th Standard Computer Science • Fully Solved with Examiner Key</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button title="Download Complete Solved PDF" class="bg-purple-600 hover:bg-purple-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-md shadow-purple-600/20 flex items-center space-x-1.5 cursor-pointer">
+                            <i class="fa-solid fa-download"></i>
+                            <span>Download PDF</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Section Tabs Switcher (Objective vs Subjective) -->
+                <div class="flex space-x-2 border-b border-slate-200/80 pb-3">
+                    <button class="px-4 py-2 bg-purple-600 text-white font-bold text-xs rounded-xl shadow-sm transition">
+                        Part I: Objective (MCQs)
+                    </button>
+                    <button class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition cursor-pointer">
+                        Part II: Subjective (Short Qs)
+                    </button>
+                    <button class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition cursor-pointer">
+                        Part III: Detailed (Long Qs)
+                    </button>
+                </div>
+
+                <!-- Solved Questions Container -->
+                <div class="space-y-4">
+                    
+                    <!-- Question 1 (MCQ Solved) -->
+                    <div class="bg-gradient-to-br from-slate-50 via-purple-50/20 to-white p-5 rounded-3xl border border-purple-100/80 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 bg-purple-100 text-purple-700 font-bold text-xs rounded-lg">Q.1 Multiple Choice Questions (Marks: 15)</span>
+                            <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full">Correct Option Highlighted</span>
+                        </div>
+                        <p class="text-xs sm:text-sm font-bold text-slate-900">1. Which of the following concepts allows a single function to behave differently in C++?</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 text-xs">
+                            <div class="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700">A) Encapsulation</div>
+                            <div class="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 font-bold flex items-center justify-between">
+                                <span>B) Polymorphism</span>
+                                <i class="fa-solid fa-check text-emerald-600"></i>
+                            </div>
+                            <div class="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700">C) Inheritance</div>
+                            <div class="p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700">D) Abstraction</div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 (Subjective / Short Question Solved) -->
+                    <div class="bg-gradient-to-br from-slate-50 via-purple-50/20 to-white p-5 rounded-3xl border border-purple-100/80 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 bg-purple-100 text-purple-700 font-bold text-xs rounded-lg">Q.2 Short Question (Marks: 2)</span>
+                            <span class="text-[11px] font-bold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full">Board Marking Scheme</span>
+                        </div>
+                        <p class="text-xs sm:text-sm font-bold text-slate-900">Q: Define Virtual Functions with respect to Run-time Polymorphism.</p>
+                        
+                        <!-- Solved Answer with Rubric Keywords Highlighted -->
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200/80 space-y-2">
+                            <span class="text-[10px] uppercase tracking-wider text-emerald-700 font-bold block">Model Answer for Full Marks:</span>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                A <strong class="text-slate-900 underline decoration-purple-400">virtual function</strong> is a member function declared within a base class and overridden by a derived class. It instructs the compiler to perform <strong class="text-slate-900 underline decoration-purple-400">dynamic binding (run-time polymorphism)</strong> using a <strong class="text-slate-900 underline decoration-purple-400">base class pointer</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 (Detailed Long Question) -->
+                    <div class="bg-gradient-to-br from-slate-50 via-purple-50/20 to-white p-5 rounded-3xl border border-purple-100/80 shadow-sm space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-1 bg-purple-100 text-purple-700 font-bold text-xs rounded-lg">Q.3 Detailed Question (Marks: 8)</span>
+                            <span class="text-[11px] font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full">Complete Solution</span>
+                        </div>
+                        <p class="text-xs sm:text-sm font-bold text-slate-900">Q: Write a complete C++ program demonstrating Method Overriding and Virtual Functions.</p>
+                        
+                        <!-- Code Solution Box -->
+                        <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 font-mono text-xs text-slate-200 overflow-x-auto leading-relaxed shadow-sm">
+                            <span class="text-purple-400">#include</span> <span class="text-amber-300">&lt;iostream&gt;</span><br>
+                            <span class="text-purple-400">using namespace</span> std;<br><br>
+                            <span class="text-purple-400">class</span> <span class="text-blue-400">Animal</span> {<br>
+                            &nbsp;&nbsp;<span class="text-purple-400">public:</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-blue-400">virtual</span> <span class="text-purple-400">void</span> <span class="text-emerald-400">sound</span>() { cout &lt;&lt; <span class="text-amber-300">"Default Animal Sound"</span>; }<br>
+                            };<br><br>
+                            <span class="text-purple-400">class</span> <span class="text-blue-400">Dog</span> : <span class="text-purple-400">public</span> Animal {<br>
+                            &nbsp;&nbsp;<span class="text-purple-400">public:</span><br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<span class="text-purple-400">void</span> <span class="text-emerald-400">sound</span>() <span class="text-blue-400">override</span> { cout &lt;&lt; <span class="text-amber-300">"Bark: Bow Wow"</span>; }<br>
+                            };
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Borderless Center Copyright Footer -->
+            <footer class="py-6 text-center text-xs text-slate-400 font-medium mt-8">
+                <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science.</p>
+            </footer>
+
+        </main>
+
+        <!-- Right Side Panel: Question Index Quick Jump -->
+        <aside id="right-panel" class="fixed inset-y-0 right-0 z-40 w-80 bg-white transform translate-x-full lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out px-5 pt-4 pb-5 overflow-y-auto no-scrollbar flex flex-col space-y-4 shadow-xl lg:shadow-none">
+            
+            <div class="flex justify-between items-center lg:hidden pb-1">
+                <span class="font-bold text-slate-800 text-sm">Question Index</span>
+                <button id="close-right-panel" title="Close Drawer" class="text-slate-400 hover:text-slate-600 text-sm font-bold">Close ✕</button>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-900 text-sm">Paper Index</h3>
+                <span class="text-[10px] font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">All Solved</span>
+            </div>
+
+            <div class="space-y-2">
+                <a href="#" class="flex items-center justify-between p-3 rounded-2xl bg-purple-50 border border-purple-200 text-xs font-bold text-purple-900 shadow-xs">
+                    <span>Q.1 MCQs (1-15)</span>
+                    <i class="fa-solid fa-check text-purple-600"></i>
+                </a>
+                <a href="#" class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition">
+                    <span>Q.2 Short Qs (1-6)</span>
+                    <i class="fa-solid fa-check text-emerald-600"></i>
+                </a>
+                <a href="#" class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition">
+                    <span>Q.3 Short Qs (7-12)</span>
+                    <i class="fa-solid fa-check text-emerald-600"></i>
+                </a>
+                <a href="#" class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-100 transition">
+                    <span>Q.4 Long Questions</span>
+                    <i class="fa-solid fa-check text-emerald-600"></i>
+                </a>
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-50/60 to-teal-50/30 p-4 rounded-3xl border border-emerald-100 space-y-2 mt-2">
+                <div class="flex items-center space-x-2 text-emerald-700 font-bold text-xs">
+                    <i class="fa-solid fa-shield-check"></i>
+                    <span>Board Verified Key</span>
+                </div>
+                <p class="text-[11px] text-slate-600 leading-relaxed">This paper has been verified against official BISE Lahore marking rubrics for maximum accuracy.</p>
+            </div>
+
+        </aside>
+
+        <!-- Backdrop for Mobile Right Panel -->
+        <div id="right-backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden lg:hidden"></div>
+
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-100 z-40 flex justify-around py-3 px-2 shadow-lg">
+        <a href="dashboard.html" title="Overview" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Overview</span>
+        </a>
+        <a href="learn.html" title="Learn" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Learn</span>
+        </a>
+        <a href="past-papers.html" title="Past Papers" class="flex flex-col items-center text-purple-600">
+            <i class="fa-solid fa-file-lines text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Papers</span>
+        </a>
+        <a href="#" id="mobile-profile-tab" title="Index Drawer" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-list-check text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Index</span>
+        </a>
+    </nav>
+
+    <!-- JavaScript for Mobile Toggles and Support Modal -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+
+        const rightPanelBtn = document.getElementById('right-panel-btn');
+        const mobileProfileTab = document.getElementById('mobile-profile-tab');
+        const rightPanel = document.getElementById('right-panel');
+        const rightBackdrop = document.getElementById('right-backdrop');
+        const closeRightPanel = document.getElementById('close-right-panel');
+
+        const supportBtn = document.getElementById('support-btn');
+        const supportModal = document.getElementById('support-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        function toggleLeftSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function toggleRightPanel() {
+            rightPanel.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+        }
+
+        supportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            supportModal.classList.toggle('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            supportModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!supportModal.contains(e.target) && !supportBtn.contains(e.target)) {
+                supportModal.classList.add('hidden');
+            }
+        });
+
+        menuBtn.addEventListener('click', toggleLeftSidebar);
+        backdrop.addEventListener('click', toggleLeftSidebar);
+
+        rightPanelBtn.addEventListener('click', toggleRightPanel);
+        mobileProfileTab.addEventListener('click', toggleRightPanel);
+        closeRightPanel.addEventListener('click', toggleRightPanel);
+        rightBackdrop.addEventListener('click', toggleRightPanel);
+    </script>
+    <!-- LMS Core Prototype Script -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configure Mock Test - Computer Science (11th Standard)</title>
+    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <script src="assets/js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts for Urdu Nastaleeq Support -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Jameel Noori Nastaleeq Font Integration -->
+    <style>
+        @font-face {
+            font-family: 'jameel-noori-nastaleeq';
+            src: url('https://cdn.jsdelivr.net/gh/tariq-abdullah/urdu-web-font-CDN/JameelNooriNastaleeq.woff') format('woff');
+            font-display: swap;
+        }
+        .font-nastaleeq {
+            font-family: 'jameel-noori-nastaleeq', serif;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+
+    </head>
+<body data-lms-page="configure-test" class="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen relative">
+
+    <!-- Top Navigation Header Bar -->
+    <header class="bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            
+            <!-- Left Corner: App Logo & Mobile Menu Button -->
+            <div class="flex items-center space-x-3">
+                <button id="menu-btn" title="Toggle Navigation Menu" class="text-slate-500 hover:text-slate-700 md:hidden focus:outline-none relative group">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                    <span class="absolute top-full left-0 mt-1.5 hidden group-hover:block bg-slate-900 text-white text-[10px] font-semibold px-2 py-1 rounded-md shadow-lg whitespace-nowrap z-50">Menu</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-emerald-500/20">
+                        CS
+                    </div>
+                    <div>
+                        <span class="font-bold text-base tracking-tight text-slate-900 block leading-tight">Computer Science</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">11th Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center: Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                <div class="relative w-full group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" title="Search test configuration parameters..." placeholder="Search test configuration parameters..." class="w-full bg-slate-50 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2 text-sm focus:bg-white focus:border-practice-500 focus:outline-none shadow-sm transition-all">
+                </div>
+            </div>
+
+            <!-- Right Side: Support Modal Trigger & Logout -->
+            <div class="flex items-center space-x-2.5 relative">
+                <!-- Support Button with Caption -->
+                <button id="support-btn" title="Support & Developer Info" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 hover:text-slate-900 text-xs font-semibold transition relative group cursor-pointer">
+                    <i class="fa-solid fa-circle-question text-slate-500"></i>
+                    <span>Support</span>
+                </button>
+
+                <!-- Support Popover Modal Box -->
+                <div id="support-modal" class="hidden absolute top-full right-16 mt-2 w-80 bg-white rounded-3xl shadow-2xl border border-slate-100 p-5 z-50">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-7 h-7 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">
+                                <i class="fa-solid fa-headset"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900 text-xs uppercase tracking-wider">Developer & Support</h4>
+                        </div>
+                        <button id="close-modal" class="text-slate-400 hover:text-slate-600 text-xs font-bold px-1.5 py-0.5 rounded-lg cursor-pointer">✕</button>
+                    </div>
+
+                    <div class="py-3 space-y-2.5 text-xs text-slate-600">
+                        <p><strong class="text-slate-800">Developer:</strong> Uzair Salman</p>
+                        <p><strong class="text-slate-800">Support Email:</strong> support@edustack.edu.pk</p>
+                        <p><strong class="text-slate-800">Contact Number:</strong> +92 300 1234567</p>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                        <a href="#" title="Open Student User Guide" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-3 py-2 rounded-xl text-xs transition flex items-center space-x-1.5">
+                            <i class="fa-solid fa-book text-[10px]"></i>
+                            <span>User Guide</span>
+                        </a>
+                        <span class="text-[10px] text-slate-400 font-medium">v2.4.0 Stable</span>
+                    </div>
+                </div>
+
+                <!-- Logout Button with Caption -->
+                <button title="Logout Account" class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 text-xs font-semibold transition relative group">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+
+                <!-- Mobile Blueprint Drawer Trigger -->
+                <button id="right-panel-btn" title="View Test Blueprint" class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center font-semibold text-slate-700 text-xs shadow-sm lg:hidden ml-1 relative group">
+                    <i class="fa-solid fa-list-check"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex max-w-[1440px] w-full mx-auto relative">
+
+        <!-- Left Sidebar Navigation -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar">
+            <div class="p-4 space-y-5 pt-6">
+                
+                <!-- Section 1: Main -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Main</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" title="Overview" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-50 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-house w-4 text-center"></i>
+                            <span>Overview</span>
+                        </a>
+                        <a href="learn.html" title="Learn" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-book-open w-4 text-center"></i>
+                            <span>Learn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 2: Assessment & Practice -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Practice & Test</p>
+                    <div class="space-y-1">
+                        <a href="past-papers.html" title="Past Papers" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                            <span>Past Papers</span>
+                        </a>
+                        <!-- Active Practice Link -->
+                        <a href="practice.html" title="Practice" class="flex items-center space-x-3 px-3 py-2 rounded-xl bg-practice-50 text-practice-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
+                            <span>Practice</span>
+                        </a>
+                        <a href="exam-mode.html" title="Exam Mode" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-laptop-code w-4 text-center"></i>
+                            <span>Exam Mode</span>
+                        </a>
+                        <a href="mistakes.html" title="Mistakes" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i>
+                            <span>Mistakes</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 3: Analytics & Study Tools -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tools & Tracking</p>
+                    <div class="space-y-1">
+                        <a href="progress.html" title="Progress" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-teal-50 hover:text-teal-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-chart-line w-4 text-center"></i>
+                            <span>Progress</span>
+                        </a>
+                        <a href="revision.html" title="Revision" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-rotate-right w-4 text-center"></i>
+                            <span>Revision</span>
+                        </a>
+                        <a href="bookmark.html" title="Bookmark" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-bookmark w-4 text-center"></i>
+                            <span>Bookmark</span>
+                        </a>
+                        <a href="#" title="AI Tutor" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-robot w-4 text-center"></i>
+                            <span>AI Tutor</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 4: Account Preferences -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Account</p>
+                    <div class="space-y-1">
+                        <a href="profile.html" title="Profile" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-user w-4 text-center"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="settings.html" title="Settings" class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-800 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-gear w-4 text-center"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 hidden md:block">
+                <div class="bg-gradient-to-r from-slate-50 to-indigo-50/50 p-3 rounded-2xl border border-indigo-100/60 shadow-sm" title="Capacitor 8.0 Cross-Platform Runtime">
+                    <p class="text-[11px] text-indigo-900 font-bold">Capacitor Native Ready</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">iOS & Android Build Support</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Backdrop for Mobile Left Sidebar -->
+        <div id="backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden md:hidden"></div>
+
+        <!-- Main Content Area: Configure Test Form -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
+            
+            <div class="space-y-6">
+                <!-- Page Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-5 rounded-3xl border border-slate-100">
+                    <div>
+                        <a href="practice.html" title="Back to Practice Hub" class="text-xs font-bold text-practice-600 hover:text-practice-700 flex items-center space-x-1 mb-1">
+                            <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                            <span>Back to Practice Hub</span>
+                        </a>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Configure Custom Mock Exam</h1>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-indigo-50 text-indigo-700 font-bold text-xs px-3.5 py-2 rounded-xl border border-indigo-100">Setup Wizard</span>
+                    </div>
+                </div>
+
+                <!-- Configuration Wizard Form -->
+                <div class="bg-gradient-to-br from-slate-50 via-slate-50/40 to-white p-6 sm:p-8 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+                    
+                    <!-- Step 1: Chapters Selection -->
+                    <div class="space-y-3">
+                        <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">1. Select Chapters to Include</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="flex items-center space-x-3 p-3.5 rounded-2xl border border-slate-200 hover:border-practice-300 bg-white cursor-pointer transition shadow-2xs">
+                                <input type="checkbox" checked class="w-4 h-4 text-practice-600 rounded border-slate-300 focus:ring-practice-500">
+                                <span class="text-xs font-semibold text-slate-700">Unit 1: Basics of IT</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-2xl border border-slate-200 hover:border-practice-300 bg-white cursor-pointer transition shadow-2xs">
+                                <input type="checkbox" checked class="w-4 h-4 text-practice-600 rounded border-slate-300 focus:ring-practice-500">
+                                <span class="text-xs font-semibold text-slate-700">Unit 2: Computer Networks</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-2xl border border-slate-200 hover:border-practice-300 bg-white cursor-pointer transition shadow-2xs">
+                                <input type="checkbox" checked class="w-4 h-4 text-practice-600 rounded border-slate-300 focus:ring-practice-500">
+                                <span class="text-xs font-semibold text-slate-700">Unit 3: Object-Oriented Prog (C++)</span>
+                            </label>
+                            <label class="flex items-center space-x-3 p-3.5 rounded-2xl border border-slate-200 hover:border-practice-300 bg-white cursor-pointer transition shadow-2xs">
+                                <input type="checkbox" class="w-4 h-4 text-practice-600 rounded border-slate-300 focus:ring-practice-500">
+                                <span class="text-xs font-semibold text-slate-700">Unit 4: Data Structures</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Question Count -->
+                    <div class="space-y-3 pt-3 border-t border-slate-200/60">
+                        <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">2. Number of Questions</label>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" class="py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:border-practice-500 hover:bg-practice-50 transition shadow-2xs">10 MCQs</button>
+                            <button type="button" class="py-2.5 rounded-xl border-2 border-practice-500 bg-practice-50 text-xs font-bold text-practice-700 shadow-2xs">20 MCQs</button>
+                            <button type="button" class="py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:border-practice-500 hover:bg-practice-50 transition shadow-2xs">30 MCQs</button>
+                            <button type="button" class="py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:border-practice-500 hover:bg-practice-50 transition shadow-2xs">50 MCQs</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Time Limit -->
+                    <div class="space-y-3 pt-3 border-t border-slate-200/60">
+                        <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">3. Time Limit</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs">
+                                <input type="radio" name="timer" class="mr-2"> 15 Minutes
+                            </label>
+                            <label class="flex items-center justify-center p-3 rounded-xl border-2 border-practice-500 bg-practice-50 cursor-pointer text-xs font-bold text-practice-700 shadow-2xs">
+                                <input type="radio" name="timer" checked class="mr-2"> 30 Minutes
+                            </label>
+                            <label class="flex items-center justify-center p-3 rounded-xl border border-slate-200 bg-white cursor-pointer hover:bg-slate-50 text-xs font-semibold text-slate-700 shadow-2xs">
+                                <input type="radio" name="timer" class="mr-2"> No Timer
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Difficulty Level -->
+                    <div class="space-y-3 pt-3 border-t border-slate-200/60">
+                        <label class="block text-xs font-bold text-slate-900 uppercase tracking-wider">4. Difficulty Level</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button type="button" class="p-3 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs">Easy (Concept check)</button>
+                            <button type="button" class="p-3 rounded-xl border-2 border-indigo-500 bg-indigo-50 text-xs font-bold text-indigo-700 shadow-2xs">Board Exam Standard</button>
+                            <button type="button" class="p-3 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-50 shadow-2xs">Hard (Analytical)</button>
+                        </div>
+                    </div>
+
+                    <!-- Launch CTA Button -->
+                    <div class="pt-4">
+                        <a href="mock-test.html" class="w-full bg-practice-600 hover:bg-practice-700 text-white font-bold py-3.5 px-6 rounded-2xl text-sm transition shadow-lg shadow-practice-600/20 cursor-pointer flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-play text-xs"></i>
+                            <span>Start Mock Exam Now</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Borderless Center Copyright Footer -->
+            <footer class="py-6 text-center text-xs text-slate-400 font-medium mt-8">
+                <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science.</p>
+            </footer>
+
+        </main>
+
+        <!-- Right Side Panel: Test Summary Overview -->
+        <aside id="right-panel" class="fixed inset-y-0 right-0 z-40 w-80 bg-white transform translate-x-full lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out px-5 pt-4 pb-5 overflow-y-auto no-scrollbar flex flex-col space-y-4 shadow-xl lg:shadow-none">
+            
+            <div class="flex justify-between items-center lg:hidden pb-1">
+                <span class="font-bold text-slate-800 text-sm">Summary</span>
+                <button id="close-right-panel" title="Close Drawer" class="text-slate-400 hover:text-slate-600 text-sm font-bold">Close ✕</button>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-900 text-sm">Test Blueprint</h3>
+                <span class="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-0.5 rounded-full">Custom Setup</span>
+            </div>
+
+            <div class="bg-gradient-to-br from-indigo-50/60 to-purple-50/30 p-4 rounded-3xl border border-indigo-100 space-y-3 text-xs">
+                <div class="flex justify-between pb-2 border-b border-indigo-100">
+                    <span class="text-slate-500 font-medium">Selected Units:</span>
+                    <span class="font-bold text-slate-800">Units 1, 2, 3</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-indigo-100">
+                    <span class="text-slate-500 font-medium">Total Questions:</span>
+                    <span class="font-bold text-slate-800">20 MCQs</span>
+                </div>
+                <div class="flex justify-between pb-2 border-b border-indigo-100">
+                    <span class="text-slate-500 font-medium">Allocated Time:</span>
+                    <span class="font-bold text-slate-800">30 Minutes</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-slate-500 font-medium">Difficulty:</span>
+                    <span class="font-bold text-indigo-600">Board Standard</span>
+                </div>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-3xl space-y-2">
+                <div class="flex items-center space-x-2 text-amber-800 font-bold text-xs">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>Exam Instruction</span>
+                </div>
+                <p class="text-[11px] text-slate-700 leading-relaxed">Once you start the test, the timer cannot be paused. Make sure you have a stable connection.</p>
+            </div>
+
+        </aside>
+
+        <!-- Backdrop for Mobile Right Panel -->
+        <div id="right-backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden lg:hidden"></div>
+
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 bg-white border-t border-slate-100 z-40 flex justify-around py-3 px-2 shadow-lg">
+        <a href="dashboard.html" title="Overview" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Overview</span>
+        </a>
+        <a href="learn.html" title="Learn" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-book-open text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Learn</span>
+        </a>
+        <a href="practice.html" title="Practice Hub" class="flex flex-col items-center text-practice-600">
+            <i class="fa-solid fa-pen-to-square text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Practice</span>
+        </a>
+        <a href="#" id="mobile-profile-tab" title="Blueprint Drawer" class="flex flex-col items-center text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-list-check text-lg"></i>
+            <span class="text-[10px] font-medium mt-1">Blueprint</span>
+        </a>
+    </nav>
+
+    <!-- JavaScript for Mobile Toggles and Support Modal -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+
+        const rightPanelBtn = document.getElementById('right-panel-btn');
+        const mobileProfileTab = document.getElementById('mobile-profile-tab');
+        const rightPanel = document.getElementById('right-panel');
+        const rightBackdrop = document.getElementById('right-backdrop');
+        const closeRightPanel = document.getElementById('close-right-panel');
+
+        const supportBtn = document.getElementById('support-btn');
+        const supportModal = document.getElementById('support-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        function toggleLeftSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function toggleRightPanel() {
+            rightPanel.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+        }
+
+        supportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            supportModal.classList.toggle('hidden');
+        });
+
+        closeModal.addEventListener('click', () => {
+            supportModal.classList.add('hidden');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (!supportModal.contains(e.target) && !supportBtn.contains(e.target)) {
+                supportModal.classList.add('hidden');
+            }
+        });
+
+        menuBtn.addEventListener('click', toggleLeftSidebar);
+        backdrop.addEventListener('click', toggleLeftSidebar);
+
+        rightPanelBtn.addEventListener('click', toggleRightPanel);
+        mobileProfileTab.addEventListener('click', toggleRightPanel);
+        closeRightPanel.addEventListener('click', toggleRightPanel);
+        rightBackdrop.addEventListener('click', toggleRightPanel);
+    </script>
+    <!-- LMS Core Prototype Script -->
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+</html>

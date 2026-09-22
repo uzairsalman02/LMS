@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings Hub - Computer Science (11th Standard)</title>
+    <!-- Tailwind CSS CDN -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <script src="assets/js/tailwind-config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body data-lms-page="settings" class="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- Top Navigation Header Bar -->
+    <header class="bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+
+            <div class="flex items-center space-x-3">
+                <button id="menu-btn" title="Toggle Navigation Menu"
+                    class="text-slate-500 hover:text-slate-700 md:hidden focus:outline-none relative group">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div
+                        class="w-9 h-9 bg-gradient-to-tr from-emerald-500 to-teal-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md shadow-emerald-500/20">
+                        CS
+                    </div>
+                    <div>
+                        <span class="font-bold text-base tracking-tight text-slate-900 block leading-tight">Computer
+                            Science</span>
+                        <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">11th
+                            Standard</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:flex flex-1 max-w-xl mx-8">
+                <div class="relative w-full group">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-search"></i>
+                    </span>
+                    <input type="text" placeholder="Search app settings, security, storage..."
+                        class="w-full bg-slate-50 border border-slate-200/80 rounded-xl pl-10 pr-4 py-2 text-sm focus:bg-white focus:border-brand-500 focus:outline-none shadow-sm transition-all">
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2.5 relative">
+                <button id="support-btn" title="Support & Developer Info"
+                    class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-semibold transition cursor-pointer">
+                    <i class="fa-solid fa-circle-question text-slate-500"></i>
+                    <span>Support</span>
+                </button>
+                <button title="Logout Account"
+                    class="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 text-xs font-semibold transition">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span>Logout</span>
+                </button>
+                <button id="right-panel-btn" title="View Profile & Schedule"
+                    class="w-8 h-8 rounded-full bg-slate-200 overflow-hidden flex items-center justify-center font-semibold text-slate-700 text-xs shadow-sm lg:hidden ml-1">
+                    US
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex max-w-[1440px] w-full mx-auto relative">
+
+        <!-- Left Sidebar Navigation (Fully Restored with All Menus) -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 z-40 w-64 bg-white transform -translate-x-full md:translate-x-0 md:sticky md:top-16 md:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out flex flex-col justify-between overflow-y-auto no-scrollbar">
+            <div class="p-4 space-y-5 pt-6">
+
+                <!-- Section 1: Main -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Main</p>
+                    <div class="space-y-1">
+                        <a href="dashboard.html" title="Overview"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-slate-50 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-house w-4 text-center"></i>
+                            <span>Overview</span>
+                        </a>
+                        <a href="learn.html" title="Learn"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-book-open w-4 text-center"></i>
+                            <span>Learn</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 2: Assessment & Practice -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Practice & Test
+                    </p>
+                    <div class="space-y-1">
+                        <a href="past-papers.html" title="Past Papers"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-file-lines w-4 text-center"></i>
+                            <span>Past Papers</span>
+                        </a>
+                        <a href="practice.html" title="Practice"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-rose-50 hover:text-rose-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-pen-to-square w-4 text-center"></i>
+                            <span>Practice</span>
+                        </a>
+                        <a href="exam-mode.html" title="Exam Mode"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-indigo-50 hover:text-indigo-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-laptop-code w-4 text-center"></i>
+                            <span>Exam Mode</span>
+                        </a>
+                        <a href="mistakes.html" title="Mistakes"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-triangle-exclamation w-4 text-center"></i>
+                            <span>Mistakes</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 3: Analytics & Study Tools -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Tools &
+                        Tracking</p>
+                    <div class="space-y-1">
+                        <a href="progress.html" title="Progress"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-teal-50 hover:text-teal-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-chart-line w-4 text-center"></i>
+                            <span>Progress</span>
+                        </a>
+                        <a href="revision.html" title="Revision"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-sky-50 hover:text-sky-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-rotate-right w-4 text-center"></i>
+                            <span>Revision</span>
+                        </a>
+                        <a href="bookmark.html" title="Bookmark"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-amber-50 hover:text-amber-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-bookmark w-4 text-center"></i>
+                            <span>Bookmark</span>
+                        </a>
+                        <a href="#" title="AI Tutor"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-robot w-4 text-center"></i>
+                            <span>AI Tutor</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section 4: Account Preferences -->
+                <div>
+                    <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Account</p>
+                    <div class="space-y-1">
+                        <a href="profile.html" title="Profile"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-emerald-50 hover:text-emerald-700 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-user w-4 text-center"></i>
+                            <span>Profile</span>
+                        </a>
+                        <!-- Active Settings Link -->
+                        <a href="settings.html" title="Settings"
+                            class="flex items-center space-x-3 px-3 py-2 rounded-xl bg-slate-100 text-slate-900 font-medium text-sm transition relative group">
+                            <i class="fa-solid fa-gear w-4 text-center"></i>
+                            <span>Settings</span>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sidebar Footer -->
+            <div class="p-4 hidden md:block">
+                <div class="bg-gradient-to-r from-slate-50 to-indigo-50/50 p-3 rounded-2xl border border-indigo-100/60 shadow-sm"
+                    title="Capacitor 8.0 Cross-Platform Runtime">
+                    <p class="text-[11px] text-indigo-900 font-bold">Capacitor Native Ready</p>
+                    <p class="text-[10px] text-slate-500 mt-0.5">iOS & Android Build Support</p>
+                </div>
+            </div>
+        </aside>
+
+        <div id="backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden md:hidden"></div>
+
+        <!-- Main Content Area -->
+        <main
+            class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
+
+            <div class="space-y-6 max-w-4xl mx-auto w-full">
+
+                <!-- Header -->
+                <div
+                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-5 rounded-3xl border border-slate-100">
+                    <div>
+                        <div class="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
+                            <span>Account</span><span>/</span><span class="text-slate-700">Settings Hub</span>
+                        </div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Application Preferences & Controls</h1>
+                    </div>
+                    <span class="bg-slate-200 text-slate-700 font-bold text-xs px-3.5 py-2 rounded-xl">v2.4.0
+                        Stable</span>
+                </div>
+
+                <!-- 1. Profile Update Quick Access Card -->
+                <a href="profile.html"
+                    class="bg-gradient-to-r from-slate-50 via-purple-50/20 to-white p-5 rounded-3xl border border-slate-200 hover:border-purple-300 shadow-sm transition flex items-center justify-between group block">
+                    <div class="flex items-center space-x-4">
+                        <div
+                            class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl shadow-inner group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-user-pen"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-900 text-base">Profile & Personal Credentials</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">Click here to update your name, photo, birth date,
+                                and contact details.</p>
+                        </div>
+                    </div>
+                    <div class="text-purple-600 font-bold text-xs flex items-center space-x-1 pr-2">
+                        <span>Open Profile</span>
+                        <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </div>
+                </a>
+
+                <!-- 2. Class & Academic Settings -->
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                    <h3
+                        class="font-bold text-slate-900 text-sm uppercase tracking-wider border-b border-slate-200 pb-3 flex items-center space-x-2">
+                        <i class="fa-solid fa-graduation-cap text-emerald-600"></i>
+                        <span>Class & Academic Settings</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">Standard / Grade</label>
+                            <select
+                                class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 font-semibold text-slate-800 focus:outline-none focus:border-brand-500 shadow-2xs">
+                                <option>11th Standard (ICS / Pre-Engineering)</option>
+                                <option>12th Standard (ICS / Pre-Engineering)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold text-slate-600 mb-1">Primary Subject Group</label>
+                            <select
+                                class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 font-semibold text-slate-800 focus:outline-none focus:border-brand-500 shadow-2xs">
+                                <option>Computer Science (C++ / IT)</option>
+                                <option>General Science</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Offline & Storage Management -->
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                    <h3
+                        class="font-bold text-slate-900 text-sm uppercase tracking-wider border-b border-slate-200 pb-3 flex items-center space-x-2">
+                        <i class="fa-solid fa-database text-sky-600"></i>
+                        <span>Offline & Storage Management</span>
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div
+                            class="flex items-center justify-between p-3.5 bg-white rounded-2xl border border-slate-200">
+                            <div>
+                                <h4 class="font-bold text-slate-900">Downloaded Chapter Cache</h4>
+                                <p class="text-[11px] text-slate-500">Local SQLite storage used for offline learning
+                                    modules (Units 1-4).</p>
+                            </div>
+                            <span class="font-mono font-bold text-sky-700 bg-sky-50 px-3 py-1 rounded-xl">124.5
+                                MB</span>
+                        </div>
+                        <div class="flex items-center justify-between pt-2">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-brand-600 rounded">
+                                <span class="font-semibold text-slate-700">Auto-sync offline quiz attempts upon internet
+                                    connection</span>
+                            </label>
+                            <button onclick="alert('Cache cleared successfully!')"
+                                class="bg-white hover:bg-rose-50 text-rose-600 border border-slate-200 font-bold px-4 py-2 rounded-xl transition shadow-2xs cursor-pointer">
+                                Clear Cache
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Session & Security Features -->
+                <div class="bg-slate-50 p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
+                    <h3
+                        class="font-bold text-slate-900 text-sm uppercase tracking-wider border-b border-slate-200 pb-3 flex items-center space-x-2">
+                        <i class="fa-solid fa-shield-halved text-indigo-600"></i>
+                        <span>Session & Security Features</span>
+                    </h3>
+                    <div class="space-y-3 text-xs">
+                        <div
+                            class="flex items-center justify-between p-3.5 bg-white rounded-2xl border border-slate-200">
+                            <div>
+                                <h4 class="font-bold text-slate-900">Active Device Session</h4>
+                                <p class="text-[11px] text-slate-500">Jauharabad, Punjab • Chrome on Windows (Current
+                                    Session)</p>
+                            </div>
+                            <span
+                                class="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-1 rounded-full text-[10px]">Active
+                                Now</span>
+                        </div>
+                        <div class="pt-2 space-y-2">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" checked class="w-4 h-4 text-brand-600 rounded">
+                                <span class="font-semibold text-slate-700">Enforce strict biometric / PIN lock on app
+                                    startup</span>
+                            </label>
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" class="w-4 h-4 text-brand-600 rounded">
+                                <span class="font-semibold text-slate-700">Log out automatically after 30 minutes of
+                                    inactivity</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Changes Button -->
+                <div class="pt-2">
+                    <button onclick="alert('Settings saved successfully!')"
+                        class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-6 rounded-2xl text-sm transition shadow-lg cursor-pointer flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i>
+                        <span>Save All Settings</span>
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Borderless Center Copyright Footer -->
+            <footer class="py-6 text-center text-xs text-slate-400 font-medium mt-8">
+                <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer
+                    Science.</p>
+            </footer>
+
+        </main>
+
+        <!-- Right Side Panel -->
+        <aside id="right-panel"
+            class="fixed inset-y-0 right-0 z-40 w-80 bg-white transform translate-x-full lg:translate-x-0 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] transition-transform duration-200 ease-in-out px-5 pt-3 pb-5 overflow-y-auto no-scrollbar flex flex-col space-y-4 shadow-xl lg:shadow-none border-0">
+
+            <div class="flex justify-between items-center lg:hidden pb-1">
+                <span class="font-bold text-slate-800 text-sm">Profile & Schedule</span>
+                <button id="close-right-panel" title="Close Profile Panel"
+                    class="text-slate-400 hover:text-slate-600 text-sm font-bold">Close ✕</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-3xl flex flex-col items-center text-center relative group">
+                <div class="relative mb-2 mt-0.5">
+                    <div
+                        class="w-16 h-16 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-400 p-1 shadow-md cursor-pointer">
+                        <div
+                            class="w-full h-full rounded-full bg-slate-100 flex items-center justify-center overflow-hidden text-slate-600 font-bold text-lg">
+                            US
+                        </div>
+                    </div>
+                    <span
+                        class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></span>
+                </div>
+                <h3 class="font-bold text-slate-900 text-sm">Uzair Salman</h3>
+                <p class="text-[11px] font-medium text-slate-500 mt-0.5">11th Computer Science • 2026</p>
+            </div>
+
+            <div
+                class="bg-gradient-to-br from-violet-500/10 via-purple-500/5 to-pink-500/10 border border-purple-100/80 p-3.5 rounded-3xl shadow-sm backdrop-blur-sm">
+                <div class="flex items-center justify-between mb-2.5">
+                    <div class="flex items-center space-x-2">
+                        <div
+                            class="w-7 h-7 rounded-2xl bg-gradient-to-tr from-purple-600 to-indigo-600 text-white flex items-center justify-center text-xs shadow-md shadow-purple-500/30">
+                            🏆
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-900 text-xs">Achievements</h4>
+                            <p class="text-[10px] text-purple-700 font-semibold">3 Badges Unlocked</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5">
+                    <div
+                        class="bg-white/90 border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm">
+                        <div
+                            class="w-7 h-7 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-sm mb-1">
+                            💻</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Coding Ace</span>
+                    </div>
+                    <div
+                        class="bg-white/90 border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm">
+                        <div
+                            class="w-7 h-7 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-sm mb-1">
+                            💡</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Problem Solver</span>
+                    </div>
+                    <div
+                        class="bg-white/90 border border-purple-100/80 p-2.5 rounded-2xl flex flex-col items-center text-center shadow-sm">
+                        <div
+                            class="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm mb-1">
+                            🚀</div>
+                        <span class="text-[9px] font-bold text-slate-800 leading-tight">Fast Coder</span>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="bg-gradient-to-br from-rose-50/60 to-pink-50/30 border border-rose-100 p-3.5 rounded-3xl shadow-sm">
+                <div class="flex items-center space-x-2 text-rose-700 font-bold text-xs mb-1">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>Upcoming Deadline</span>
+                </div>
+                <p class="text-xs text-slate-600 font-medium">OOP Practical Lab Assignment due tomorrow at 11:59 PM.</p>
+            </div>
+
+        </aside>
+
+        <div id="right-backdrop" class="fixed inset-0 bg-slate-900/20 z-30 hidden lg:hidden"></div>
+
+    </div>
+
+    <!-- Script for Toggling Sidebars -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('backdrop');
+
+        const rightPanelBtn = document.getElementById('right-panel-btn');
+        const rightPanel = document.getElementById('right-panel');
+        const rightBackdrop = document.getElementById('right-backdrop');
+        const closeRightPanel = document.getElementById('close-right-panel');
+
+        function toggleLeftSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        function toggleRightPanel() {
+            rightPanel.classList.toggle('translate-x-full');
+            rightBackdrop.classList.toggle('hidden');
+        }
+
+        if (menuBtn) menuBtn.addEventListener('click', toggleLeftSidebar);
+        if (backdrop) backdrop.addEventListener('click', toggleLeftSidebar);
+        if (rightPanelBtn) rightPanelBtn.addEventListener('click', toggleRightPanel);
+        if (closeRightPanel) closeRightPanel.addEventListener('click', toggleRightPanel);
+        if (rightBackdrop) rightBackdrop.addEventListener('click', toggleRightPanel);
+    </script>
+    <script src="assets/js/core.js"></script>
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>
