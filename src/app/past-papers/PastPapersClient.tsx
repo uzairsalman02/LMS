@@ -17,25 +17,75 @@ export interface PastPaperItem {
   verificationStatus: string;
   boardName: string;
   boardCode: string;
+  boardDescription?: string;
+}
+
+export interface BoardItem {
+  id: string;
+  name: string;
+  code: string;
+  description: string;
 }
 
 interface PastPapersClientProps {
   papers: PastPaperItem[];
+  boards?: BoardItem[];
 }
 
-export function getPaperBoardInfo(paper: PastPaperItem) {
+export function getPaperBoardDetails(paper: PastPaperItem, boards: BoardItem[] = []) {
   const title = paper.title.toLowerCase();
-  if (title.includes("lahore")) return { name: "BISE Lahore", short: "Lahore", key: "lahore", color: "purple" };
-  if (title.includes("rawalpindi")) return { name: "BISE Rawalpindi", short: "Rawalpindi", key: "rawalpindi", color: "sky" };
-  if (title.includes("faisalabad")) return { name: "BISE Faisalabad", short: "Faisalabad", key: "faisalabad", color: "indigo" };
-  if (title.includes("multan")) return { name: "BISE Multan", short: "Multan", key: "multan", color: "emerald" };
-  if (title.includes("gujranwala")) return { name: "BISE Gujranwala", short: "Gujranwala", key: "gujranwala", color: "amber" };
-  if (title.includes("sahiwal")) return { name: "BISE Sahiwal", short: "Sahiwal", key: "sahiwal", color: "rose" };
-  if (title.includes("federal") || title.includes("fbise")) return { name: "Federal Board (FBISE)", short: "FBISE", key: "fbise", color: "teal" };
-  return { name: paper.boardName || "Punjab Board", short: "Punjab", key: "punjab", color: "purple" };
+  const boardName = paper.boardName.toLowerCase();
+
+  // Match against known boards
+  for (const b of boards) {
+    const bNameLower = b.name.toLowerCase();
+    const city = b.name.replace("BISE ", "").toLowerCase();
+    if (boardName.includes(bNameLower) || title.includes(bNameLower) || title.includes(city)) {
+      return {
+        name: b.name,
+        code: b.code,
+        description: b.description,
+      };
+    }
+  }
+
+  // Fallback pattern matching for the 9 Punjab BISE boards
+  if (title.includes("lahore")) {
+    return { name: "BISE Lahore", code: "BISE_LHR", description: "Serves Lahore, Kasur, Sheikhupura, and Nankana Sahib." };
+  }
+  if (title.includes("rawalpindi")) {
+    return { name: "BISE Rawalpindi", code: "BISE_RWP", description: "Serves Rawalpindi, Attock, Chakwal, Jhelum, and Murree." };
+  }
+  if (title.includes("faisalabad")) {
+    return { name: "BISE Faisalabad", code: "BISE_FSD", description: "Serves Faisalabad, Jhang, Toba Tek Singh, and Chiniot." };
+  }
+  if (title.includes("gujranwala")) {
+    return { name: "BISE Gujranwala", code: "BISE_GRW", description: "Serves Gujranwala, Gujrat, Sialkot, Narowal, Hafizabad, and Mandi Bahauddin." };
+  }
+  if (title.includes("multan")) {
+    return { name: "BISE Multan", code: "BISE_MUL", description: "Serves Multan, Khanewal, Vehari, and Lodhran." };
+  }
+  if (title.includes("bahawalpur")) {
+    return { name: "BISE Bahawalpur", code: "BISE_BWP", description: "Serves the Bahawalpur division." };
+  }
+  if (title.includes("d.g. khan") || title.includes("dg khan")) {
+    return { name: "BISE D.G. Khan", code: "BISE_DGK", description: "Serves Dera Ghazi Khan and surrounding districts." };
+  }
+  if (title.includes("sahiwal")) {
+    return { name: "BISE Sahiwal", code: "BISE_SHW", description: "Serves Sahiwal, Okara, and Pakpattan." };
+  }
+  if (title.includes("sargodha")) {
+    return { name: "BISE Sargodha", code: "BISE_SGD", description: "Serves the Sargodha division." };
+  }
+
+  return {
+    name: paper.boardName || "Punjab Board",
+    code: paper.boardCode || "BISE",
+    description: paper.boardDescription || "Official Intermediate Computer Science Curriculum for Punjab BISE boards.",
+  };
 }
 
-export function PastPapersClient({ papers }: PastPapersClientProps) {
+export function PastPapersClient({ papers, boards = [] }: PastPapersClientProps) {
   const [selectedBoard, setSelectedBoard] = useState<string>("All");
   const [selectedYear, setSelectedYear] = useState<string>("All");
   const [selectedSession, setSelectedSession] = useState<string>("All");
@@ -56,32 +106,29 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
     return years.sort((a, b) => b - a);
   }, [papers]);
 
-  // Extract unique boards dynamically from papers
-  const availableBoards = useMemo(() => {
-    const boardMap = new Map<string, string>();
-    papers.forEach((p) => {
-      const info = getPaperBoardInfo(p);
-      boardMap.set(info.key, info.name);
-    });
-    return Array.from(boardMap.entries()).map(([key, name]) => ({ key, name }));
-  }, [papers]);
+  // Selected board description / coverage details
+  const activeBoardMeta = useMemo(() => {
+    if (selectedBoard === "All") return null;
+    return boards.find((b) => b.name === selectedBoard) || null;
+  }, [selectedBoard, boards]);
 
-  // Filtered papers matching all active criteria
+  // Filter papers strictly matching all active filters
   const filteredPapers = useMemo(() => {
     return papers.filter((paper) => {
-      const boardInfo = getPaperBoardInfo(paper);
+      const details = getPaperBoardDetails(paper, boards);
       const titleLower = paper.title.toLowerCase();
       const paperTypeLower = (paper.paperType || "").toLowerCase();
       const sessionLower = (paper.session || "").toLowerCase();
 
       // 1. Board Filter
       if (selectedBoard !== "All") {
-        const sel = selectedBoard.toLowerCase();
+        const selLower = selectedBoard.toLowerCase();
+        const cityLower = selectedBoard.replace("BISE ", "").toLowerCase();
         const matchesBoard =
-          boardInfo.key === sel ||
-          boardInfo.name.toLowerCase().includes(sel) ||
-          titleLower.includes(sel) ||
-          (sel === "punjab" && (paper.boardName.toLowerCase().includes("punjab") || titleLower.includes("bise")));
+          details.name.toLowerCase() === selLower ||
+          paper.boardName.toLowerCase() === selLower ||
+          titleLower.includes(cityLower) ||
+          titleLower.includes(selLower);
         if (!matchesBoard) return false;
       }
 
@@ -105,21 +152,21 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
         }
       }
 
-      // 4. Study Group / Stream Filter
+      // 4. Academic Stream Filter
       if (selectedGroup !== "All") {
         const grp = selectedGroup.toLowerCase();
         if (grp === "computer" || grp === "ics") {
-          // All 11th Computer Science papers match
           if (!titleLower.includes("computer") && !titleLower.includes("ics")) return false;
         }
       }
 
-      // 5. Search Query Filter
+      // 5. Keyword Search Query
       if (searchQuery.trim() !== "") {
         const q = searchQuery.toLowerCase().trim();
         const matchesQuery =
           titleLower.includes(q) ||
-          boardInfo.name.toLowerCase().includes(q) ||
+          details.name.toLowerCase().includes(q) ||
+          details.description.toLowerCase().includes(q) ||
           paper.year.toString().includes(q) ||
           paperTypeLower.includes(q) ||
           sessionLower.includes(q);
@@ -128,71 +175,78 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
 
       return true;
     });
-  }, [papers, selectedBoard, selectedYear, selectedSession, selectedGroup, searchQuery]);
+  }, [papers, boards, selectedBoard, selectedYear, selectedSession, selectedGroup, searchQuery]);
 
-  // Right Rail: Exam Weightage & Insights
+  // Right Rail: Punjab Board Examination Guide & Coverage
   const rightRail = (
     <div className="space-y-4">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h3 className="font-bold text-slate-900 text-sm">Exam Weightage Trend</h3>
+        <h3 className="font-bold text-slate-900 text-sm">Punjab Boards Coverage</h3>
         <span className="text-[10px] font-bold text-purple-700 bg-purple-100 px-2.5 py-0.5 rounded-full">
-          AI Insights
+          PCTB Curriculum
         </span>
       </div>
 
+      {/* District Coverage Info Box */}
       <div className="bg-gradient-to-br from-purple-50/60 to-indigo-50/30 p-4 rounded-3xl border border-purple-100/80 space-y-3">
-        <h4 className="text-xs font-bold text-slate-800">Most Repeated Units in Past 5 Years</h4>
-
-        <div>
-          <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-            <span>Unit 3: Data Communications</span>
-            <span className="text-purple-700 font-mono">35% Weightage</span>
-          </div>
-          <div className="w-full bg-purple-100 h-2 rounded-full overflow-hidden">
-            <div className="bg-purple-600 h-full rounded-full" style={{ width: "35%" }}></div>
-          </div>
-        </div>
-
-        <div>
-          <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-            <span>Unit 2: Computer Networks & OSI</span>
-            <span className="text-sky-700 font-mono">28% Weightage</span>
-          </div>
-          <div className="w-full bg-sky-100 h-2 rounded-full overflow-hidden">
-            <div className="bg-sky-600 h-full rounded-full" style={{ width: "28%" }}></div>
-          </div>
-        </div>
-
-        <div>
-          <div className="flex justify-between text-[11px] font-bold text-slate-700 mb-1">
-            <span>Unit 1 & 5: Hardware & Software</span>
-            <span className="text-emerald-700 font-mono">37% Weightage</span>
-          </div>
-          <div className="w-full bg-emerald-100 h-2 rounded-full overflow-hidden">
-            <div className="bg-emerald-600 h-full rounded-full" style={{ width: "37%" }}></div>
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white border border-slate-200/80 p-4 rounded-3xl shadow-sm space-y-2">
-        <div className="flex items-center space-x-2 text-amber-600 font-bold text-xs">
-          <i className="fa-solid fa-lightbulb"></i>
-          <span>Board Exam Tip</span>
+        <div className="flex items-center space-x-2 text-purple-900 font-bold text-xs">
+          <i className="fa-solid fa-map-location-dot text-purple-600"></i>
+          <span>Official 9 Punjab BISE Boards</span>
         </div>
         <p className="text-[11px] text-slate-600 leading-relaxed">
-          Punjab Board past papers show that <strong>OSI Model 7 Layers and Network Topologies</strong> appear in both Morning & Evening papers as mandatory 8-mark long questions.
+          All 9 education boards in Punjab share the identical Punjab Curriculum and Textbook Board (PCTB) Computer Science syllabus and paper pattern.
         </p>
+
+        {/* Board List with Jurisdiction */}
+        <div className="space-y-2 pt-1">
+          {boards.map((b) => {
+            const isCurrentSelected = selectedBoard === b.name;
+            return (
+              <div
+                key={b.id}
+                onClick={() => setSelectedBoard(isCurrentSelected ? "All" : b.name)}
+                className={`p-2 rounded-xl text-[11px] transition cursor-pointer border ${
+                  isCurrentSelected
+                    ? "bg-purple-600 text-white border-purple-600 font-bold shadow-2xs"
+                    : "bg-white/80 text-slate-700 hover:bg-white hover:border-purple-200 border-slate-100"
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-bold">{b.name}</span>
+                  <span className={`text-[10px] font-mono ${isCurrentSelected ? "text-purple-200" : "text-slate-400"}`}>
+                    {b.code}
+                  </span>
+                </div>
+                <p className={`text-[10px] mt-0.5 line-clamp-1 ${isCurrentSelected ? "text-purple-100" : "text-slate-500"}`}>
+                  {b.description}
+                </p>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Quick Filter Summary Pill in Right Rail */}
-      <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100 space-y-2 text-xs">
-        <div className="flex items-center justify-between text-slate-700 font-bold">
-          <span>Active Archive</span>
-          <span className="text-purple-700 font-mono">{filteredPapers.length} / {papers.length}</span>
+      {/* Unit Weightage Box */}
+      <div className="bg-white border border-slate-200/80 p-4 rounded-3xl shadow-sm space-y-3">
+        <div className="flex items-center space-x-2 text-amber-600 font-bold text-xs">
+          <i className="fa-solid fa-chart-pie"></i>
+          <span>Punjab Board Paper Pattern (75 Marks)</span>
         </div>
-        <p className="text-[11px] text-slate-500">
-          Showing authentic Punjab Board & FBISE past papers with solved objective and subjective keys.
-        </p>
+        <div className="space-y-2 text-xs">
+          <div className="flex justify-between text-[11px] text-slate-700">
+            <span>Section A: 15 Objective MCQs</span>
+            <span className="font-bold text-purple-700">15 Marks (20 Mins)</span>
+          </div>
+          <div className="flex justify-between text-[11px] text-slate-700">
+            <span>Section B: Short Questions (24/37)</span>
+            <span className="font-bold text-sky-700">36 Marks</span>
+          </div>
+          <div className="flex justify-between text-[11px] text-slate-700">
+            <span>Section C: Long Questions (3/5)</span>
+            <span className="font-bold text-emerald-700">24 Marks</span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -208,9 +262,9 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
     <StudentShell
       rightPanel={rightRail}
       rightPanelIcon="fa-filter"
-      rightPanelLabel="Exam Insights"
+      rightPanelLabel="Board Coverage"
       pageTitle="Past Papers"
-      badge="11th Computer Science"
+      badge="Punjab Boards"
     >
       <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
         <div className="space-y-6">
@@ -220,11 +274,16 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
               <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
                 <span>Exam Center</span>
                 <span>/</span>
-                <span className="text-purple-600">Past Papers Archive</span>
+                <span className="text-purple-600">Punjab Boards Archive</span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">11th Computer Science Past Papers</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
+                11th Computer Science Past Papers
+              </h1>
+              <p className="text-xs text-slate-500 mt-1">
+                Official Punjab Board (PCTB) examination papers for all 9 education divisions.
+              </p>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 self-start sm:self-auto">
               <span className="bg-purple-100 text-purple-700 font-bold text-xs px-3.5 py-2 rounded-xl border border-purple-200 shadow-2xs">
                 {filteredPapers.length} {filteredPapers.length === 1 ? "Paper" : "Papers"} Available
               </span>
@@ -236,7 +295,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <h3 className="font-bold text-slate-900 text-xs uppercase tracking-wider flex items-center space-x-2">
                 <i className="fa-solid fa-filter text-purple-600"></i>
-                <span>Filter Past Papers Archive</span>
+                <span>Filter by Punjab Board & Year</span>
               </h3>
 
               {/* Instant Search Bar */}
@@ -244,7 +303,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                 <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                 <input
                   type="text"
-                  placeholder="Search by Board, Year, Group..."
+                  placeholder="Search city, year, group..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-8 pr-8 py-2 bg-white border border-slate-200 rounded-xl text-xs font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-purple-500 shadow-2xs"
@@ -262,25 +321,22 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
 
             {/* Filter Dropdowns Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-              {/* 1. Board Filter */}
+              {/* 1. Punjab Board Filter */}
               <div>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                  Target Board
+                  Punjab Board (9 Divisions)
                 </label>
                 <select
                   value={selectedBoard}
                   onChange={(e) => setSelectedBoard(e.target.value)}
                   className="w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 focus:outline-none focus:border-purple-500 shadow-2xs cursor-pointer"
                 >
-                  <option value="All">All Boards (Punjab & FBISE)</option>
-                  <option value="lahore">BISE Lahore</option>
-                  <option value="rawalpindi">BISE Rawalpindi</option>
-                  <option value="faisalabad">BISE Faisalabad</option>
-                  <option value="multan">BISE Multan</option>
-                  <option value="gujranwala">BISE Gujranwala</option>
-                  <option value="sahiwal">BISE Sahiwal</option>
-                  <option value="fbise">Federal Board (FBISE)</option>
-                  <option value="punjab">All Punjab Boards</option>
+                  <option value="All">All Punjab Boards (All 9 Divisions)</option>
+                  {boards.map((b) => (
+                    <option key={b.id} value={b.name}>
+                      {b.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -306,7 +362,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
               {/* 3. Session Filter */}
               <div>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                  Exam Session / Group
+                  Session / Group
                 </label>
                 <select
                   value={selectedSession}
@@ -320,10 +376,10 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                 </select>
               </div>
 
-              {/* 4. Stream / Group Filter */}
+              {/* 4. Stream Filter */}
               <div>
                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">
-                  Academic Stream
+                  Study Stream
                 </label>
                 <select
                   value={selectedGroup}
@@ -337,6 +393,16 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
               </div>
             </div>
 
+            {/* Jurisdiction / Districts Info Banner when a board is selected */}
+            {activeBoardMeta && (
+              <div className="p-3 bg-purple-50/80 rounded-2xl border border-purple-200/80 flex items-center space-x-2 text-xs text-purple-900">
+                <i className="fa-solid fa-circle-info text-purple-600 shrink-0"></i>
+                <span>
+                  <strong>{activeBoardMeta.name}:</strong> {activeBoardMeta.description}
+                </span>
+              </div>
+            )}
+
             {/* Active Filter Pills Bar */}
             {hasActiveFilters && (
               <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-200/60">
@@ -344,10 +410,10 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
 
                 {selectedBoard !== "All" && (
                   <span className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-purple-100 text-purple-800 text-xs font-semibold">
-                    <span>Board: {availableBoards.find((b) => b.key === selectedBoard)?.name || selectedBoard}</span>
+                    <span>Board: {selectedBoard}</span>
                     <button
                       onClick={() => setSelectedBoard("All")}
-                      className="text-purple-600 hover:text-purple-900 cursor-pointer"
+                      className="text-purple-600 hover:text-purple-900 cursor-pointer ml-1"
                     >
                       ✕
                     </button>
@@ -359,7 +425,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                     <span>Year: {selectedYear}</span>
                     <button
                       onClick={() => setSelectedYear("All")}
-                      className="text-sky-600 hover:text-sky-900 cursor-pointer"
+                      className="text-sky-600 hover:text-sky-900 cursor-pointer ml-1"
                     >
                       ✕
                     </button>
@@ -371,7 +437,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                     <span>Session: {selectedSession}</span>
                     <button
                       onClick={() => setSelectedSession("All")}
-                      className="text-amber-600 hover:text-amber-900 cursor-pointer"
+                      className="text-amber-600 hover:text-amber-900 cursor-pointer ml-1"
                     >
                       ✕
                     </button>
@@ -383,7 +449,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                     <span>Stream: {selectedGroup}</span>
                     <button
                       onClick={() => setSelectedGroup("All")}
-                      className="text-emerald-600 hover:text-emerald-900 cursor-pointer"
+                      className="text-emerald-600 hover:text-emerald-900 cursor-pointer ml-1"
                     >
                       ✕
                     </button>
@@ -395,7 +461,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                     <span>Keyword: &quot;{searchQuery}&quot;</span>
                     <button
                       onClick={() => setSearchQuery("")}
-                      className="text-slate-600 hover:text-slate-900 cursor-pointer"
+                      className="text-slate-600 hover:text-slate-900 cursor-pointer ml-1"
                     >
                       ✕
                     </button>
@@ -415,7 +481,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
           {/* Past Papers Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredPapers.map((paper) => {
-              const boardInfo = getPaperBoardInfo(paper);
+              const details = getPaperBoardDetails(paper, boards);
               const isMorning =
                 paper.paperType?.toLowerCase().includes("group 1") ||
                 paper.paperType?.toLowerCase().includes("morning") ||
@@ -427,12 +493,12 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                   className="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4"
                 >
                   <div>
-                    {/* Card Badges Row */}
+                    {/* Badges Row */}
                     <div className="flex items-center justify-between mb-2.5">
                       <div className="flex flex-wrap items-center gap-1.5">
                         <span className="px-2.5 py-1 bg-purple-50 text-purple-700 font-bold text-xs rounded-lg border border-purple-100 flex items-center space-x-1">
                           <i className="fa-solid fa-landmark text-[10px]"></i>
-                          <span>{boardInfo.name}</span>
+                          <span>{details.name}</span>
                         </span>
                         <span className="px-2 py-0.5 bg-slate-100 text-slate-700 font-semibold text-[11px] rounded-md font-mono">
                           {paper.year}
@@ -454,12 +520,20 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                     <h3 className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
                       {paper.title}
                     </h3>
-                    <p className="text-slate-500 text-xs mt-1.5 leading-relaxed">
-                      Complete board examination paper with MCQs, short answers, and official Punjab Board rubric scoring scheme.
+
+                    {/* District coverage hint */}
+                    {details.description && (
+                      <p className="text-[11px] text-purple-700/80 font-medium mt-1">
+                        📍 {details.description}
+                      </p>
+                    )}
+
+                    <p className="text-slate-500 text-xs mt-1 leading-relaxed">
+                      Official Punjab Board paper: Section A (MCQs 15 Marks) and Section B & C (Subjective with rubric guidelines).
                     </p>
                   </div>
 
-                  {/* Card Bottom Meta & Actions */}
+                  {/* Bottom Meta & Action Buttons */}
                   <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
                     <div className="flex items-center space-x-3 text-[11px] text-slate-500 font-mono">
                       <span>{paper.totalMarks} Marks</span>
@@ -471,7 +545,7 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                       <a
                         href={paper.fileUrl || "#"}
                         download
-                        title="Download PDF Paper"
+                        title="Download PDF"
                         className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold px-3 py-1.5 rounded-xl text-xs transition shadow-2xs cursor-pointer inline-flex items-center space-x-1"
                       >
                         <i className="fa-solid fa-download text-[10px]"></i>
@@ -498,9 +572,9 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
                   <i className="fa-solid fa-folder-open"></i>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-800">No Past Papers Match Your Filter</h4>
+                  <h4 className="text-sm font-bold text-slate-800">No Past Papers Found</h4>
                   <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                    Try changing your selected board, year, or search query to browse other Punjab Board and Federal papers.
+                    No papers match the selected Punjab board or year. Click below to clear all filters.
                   </p>
                 </div>
                 <button
@@ -514,9 +588,9 @@ export function PastPapersClient({ papers }: PastPapersClientProps) {
           </div>
         </div>
 
-        {/* Center Copyright Footer */}
+        {/* Footer */}
         <footer className="py-6 text-center text-xs text-slate-400 font-medium mt-8">
-          <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science.</p>
+          <p>&copy; 2026 Uzair Salman. All rights reserved. Designed for all 9 Punjab Boards (BISE).</p>
         </footer>
       </main>
     </StudentShell>
