@@ -125,13 +125,78 @@ body {
   scrollbar-width: none;
 }
 
+@page {
+  size: A4 portrait;
+  margin: 6mm 8mm;
+}
+
 @media print {
-  header, #sidebar, #right-panel, #backdrop, #right-backdrop, .no-print {
+  /* Strictly hide everything outside the report */
+  header, aside, nav, footer, #sidebar, #right-panel, #backdrop, #right-backdrop, .no-print, .print\:hidden {
     display: none !important;
   }
-  body {
-    background: white !important;
-    print-color-adjust: exact;
-    -webkit-print-color-adjust: exact;
+
+  html, body {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11px !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: transparent !important;
+  }
+
+  /* Strict Single A4 page transcript container (fits 1 page cleanly) */
+  .a4-page,
+  .a4-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+    break-inside: avoid !important;
+    break-after: avoid !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    padding: 14px 18px !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+  }
+
+  /* Clean high-contrast typography in print */
+  .a4-page h1, .a4-sheet h1,
+  .a4-page h2, .a4-sheet h2,
+  .a4-page h3, .a4-sheet h3 {
+    color: #0f172a !important;
+  }
+
+  /* Crisp borders on print */
+  .a4-page table, .a4-sheet table {
+    border-collapse: collapse !important;
+  }
+
+  .a4-page th, .a4-sheet th {
+    border-bottom: 1.5px solid #334155 !important;
+    font-weight: 800 !important;
+  }
+
+  .a4-page tr, .a4-sheet tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }
+

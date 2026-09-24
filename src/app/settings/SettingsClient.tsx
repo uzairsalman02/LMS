@@ -121,7 +121,34 @@ export function SettingsClient() {
           </span>
         </div>
 
-        {/* 1. Profile Update Quick Access Card */}
+        {/* 1. Admin Signatory & Examination Settings Quick Access Card */}
+        <Link
+          href="/admin/settings"
+          className="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-white p-5 rounded-3xl border border-emerald-200 hover:border-emerald-400 shadow-2xs transition flex items-center justify-between group block"
+        >
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl shadow-inner group-hover:scale-105 transition-transform">
+              <i className="fa-solid fa-signature"></i>
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <h3 className="font-bold text-slate-900 text-base">Report Signatory & Digital Signature</h3>
+                <span className="bg-emerald-600 text-white font-bold text-[9px] px-2 py-0.5 rounded-full uppercase tracking-wider">
+                  Admin Setting
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Configure signing officer&apos;s name, official title, and draw or upload signatures for student report cards.
+              </p>
+            </div>
+          </div>
+          <div className="text-emerald-700 font-bold text-xs flex items-center space-x-1 pr-2">
+            <span>Manage Signatory</span>
+            <i className="fa-solid fa-arrow-right text-[10px]"></i>
+          </div>
+        </Link>
+
+        {/* 2. Profile Update Quick Access Card */}
         <Link
           href="/profile"
           className="bg-gradient-to-r from-slate-50 via-purple-50/20 to-white p-5 rounded-3xl border border-slate-200 hover:border-purple-300 shadow-2xs transition flex items-center justify-between group block"

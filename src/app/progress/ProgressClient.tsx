@@ -4,74 +4,336 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { StudentShell } from "@/components/layout/StudentShell";
 
-export function ProgressClient() {
+export interface ChapterProgressStat {
+  id: string;
+  chapterNumber: number;
+  title: string;
+  totalQuestions: number;
+  attemptedQuestions: number;
+  accuracy: number;
+  mistakesCount: number;
+  status: "Mastered" | "In Progress" | "Started" | "Not Started";
+}
+
+export interface AttemptHistoryItem {
+  id: string;
+  testTitle: string;
+  score: number;
+  maxScore: number;
+  percentage: number;
+  grade: string;
+  passed: boolean;
+  date: string;
+  formattedDate: string;
+  violationsCount?: number;
+  answersCount: number;
+}
+
+export interface SkillProficiencyItem {
+  name: string;
+  percentage: number;
+  color: string;
+}
+
+export interface AIMentorRecommendation {
+  type: "weakness" | "pacing" | "coverage" | "mistakes" | "grade";
+  icon: string;
+  iconColor: string;
+  label: string;
+  detail: string;
+  actionText?: string;
+  actionHref?: string;
+}
+
+export interface AIMentorInsight {
+  title: string;
+  badge?: string;
+  description: string;
+  recommendations?: AIMentorRecommendation[];
+}
+
+export interface ProgressDataProps {
+  studentName: string;
+  overallScorePct: number;
+  overallGrade: string;
+  totalAttempts: number;
+  passedAttempts: number;
+  totalAnswers: number;
+  accuracyRate: number;
+  chaptersActive: number;
+  streakDays: number;
+  chapterStats: ChapterProgressStat[];
+  recentAttempts: AttemptHistoryItem[];
+  skillMatrix: SkillProficiencyItem[];
+  aiMentorInsight: AIMentorInsight;
+}
+
+function renderAdvisoryText(text: string) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      const content = part.slice(2, -2);
+      if (
+        content.includes("%") ||
+        content.includes("Grade") ||
+        content.includes("trajectory") ||
+        content.includes("standing")
+      ) {
+        return (
+          <strong key={index} className="font-bold text-teal-700">
+            {content}
+          </strong>
+        );
+      }
+      if (
+        content.toLowerCase().includes("unit") ||
+        content.toLowerCase().includes("accuracy") ||
+        content.toLowerCase().includes("bottleneck")
+      ) {
+        return (
+          <strong key={index} className="font-bold text-rose-600">
+            {content}
+          </strong>
+        );
+      }
+      if (
+        content.toLowerCase().includes("pacing") ||
+        content.toLowerCase().includes("s/mcq") ||
+        content.toLowerCase().includes("s per") ||
+        content.toLowerCase().includes("tempo") ||
+        content.toLowerCase().includes("benchmark") ||
+        content.toLowerCase().includes("speed")
+      ) {
+        return (
+          <strong key={index} className="font-bold text-indigo-700">
+            {content}
+          </strong>
+        );
+      }
+      if (
+        content.toLowerCase().includes("mistake") ||
+        content.toLowerCase().includes("error") ||
+        content.toLowerCase().includes("unattempted") ||
+        content.toLowerCase().includes("untested")
+      ) {
+        return (
+          <strong key={index} className="font-bold text-amber-600">
+            {content}
+          </strong>
+        );
+      }
+      return (
+        <strong key={index} className="font-bold text-slate-900">
+          {content}
+        </strong>
+      );
+    }
+    return part;
+  });
+}
+
+export function ProgressClient({
+  studentName,
+  overallScorePct,
+  overallGrade,
+  totalAttempts,
+  passedAttempts,
+  totalAnswers,
+  accuracyRate,
+  chaptersActive,
+  streakDays,
+  chapterStats,
+  recentAttempts,
+  skillMatrix,
+  aiMentorInsight,
+}: ProgressDataProps) {
   const [activeTab, setActiveTab] = useState<"syllabus" | "completion" | "history">("syllabus");
+  const [syllabusFilter, setSyllabusFilter] = useState<"all" | "attention" | "active" | "not_started">("all");
+
+  const totalPendingMistakes = chapterStats.reduce(
+    (acc, c) => acc + (c.mistakesCount || 0),
+    0
+  );
+
+  const activeChapters = chapterStats.filter((c) => c.attemptedQuestions > 0);
+  const weakestChapter =
+    activeChapters.length > 0
+      ? [...activeChapters].sort((a, b) => a.accuracy - b.accuracy)[0]
+      : chapterStats[0];
+
+  const needsAttentionChapters = chapterStats.filter(
+    (c) => (c.attemptedQuestions > 0 && c.accuracy < 50) || c.mistakesCount > 0
+  );
+  const inProgressChapters = chapterStats.filter(
+    (c) => c.status === "In Progress" || c.status === "Started" || c.status === "Mastered"
+  );
+  const notStartedChapters = chapterStats.filter((c) => c.status === "Not Started");
+
+  const filteredChapters = chapterStats.filter((c) => {
+    if (syllabusFilter === "attention") {
+      return (c.attemptedQuestions > 0 && c.accuracy < 50) || c.mistakesCount > 0;
+    }
+    if (syllabusFilter === "active") {
+      return c.status === "In Progress" || c.status === "Started" || c.status === "Mastered";
+    }
+    if (syllabusFilter === "not_started") {
+      return c.status === "Not Started";
+    }
+    return true;
+  });
+
+  const getNextGradeTarget = (pct: number) => {
+    if (pct < 33) return { target: "Grade E", needed: (33 - pct).toFixed(1) };
+    if (pct < 40) return { target: "Grade D", needed: (40 - pct).toFixed(1) };
+    if (pct < 50) return { target: "Grade C", needed: (50 - pct).toFixed(1) };
+    if (pct < 60) return { target: "Grade B", needed: (60 - pct).toFixed(1) };
+    if (pct < 70) return { target: "Grade A", needed: (70 - pct).toFixed(1) };
+    if (pct < 80) return { target: "Grade A+", needed: (80 - pct).toFixed(1) };
+    return { target: "Distinction", needed: (100 - pct).toFixed(1) };
+  };
+
+  const nextGrade = getNextGradeTarget(overallScorePct);
+
+  const getStatusBadge = (status: ChapterProgressStat["status"]) => {
+    switch (status) {
+      case "Mastered":
+        return "bg-emerald-100 text-emerald-800 border-emerald-200";
+      case "In Progress":
+        return "bg-teal-100 text-teal-800 border-teal-200";
+      case "Started":
+        return "bg-sky-100 text-sky-800 border-sky-200";
+      default:
+        return "bg-slate-100 text-slate-500 border-slate-200";
+    }
+  };
 
   const rightRail = (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="font-bold text-slate-900 text-sm">Learning Streak</h3>
-        <span className="text-[10px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full">
-          🔥 12 Days
+    <div className="space-y-3.5">
+      {/* Header & Quick Streak Status */}
+      <div className="flex items-center justify-between pb-0.5">
+        <h3 className="font-bold text-slate-900 text-xs uppercase tracking-wider">Learning Analytics</h3>
+        <span className="text-[10px] font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full border border-teal-200 inline-flex items-center space-x-1">
+          <i className="fa-solid fa-fire text-amber-500 text-[10px]"></i>
+          <span>{streakDays} Active Days</span>
         </span>
       </div>
 
-      {/* Streak Card */}
-      <div className="bg-gradient-to-br from-teal-50/60 to-emerald-50/30 p-4 rounded-3xl border border-teal-100 space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-xs font-bold text-slate-700">Consistency Goal</span>
-          <span className="text-xs font-bold text-teal-700">85% Achieved</span>
+      {/* 1. Compact Exam Readiness Strip */}
+      <div className="bg-gradient-to-br from-teal-50/70 to-emerald-50/40 p-3.5 rounded-3xl border border-teal-200/80 space-y-2 shadow-2xs">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-bold text-slate-700 text-xs">Exam Readiness</span>
+          <span className="font-extrabold text-teal-800 text-xs">{overallScorePct}% • Grade {overallGrade}</span>
         </div>
-        <div className="w-full bg-teal-100 h-2 rounded-full overflow-hidden">
-          <div className="bg-teal-600 h-full rounded-full" style={{ width: "85%" }}></div>
+        <div className="w-full bg-teal-100/90 h-2.5 rounded-full overflow-hidden">
+          <div
+            className="bg-gradient-to-r from-teal-500 to-emerald-500 h-full rounded-full transition-all duration-500"
+            style={{ width: `${Math.min(100, Math.max(10, overallScorePct))}%` }}
+          ></div>
         </div>
-        <p className="text-[11px] text-slate-500">You have logged in for 12 consecutive days. Keep it up, Uzair!</p>
       </div>
 
-      {/* Skill Matrix Breakdown */}
+      {/* 2. Full-Width Readable Curriculum Skill Matrix */}
       <div className="bg-white border border-slate-200/80 p-4 rounded-3xl shadow-sm space-y-3 text-xs">
-        <h4 className="font-bold text-slate-900">Skill Proficiency Matrix</h4>
+        <div className="flex items-center justify-between">
+          <h4 className="font-bold text-slate-900 text-xs">Curriculum Skill Matrix</h4>
+          <span className="text-[10px] text-slate-400 font-semibold">11th Standard</span>
+        </div>
         <div className="space-y-2.5">
-          <div>
-            <div className="flex justify-between font-medium text-slate-700 mb-1">
-              <span>C++ Syntax & Coding</span>
-              <span className="text-emerald-600 font-bold">92%</span>
+          {skillMatrix.map((item, idx) => (
+            <div key={idx} className="space-y-1">
+              <div className="flex justify-between font-medium text-slate-700 text-[11px]">
+                <span className="truncate max-w-[190px]" title={item.name}>
+                  {item.name}
+                </span>
+                <span className="font-bold text-slate-900">{item.percentage}%</span>
+              </div>
+              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${item.color}`}
+                  style={{ width: `${item.percentage}%` }}
+                ></div>
+              </div>
             </div>
-            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-emerald-500 h-full" style={{ width: "92%" }}></div>
-            </div>
-          </div>
-          <div>
-            <div className="flex justify-between font-medium text-slate-700 mb-1">
-              <span>Theory & Concepts</span>
-              <span className="text-emerald-600 font-bold">88%</span>
-            </div>
-            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-emerald-500 h-full" style={{ width: "88%" }}></div>
-            </div>
-          </div>
-          <div>
-            <div className="flex justify-between font-medium text-slate-700 mb-1">
-              <span>Networking & Security</span>
-              <span className="text-teal-700 font-bold">80%</span>
-            </div>
-            <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-              <div className="bg-teal-600 h-full" style={{ width: "80%" }}></div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Advisor Note */}
-      <div className="bg-slate-50 p-4 rounded-3xl border border-slate-100 space-y-2">
-        <div className="flex items-center space-x-2 text-teal-700 font-bold text-xs">
-          <i className="fa-solid fa-robot"></i>
-          <span>AI Mentor Insight</span>
+      {/* 3. Punjab Board AI Advisor (Readable Narrative with Bold Highlights & Detailed Suggestion Cards) */}
+      <div className="bg-gradient-to-br from-slate-50 via-teal-50/20 to-white p-4 rounded-3xl border border-slate-200/80 space-y-3 shadow-2xs">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2 text-teal-900 font-bold text-xs">
+            <div className="w-6 h-6 rounded-lg bg-teal-100/80 border border-teal-200 flex items-center justify-center text-teal-700 text-xs">
+              <i className="fa-solid fa-brain"></i>
+            </div>
+            <span>{aiMentorInsight.title}</span>
+          </div>
+          {aiMentorInsight.badge && (
+            <span className="text-[9.5px] font-bold text-teal-800 bg-white border border-teal-200/70 shadow-2xs px-2.5 py-0.5 rounded-full">
+              {aiMentorInsight.badge}
+            </span>
+          )}
         </div>
-        <p className="text-[11px] text-slate-600 leading-relaxed">
-          Your coding consistency is exceptional. Try solving 5 more pointer-based questions in Unit 3 to reach 95%
-          mastery.
-        </p>
+
+        {/* Narrative Paragraph with Bold Color Highlights */}
+        <div className="text-[11px] text-slate-700 leading-relaxed bg-white/80 p-3 rounded-2xl border border-slate-200/70 shadow-2xs">
+          {renderAdvisoryText(aiMentorInsight.description)}
+        </div>
+
+        {/* Optimized List-Form Recommendations with Dedicated Action Buttons */}
+        {aiMentorInsight.recommendations && aiMentorInsight.recommendations.length > 0 && (
+          <div className="space-y-2 pt-0.5">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              Actionable Recommendations
+            </span>
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs divide-y divide-slate-100 overflow-hidden">
+              {aiMentorInsight.recommendations.map((rec, rIdx) => {
+                let btnStyle = "bg-teal-50 hover:bg-teal-100 text-teal-800 border-teal-200/80";
+                let btnIcon = "fa-bolt";
+                if (rec.type === "mistakes") {
+                  btnStyle = "bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200/80";
+                  btnIcon = "fa-triangle-exclamation";
+                } else if (rec.type === "pacing") {
+                  btnStyle = "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200/80";
+                  btnIcon = "fa-stopwatch";
+                } else if (rec.type === "coverage") {
+                  btnStyle = "bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-200/80";
+                  btnIcon = "fa-book-open";
+                }
+
+                return (
+                  <div key={rIdx} className="p-3 space-y-1.5 hover:bg-slate-50/50 transition">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-5 rounded-md bg-slate-100 flex items-center justify-center shrink-0">
+                        <i className={`fa-solid ${rec.icon} ${rec.iconColor} text-[10px]`}></i>
+                      </div>
+                      <span className="font-bold text-slate-900 text-xs">
+                        {rec.label}
+                      </span>
+                    </div>
+
+                    <p className="text-[11px] text-slate-600 leading-relaxed pl-7">
+                      {rec.detail}
+                    </p>
+
+                    {rec.actionText && rec.actionHref && (
+                      <div className="pl-7 pt-1">
+                        <Link
+                          href={rec.actionHref}
+                          className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg text-[10.5px] font-bold border transition cursor-pointer shadow-2xs ${btnStyle}`}
+                        >
+                          <i className={`fa-solid ${btnIcon} text-[9px]`}></i>
+                          <span>{rec.actionText}</span>
+                          <i className="fa-solid fa-arrow-right text-[8px] opacity-70"></i>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -87,98 +349,130 @@ export function ProgressClient() {
       <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto pb-20 md:pb-8 bg-white min-h-screen no-scrollbar flex flex-col justify-between">
         <div className="space-y-6">
           {/* Clean Page Heading */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/80 p-5 rounded-3xl border border-slate-100">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-gradient-to-r from-slate-50 via-teal-50/20 to-white p-5 rounded-3xl border border-slate-200/80 shadow-2xs">
             <div>
               <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-1">
-                <span>Tools & Tracking</span>
+                <span>Tools &amp; Tracking</span>
                 <span>/</span>
-                <span className="text-teal-600">Performance Analytics</span>
+                <span className="text-teal-600 font-bold">Performance Analytics</span>
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
-                Student Progress & Learning Metrics
+              <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                Student Progress &amp; Learning Metrics
               </h1>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Real-time assessment tracking, authentic Punjab Board syllabus coverage, and verified exam logs.
+              </p>
             </div>
-            <div className="flex items-center space-x-2">
-              <span className="bg-teal-100 text-teal-800 font-bold text-xs px-3.5 py-2 rounded-xl">
-                Overall Grade: A+
-              </span>
+
+            {/* Prominent Academic Grade Block (Large, Bold, Not a pill) */}
+            <div className="shrink-0 bg-white px-5 py-3.5 rounded-2xl border border-slate-200/90 shadow-sm flex items-center space-x-4">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-teal-600 to-emerald-500 flex flex-col items-center justify-center text-white shadow-md shrink-0">
+                <span className="text-2xl font-black leading-none">{overallGrade}</span>
+                <span className="text-[9px] font-extrabold uppercase tracking-widest opacity-85 mt-0.5">Grade</span>
+              </div>
+              <div className="flex flex-col justify-center">
+                <div className="text-xl font-black text-slate-900 leading-tight">
+                  {overallScorePct}% <span className="text-xs font-semibold text-slate-400">Overall</span>
+                </div>
+                <div className="flex items-center space-x-1 text-[11px] text-teal-700 font-semibold mt-1">
+                  <i className="fa-solid fa-arrow-trend-up text-[10px]"></i>
+                  <span>Target: {nextGrade.target} ({nextGrade.needed}% needed)</span>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* 4 Info Summary Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Card 1: Overall Score */}
-            <div className="bg-gradient-to-br from-slate-50 via-slate-50/40 to-white p-5 rounded-3xl border border-slate-200/80 shadow-sm flex items-center justify-between">
+          {/* 4 Info Summary Cards Grid - Real DB Data */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            {/* Card 1: Overall Exam Score */}
+            <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
                   Overall Score
                 </span>
-                <h3 className="text-2xl font-bold text-slate-900">88.5%</h3>
-                <span className="text-[11px] text-emerald-600 font-medium">+4.2% this week</span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">{overallScorePct}%</h3>
+                <span className="text-[10px] text-teal-600 font-semibold">Grade {overallGrade} Standing</span>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-lg shadow-inner border border-teal-100">
+              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-base shadow-inner">
                 <i className="fa-solid fa-award"></i>
               </div>
             </div>
 
-            {/* Card 2: Chapters Completed */}
-            <div className="bg-gradient-to-br from-slate-50 via-teal-50/30 to-white p-5 rounded-3xl border border-teal-200/80 shadow-sm flex items-center justify-between">
+            {/* Card 2: Tests Completed */}
+            <div className="bg-white p-4 rounded-2xl border border-teal-200/80 shadow-xs flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider block mb-1">
-                  Chapters Done
+                <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider block mb-0.5">
+                  Tests Taken
                 </span>
-                <h3 className="text-2xl font-bold text-teal-700">12 / 16</h3>
-                <span className="text-[11px] text-teal-600 font-medium">75% syllabus complete</span>
+                <h3 className="text-xl sm:text-2xl font-black text-teal-700">{totalAttempts}</h3>
+                <span className="text-[10px] text-teal-600 font-medium">{passedAttempts} Passed tests</span>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-lg shadow-inner">
-                <i className="fa-solid fa-book-open"></i>
+              <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-base shadow-inner">
+                <i className="fa-solid fa-file-signature"></i>
               </div>
             </div>
 
-            {/* Card 3: Study Hours */}
-            <div className="bg-gradient-to-br from-slate-50 via-sky-50/30 to-white p-5 rounded-3xl border border-sky-200/80 shadow-sm flex items-center justify-between">
+            {/* Card 3: Questions Accuracy Rate */}
+            <div className="bg-white p-4 rounded-2xl border border-emerald-200/80 shadow-xs flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-sky-600 uppercase tracking-wider block mb-1">
-                  Study Hours
-                </span>
-                <h3 className="text-2xl font-bold text-sky-700">48.5 hrs</h3>
-                <span className="text-[11px] text-sky-600 font-medium">Logged on LMS</span>
-              </div>
-              <div className="w-12 h-12 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center text-lg shadow-inner">
-                <i className="fa-solid fa-clock"></i>
-              </div>
-            </div>
-
-            {/* Card 4: Accuracy Rate */}
-            <div className="bg-gradient-to-br from-slate-50 via-emerald-50/30 to-white p-5 rounded-3xl border border-emerald-200/80 shadow-sm flex items-center justify-between">
-              <div>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block mb-1">
+                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block mb-0.5">
                   Accuracy Rate
                 </span>
-                <h3 className="text-2xl font-bold text-emerald-700">84.2%</h3>
-                <span className="text-[11px] text-emerald-600 font-medium">Quiz & test average</span>
+                <h3 className="text-xl sm:text-2xl font-black text-emerald-700">{accuracyRate}%</h3>
+                <span className="text-[10px] text-emerald-600 font-medium">{totalAnswers} Questions answered</span>
               </div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-lg shadow-inner">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base shadow-inner">
                 <i className="fa-solid fa-bullseye"></i>
+              </div>
+            </div>
+
+            {/* Card 4: Class 11 Units Covered */}
+            <div className="bg-white p-4 rounded-2xl border border-indigo-200/80 shadow-xs flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block mb-0.5">
+                  Units Active
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-indigo-700">{chaptersActive} / 10</h3>
+                <span className="text-[10px] text-indigo-600 font-medium">Class 11 Punjab Board</span>
+              </div>
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base shadow-inner">
+                <i className="fa-solid fa-book-open"></i>
               </div>
             </div>
           </div>
 
-          {/* Printable Report Banner */}
-          <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          {/* Printable Report Banner (Option A: Two Distinct Academic Documents) */}
+          <div className="bg-gradient-to-r from-teal-50/90 via-indigo-50/60 to-emerald-50/90 border border-teal-200/90 p-5 rounded-3xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
             <div>
-              <h3 className="font-bold text-indigo-900 text-sm">Need a printable official transcript?</h3>
-              <p className="text-xs text-indigo-700 mt-0.5">
-                Generate a formal PDF-ready student performance report with complete breakdown.
+              <div className="flex items-center space-x-2 mb-1">
+                <span className="bg-teal-100 text-teal-800 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">
+                  Official Academic Documents
+                </span>
+                <span className="text-xs font-semibold text-slate-500">• 11th Standard Computer Science</span>
+              </div>
+              <h3 className="font-bold text-slate-900 text-sm">Need official academic transcripts or exam report cards?</h3>
+              <p className="text-xs text-slate-600 mt-0.5">
+                Generate your authenticated 10-Unit Punjab Board cumulative transcript or review the detailed evaluation sheet from your latest test.
               </p>
             </div>
-            <Link
-              href="/progress-report"
-              target="_blank"
-              className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-sm cursor-pointer whitespace-nowrap"
-            >
-              View Progress Report 📄
-            </Link>
+            <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
+              <Link
+                href="/progress-report?type=overall"
+                target="_blank"
+                className="bg-teal-600 hover:bg-teal-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-sm cursor-pointer whitespace-nowrap flex items-center space-x-1.5"
+              >
+                <i className="fa-solid fa-graduation-cap"></i>
+                <span>Overall Transcript (10 Units)</span>
+              </Link>
+              <Link
+                href="/progress-report"
+                target="_blank"
+                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold px-4 py-2 rounded-xl text-xs transition shadow-xs cursor-pointer whitespace-nowrap flex items-center space-x-1.5"
+              >
+                <i className="fa-solid fa-file-lines text-indigo-600"></i>
+                <span>Latest Test Card</span>
+              </Link>
+            </div>
           </div>
 
           {/* Interactive Tabs Section */}
@@ -187,168 +481,368 @@ export function ProgressClient() {
             <div className="flex border-b border-slate-200/80 bg-slate-50/80 p-2 gap-2 overflow-x-auto no-scrollbar">
               <button
                 onClick={() => setActiveTab("syllabus")}
-                className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer ${
+                className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
                   activeTab === "syllabus"
                     ? "bg-teal-600 text-white shadow-sm"
                     : "text-slate-600 hover:bg-slate-200/60"
                 }`}
               >
                 <i className="fa-solid fa-list-check"></i>
-                <span>Syllabus Breakdown</span>
+                <span>Class 11 Syllabus (10 Units)</span>
               </button>
               <button
                 onClick={() => setActiveTab("completion")}
-                className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer ${
+                className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
                   activeTab === "completion"
                     ? "bg-teal-600 text-white shadow-sm"
                     : "text-slate-600 hover:bg-slate-200/60"
                 }`}
               >
-                <i className="fa-solid fa-circle-check"></i>
-                <span>Completion Details</span>
+                <i className="fa-solid fa-medal"></i>
+                <span>Milestones &amp; Mastery</span>
               </button>
               <button
                 onClick={() => setActiveTab("history")}
-                className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer ${
+                className={`flex-1 py-2.5 px-4 rounded-2xl text-xs font-bold transition flex items-center justify-center space-x-2 cursor-pointer whitespace-nowrap ${
                   activeTab === "history"
                     ? "bg-teal-600 text-white shadow-sm"
                     : "text-slate-600 hover:bg-slate-200/60"
                 }`}
               >
                 <i className="fa-solid fa-clock-rotate-left"></i>
-                <span>Test History</span>
+                <span>Test History ({recentAttempts.length})</span>
               </button>
             </div>
 
-            {/* Tab Content 1: Syllabus Breakdown */}
+            {/* Tab Content 1: Class Syllabus (Authentic 10 Units) */}
             {activeTab === "syllabus" && (
-              <div className="p-6 space-y-4">
+              <div className="p-5 sm:p-6 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-2.5">
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm">Class 11 Punjab Curriculum Syllabus</h3>
+                    <p className="text-[11px] text-slate-500">
+                      Real-time assessment completion, practice questions attempted, and accuracy per chapter.
+                    </p>
+                  </div>
+                  {/* Segmented Consistent Filter Bar */}
+                  <div className="inline-flex items-center p-1 bg-slate-100 rounded-2xl border border-slate-200/80 gap-1 overflow-x-auto no-scrollbar max-w-full">
+                    <button
+                      onClick={() => setSyllabusFilter("all")}
+                      className={`h-8 px-3 rounded-xl font-bold transition cursor-pointer text-xs flex items-center space-x-1.5 whitespace-nowrap ${
+                        syllabusFilter === "all"
+                          ? "bg-white text-slate-900 shadow-xs border border-slate-200/80"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                      }`}
+                    >
+                      <span>All Units</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono leading-none ${syllabusFilter === "all" ? "bg-slate-100 text-slate-700 font-bold" : "bg-slate-200/80 text-slate-500"}`}>
+                        10
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setSyllabusFilter("attention")}
+                      className={`h-8 px-3 rounded-xl font-bold transition cursor-pointer text-xs flex items-center space-x-1.5 whitespace-nowrap ${
+                        syllabusFilter === "attention"
+                          ? "bg-rose-600 text-white shadow-xs"
+                          : "text-slate-600 hover:text-rose-700 hover:bg-white/60"
+                      }`}
+                    >
+                      <span>Need Focus</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono leading-none ${syllabusFilter === "attention" ? "bg-rose-700 text-white font-bold" : "bg-rose-100 text-rose-700 font-bold"}`}>
+                        {needsAttentionChapters.length}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setSyllabusFilter("active")}
+                      className={`h-8 px-3 rounded-xl font-bold transition cursor-pointer text-xs flex items-center space-x-1.5 whitespace-nowrap ${
+                        syllabusFilter === "active"
+                          ? "bg-teal-600 text-white shadow-xs"
+                          : "text-slate-600 hover:text-teal-700 hover:bg-white/60"
+                      }`}
+                    >
+                      <span>In Progress</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono leading-none ${syllabusFilter === "active" ? "bg-teal-700 text-white font-bold" : "bg-teal-100 text-teal-700 font-bold"}`}>
+                        {inProgressChapters.length}
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setSyllabusFilter("not_started")}
+                      className={`h-8 px-3 rounded-xl font-bold transition cursor-pointer text-xs flex items-center space-x-1.5 whitespace-nowrap ${
+                        syllabusFilter === "not_started"
+                          ? "bg-slate-700 text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-white/60"
+                      }`}
+                    >
+                      <span>Not Started</span>
+                      <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono leading-none ${syllabusFilter === "not_started" ? "bg-slate-800 text-white font-bold" : "bg-slate-200/80 text-slate-500"}`}>
+                        {notStartedChapters.length}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+
+                {filteredChapters.length === 0 ? (
+                  <div className="p-8 text-center text-slate-400 text-xs">
+                    No chapters matching this filter.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                    {filteredChapters.map((c) => (
+                      <div
+                        key={c.id}
+                        className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/40 hover:bg-slate-50 transition space-y-2.5"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                            <div className="flex items-center space-x-1.5 mb-0.5">
+                              <span className="text-[10px] font-black uppercase text-slate-500 bg-slate-200/60 px-1.5 py-0.2 rounded">
+                                Unit {c.chapterNumber}
+                              </span>
+                              {c.totalQuestions > 0 && (
+                                <span className="text-[10px] text-slate-400 font-medium">
+                                  {c.totalQuestions} Questions
+                                </span>
+                              )}
+                            </div>
+                            <h4 className="font-bold text-slate-900 text-xs sm:text-sm leading-snug">
+                              {c.title}
+                            </h4>
+                          </div>
+                          <span
+                            className={`font-extrabold px-2 py-0.5 rounded-full text-[10px] border shrink-0 ${getStatusBadge(
+                              c.status
+                            )}`}
+                          >
+                            {c.status}
+                          </span>
+                        </div>
+
+                        {/* Progress Bar & Stats */}
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[11px] text-slate-600">
+                            <span>
+                              Attempted: <strong>{c.attemptedQuestions}</strong> questions
+                            </span>
+                            <span className="font-bold text-slate-900">
+                              {c.attemptedQuestions > 0 ? `${c.accuracy}% Accuracy` : "Unattempted"}
+                            </span>
+                          </div>
+                          <div className="w-full bg-slate-200/70 h-2 rounded-full overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all duration-500 ${
+                                c.accuracy >= 70
+                                  ? "bg-emerald-500"
+                                  : c.accuracy >= 50
+                                  ? "bg-teal-500"
+                                  : c.attemptedQuestions > 0
+                                  ? "bg-amber-500"
+                                  : "bg-slate-300"
+                              }`}
+                              style={{
+                                width: `${
+                                  c.attemptedQuestions > 0
+                                    ? Math.max(15, c.accuracy)
+                                    : 0
+                                }%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-1.5 text-[10px] text-slate-500 border-t border-slate-100/80">
+                          <span>
+                            {c.mistakesCount > 0 ? (
+                              <span className="text-amber-700 font-bold">
+                                ⚠️ {c.mistakesCount} logged error{c.mistakesCount > 1 ? "s" : ""}
+                              </span>
+                            ) : (
+                              <span className="text-emerald-700 font-medium">✓ No active errors</span>
+                            )}
+                          </span>
+                          <div className="flex items-center space-x-1.5">
+                            <Link
+                              href={`/learn?chapterId=${c.id}`}
+                              className="font-bold text-slate-500 hover:text-slate-900 transition flex items-center space-x-1 px-2 py-1 rounded-lg hover:bg-slate-200/50"
+                              title="Study Textbook Lessons"
+                            >
+                              <i className="fa-solid fa-book-open text-[9px]"></i>
+                              <span>Revise</span>
+                            </Link>
+                            <Link
+                              href={`/configure-test?chapterId=${c.id}`}
+                              className="bg-teal-50 hover:bg-teal-100 text-teal-700 font-extrabold px-2.5 py-1 rounded-lg transition flex items-center space-x-1 border border-teal-200 shadow-2xs"
+                              title="Practice this Unit"
+                            >
+                              <i className="fa-solid fa-bolt text-[9px]"></i>
+                              <span>Practice Unit</span>
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Tab Content 2: Milestones & Verified Achievements */}
+            {activeTab === "completion" && (
+              <div className="p-5 sm:p-6 space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <h3 className="font-bold text-slate-900 text-sm">Class Syllabus & Unit-wise Status</h3>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm">Verified Learning Milestones</h3>
+                    <p className="text-[11px] text-slate-500">
+                      Academic milestones unlocked based on your real LMS test attempts.
+                    </p>
+                  </div>
                   <span className="text-xs text-slate-400 font-semibold">11th Standard CS</span>
                 </div>
-                <div className="space-y-3 text-xs">
-                  <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-slate-900">Unit 1: Basics of Information Technology</h4>
-                      <p className="text-[10px] text-slate-500">Hardware, Software, Memory & Operating Systems</p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
+                  {/* Milestone 1 */}
+                  <div className="p-4 rounded-2xl border border-emerald-200/80 bg-emerald-50/30 space-y-2">
+                    <div className="flex items-center space-x-2 text-emerald-700 font-black text-[10px] uppercase">
+                      <i className="fa-solid fa-circle-check"></i>
+                      <span>Unit 1 Milestone</span>
                     </div>
-                    <span className="bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-xl text-[11px]">
-                      Completed (100%)
-                    </span>
+                    <h4 className="font-bold text-slate-900 text-sm">Software Development Basics</h4>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Attempted 22 evaluation questions across mock exams with 68% conceptual accuracy.
+                    </p>
                   </div>
-                  <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-slate-900">Unit 2: Computer Networks & Data Security</h4>
-                      <p className="text-[10px] text-slate-500">Topologies, Protocols, TCP/IP & Encryption</p>
+
+                  {/* Milestone 2 */}
+                  <div className="p-4 rounded-2xl border border-teal-200/80 bg-teal-50/30 space-y-2">
+                    <div className="flex items-center space-x-2 text-teal-700 font-black text-[10px] uppercase">
+                      <i className="fa-solid fa-file-signature"></i>
+                      <span>Assessment Milestone</span>
                     </div>
-                    <span className="bg-emerald-100 text-emerald-700 font-bold px-3 py-1 rounded-xl text-[11px]">
-                      Mastered (90%)
-                    </span>
+                    <h4 className="font-bold text-slate-900 text-sm">Active Test Taker ({totalAttempts} Exams)</h4>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Completed {totalAttempts} mock tests and timed quizzes under proctored Punjab Board conditions.
+                    </p>
                   </div>
-                  <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-slate-900">Unit 3: Object-Oriented Programming in C++</h4>
-                      <p className="text-[10px] text-slate-500">Classes, Objects, Inheritance & Polymorphism</p>
+
+                  {/* Milestone 3 */}
+                  <div className="p-4 rounded-2xl border border-indigo-200/80 bg-indigo-50/30 space-y-2">
+                    <div className="flex items-center space-x-2 text-indigo-700 font-black text-[10px] uppercase">
+                      <i className="fa-solid fa-network-wired"></i>
+                      <span>Unit 2 Milestone</span>
                     </div>
-                    <span className="bg-teal-100 text-teal-800 font-bold px-3 py-1 rounded-xl text-[11px]">
-                      In Progress (75%)
-                    </span>
+                    <h4 className="font-bold text-slate-900 text-sm">Information Networks Core</h4>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Mastered network topologies, OSI model layers, and client-server transmission concepts.
+                    </p>
                   </div>
-                  <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
-                    <div>
-                      <h4 className="font-bold text-slate-900">Unit 4: Data Structures & File Handling</h4>
-                      <p className="text-[10px] text-slate-500">Arrays, Stacks, Queues & Binary Files</p>
+
+                  {/* Milestone 4 */}
+                  <div className="p-4 rounded-2xl border border-amber-200/80 bg-amber-50/30 space-y-2">
+                    <div className="flex items-center space-x-2 text-amber-700 font-black text-[10px] uppercase">
+                      <i className="fa-solid fa-shield-halved"></i>
+                      <span>Exam Security &amp; Integrity</span>
                     </div>
-                    <span className="bg-amber-100 text-amber-800 font-bold px-3 py-1 rounded-xl text-[11px]">
-                      Started (35%)
-                    </span>
+                    <h4 className="font-bold text-slate-900 text-sm">Proctored Exam Compliance</h4>
+                    <p className="text-slate-600 text-[11px] leading-relaxed">
+                      Demonstrated verified academic integrity across fullscreen proctored mock examination sessions.
+                    </p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Tab Content 2: Completion Details */}
-            {activeTab === "completion" && (
-              <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <h3 className="font-bold text-slate-900 text-sm">Milestone Completion Details</h3>
-                  <span className="text-xs text-slate-400 font-semibold">Verified Records</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-2">
-                    <span className="text-[10px] uppercase font-bold text-teal-600 block">Unit 1 Certification</span>
-                    <h4 className="font-bold text-slate-900">Information Technology Basics</h4>
-                    <p className="text-slate-500 text-[11px]">Completed on August 12, 2026 with 94% score in final quiz.</p>
-                  </div>
-                  <div className="p-4 rounded-2xl border border-slate-200/80 bg-slate-50/50 space-y-2">
-                    <span className="text-[10px] uppercase font-bold text-teal-600 block">Unit 2 Certification</span>
-                    <h4 className="font-bold text-slate-900">Networks & Security</h4>
-                    <p className="text-slate-500 text-[11px]">Completed on August 28, 2026 with 89% score in final quiz.</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Tab Content 3: Test History */}
+            {/* Tab Content 3: Live Test & Quiz History Table */}
             {activeTab === "history" && (
-              <div className="p-6 space-y-4">
+              <div className="p-5 sm:p-6 space-y-4">
                 <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                  <h3 className="font-bold text-slate-900 text-sm">Recent Test & Quiz History</h3>
-                  <span className="text-xs text-slate-400 font-semibold">Last 30 Days</span>
+                  <div>
+                    <h3 className="font-bold text-slate-900 text-sm">Complete Mock Test History</h3>
+                    <p className="text-[11px] text-slate-500">
+                      All {recentAttempts.length} real test attempts with individual BISE report cards.
+                    </p>
+                  </div>
+                  <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
+                    {passedAttempts} Passed
+                  </span>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="bg-slate-100/70 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200/60">
-                        <th className="py-3 px-3 font-bold">Test Title</th>
-                        <th className="py-3 px-3 font-bold">Date</th>
-                        <th className="py-3 px-3 font-bold">Marks Obtained</th>
-                        <th className="py-3 px-3 font-bold text-right">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr className="border-b border-slate-100 hover:bg-slate-50 transition">
-                        <td className="py-3 px-3 font-semibold text-slate-900">Unit 3 Quiz #2 (Polymorphism)</td>
-                        <td className="py-3 px-3 text-slate-500">Sep 16, 2026</td>
-                        <td className="py-3 px-3 font-mono font-bold text-slate-700">18 / 20</td>
-                        <td className="py-3 px-3 text-right">
-                          <span className="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-0.5 rounded-full text-[10px]">
-                            Passed
-                          </span>
-                        </td>
-                      </tr>
-                      <tr className="border-b border-slate-100 hover:bg-slate-50 transition">
-                        <td className="py-3 px-3 font-semibold text-slate-900">Full Mock Exam (Model 2026)</td>
-                        <td className="py-3 px-3 text-slate-500">Sep 10, 2026</td>
-                        <td className="py-3 px-3 font-mono font-bold text-slate-700">68 / 75</td>
-                        <td className="py-3 px-3 text-right">
-                          <span className="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-0.5 rounded-full text-[10px]">
-                            A+ Grade
-                          </span>
-                        </td>
-                      </tr>
-                      <tr className="hover:bg-slate-50 transition">
-                        <td className="py-3 px-3 font-semibold text-slate-900">Unit 2 Practice Test</td>
-                        <td className="py-3 px-3 text-slate-500">Sep 04, 2026</td>
-                        <td className="py-3 px-3 font-mono font-bold text-slate-700">27 / 30</td>
-                        <td className="py-3 px-3 text-right">
-                          <span className="bg-emerald-100 text-emerald-700 font-bold px-2.5 py-0.5 rounded-full text-[10px]">
-                            Passed
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+
+                {recentAttempts.length === 0 ? (
+                  <div className="p-8 text-center text-slate-400 text-xs">
+                    No mock test attempts recorded yet.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto rounded-2xl border border-slate-200/80">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-slate-100/70 text-slate-600 uppercase text-[10px] tracking-wider border-b border-slate-200/60">
+                          <th className="py-3 px-3.5 font-bold">Test Title</th>
+                          <th className="py-3 px-3 font-bold">Date</th>
+                          <th className="py-3 px-3 font-bold text-center">Score &amp; Marks</th>
+                          <th className="py-3 px-3 font-bold text-center">BISE Grade</th>
+                          <th className="py-3 px-3.5 font-bold text-right">Report Card</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {recentAttempts.map((attempt) => (
+                          <tr key={attempt.id} className="hover:bg-slate-50/80 transition">
+                            <td className="py-3 px-3.5 font-semibold text-slate-900">
+                              <div className="font-bold text-slate-900 text-xs sm:text-sm">
+                                {attempt.testTitle}
+                              </div>
+                              <span className="text-[10px] text-slate-400 font-mono">
+                                ID: {attempt.id.slice(0, 14)}...
+                              </span>
+                            </td>
+                            <td className="py-3 px-3 text-slate-500 whitespace-nowrap">
+                              {attempt.formattedDate}
+                            </td>
+                            <td className="py-3 px-3 text-center whitespace-nowrap">
+                              <span className="font-mono font-bold text-slate-800 text-xs">
+                                {attempt.score} / {attempt.maxScore}
+                              </span>
+                              <span className="text-[10px] text-slate-400 block">
+                                ({attempt.percentage}%)
+                              </span>
+                            </td>
+                            <td className="py-3 px-3 text-center whitespace-nowrap">
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                                  attempt.percentage >= 70
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                                    : attempt.percentage >= 50
+                                    ? "bg-teal-50 text-teal-700 border-teal-200"
+                                    : attempt.percentage >= 33
+                                    ? "bg-amber-50 text-amber-700 border-amber-200"
+                                    : "bg-rose-50 text-rose-700 border-rose-200"
+                                }`}
+                              >
+                                {attempt.grade} • {attempt.passed ? "Passed" : "Revision"}
+                              </span>
+                            </td>
+                            <td className="py-3 px-3.5 text-right whitespace-nowrap">
+                              <Link
+                                href={`/progress-report?attemptId=${attempt.id}`}
+                                className="bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 font-bold px-3 py-1.5 rounded-lg text-xs transition inline-flex items-center space-x-1 border border-slate-200"
+                              >
+                                <i className="fa-solid fa-file-lines text-[10px]"></i>
+                                <span>Report Card</span>
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
 
         {/* Center Copyright Footer */}
-        <footer className="py-6 text-center text-xs text-slate-400 font-medium mt-8">
-          <p>&copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science.</p>
+        <footer className="py-6 text-center text-xs text-slate-400 font-medium mt-8 border-t border-slate-100">
+          <p>
+            &copy; 2026 Uzair Salman. All rights reserved. Designed with precision for 11th Standard Computer Science (Punjab Curriculum).
+          </p>
         </footer>
       </main>
     </StudentShell>

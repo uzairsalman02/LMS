@@ -267,6 +267,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="space-y-1">
               {renderNavLink("/profile", "fa-solid fa-user", "Profile", "bg-emerald-50 text-emerald-700")}
               {renderNavLink("/settings", "fa-solid fa-gear", "Settings", "bg-slate-100 text-slate-800")}
+              {renderNavLink("/admin/settings", "fa-solid fa-user-shield", "Admin Settings", "bg-amber-50 text-amber-700")}
             </div>
           </div>
         </div>

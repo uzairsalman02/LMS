@@ -198,18 +198,18 @@ export function PastPapersClient({ papers, boards = [] }: PastPapersClientProps)
           All 9 education boards in Punjab share the identical Punjab Curriculum and Textbook Board (PCTB) Computer Science syllabus and paper pattern.
         </p>
 
-        {/* Board List with Jurisdiction */}
-        <div className="space-y-2 pt-1">
+        {/* Board List with Jurisdiction (Compact Scrollable) */}
+        <div className="space-y-2 pt-1 max-h-[260px] overflow-y-auto pr-1 no-scrollbar">
           {boards.map((b) => {
             const isCurrentSelected = selectedBoard === b.name;
             return (
               <div
                 key={b.id}
                 onClick={() => setSelectedBoard(isCurrentSelected ? "All" : b.name)}
-                className={`p-2 rounded-xl text-[11px] transition cursor-pointer border ${
+                className={`p-2.5 rounded-2xl text-[11px] transition cursor-pointer border ${
                   isCurrentSelected
                     ? "bg-purple-600 text-white border-purple-600 font-bold shadow-2xs"
-                    : "bg-white/80 text-slate-700 hover:bg-white hover:border-purple-200 border-slate-100"
+                    : "bg-white/85 text-slate-700 hover:bg-white hover:border-purple-200 border-slate-100 shadow-2xs"
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -227,25 +227,60 @@ export function PastPapersClient({ papers, boards = [] }: PastPapersClientProps)
         </div>
       </div>
 
-      {/* Unit Weightage Box */}
-      <div className="bg-white border border-slate-200/80 p-4 rounded-3xl shadow-sm space-y-3">
-        <div className="flex items-center space-x-2 text-amber-600 font-bold text-xs">
-          <i className="fa-solid fa-chart-pie"></i>
-          <span>Punjab Board Paper Pattern (75 Marks)</span>
+      {/* Highlighted Punjab Board Paper Pattern Card */}
+      <div className="bg-gradient-to-br from-amber-50 via-amber-100/30 to-orange-50/40 border border-amber-200/90 p-4 rounded-3xl shadow-xs space-y-3">
+        <div className="flex items-center justify-between pb-2.5 border-b border-amber-200/70">
+          <div className="flex items-center space-x-2 text-amber-950 font-bold text-xs">
+            <div className="w-6 h-6 rounded-xl bg-amber-500 text-white flex items-center justify-center text-xs shadow-2xs">
+              <i className="fa-solid fa-file-lines"></i>
+            </div>
+            <span>Board Paper Pattern</span>
+          </div>
+          <span className="text-[10px] font-bold text-amber-800 bg-amber-100 border border-amber-200/80 px-2.5 py-0.5 rounded-full font-mono">
+            Total 75 Marks
+          </span>
         </div>
-        <div className="space-y-2 text-xs">
-          <div className="flex justify-between text-[11px] text-slate-700">
-            <span>Section A: 15 Objective MCQs</span>
-            <span className="font-bold text-purple-700">15 Marks (20 Mins)</span>
+
+        {/* Simple Sections Breakdown */}
+        <div className="space-y-2.5 text-xs">
+          {/* Section A */}
+          <div className="flex items-start justify-between">
+            <div>
+              <span className="font-bold text-slate-900 block text-[11px]">Section A: Objective (MCQs)</span>
+              <span className="text-[10px] text-slate-600">15 Questions • Time: 20 Mins</span>
+            </div>
+            <span className="font-bold text-amber-900 bg-amber-100/80 border border-amber-200/60 px-2 py-0.5 rounded-lg font-mono text-[10px]">
+              15 Marks
+            </span>
           </div>
-          <div className="flex justify-between text-[11px] text-slate-700">
-            <span>Section B: Short Questions (24/37)</span>
-            <span className="font-bold text-sky-700">36 Marks</span>
+
+          {/* Section B */}
+          <div className="flex items-start justify-between">
+            <div>
+              <span className="font-bold text-slate-900 block text-[11px]">Section B: Short Questions</span>
+              <span className="text-[10px] text-slate-600">Attempt 24 out of 37 questions</span>
+            </div>
+            <span className="font-bold text-sky-900 bg-sky-100/80 border border-sky-200/60 px-2 py-0.5 rounded-lg font-mono text-[10px]">
+              36 Marks
+            </span>
           </div>
-          <div className="flex justify-between text-[11px] text-slate-700">
-            <span>Section C: Long Questions (3/5)</span>
-            <span className="font-bold text-emerald-700">24 Marks</span>
+
+          {/* Section C */}
+          <div className="flex items-start justify-between">
+            <div>
+              <span className="font-bold text-slate-900 block text-[11px]">Section C: Long Questions</span>
+              <span className="text-[10px] text-slate-600">Attempt 3 out of 5 questions</span>
+            </div>
+            <span className="font-bold text-emerald-900 bg-emerald-100/80 border border-emerald-200/60 px-2 py-0.5 rounded-lg font-mono text-[10px]">
+              24 Marks
+            </span>
           </div>
+        </div>
+
+        {/* Footer: Time & Passing Marks */}
+        <div className="pt-2 border-t border-amber-200/70 flex items-center justify-between text-[10px] text-slate-600">
+          <span>Passing Marks: <strong className="text-slate-900 font-bold">25 (33%)</strong></span>
+          <span>Time: <strong className="text-slate-900 font-bold">2h 30m</strong></span>
         </div>
       </div>
     </div>
