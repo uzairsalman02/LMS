@@ -269,9 +269,8 @@ export function AITutorClient({
                 >
                   <span className="pr-2">{faq.q}</span>
                   <i
-                    className={`fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 text-emerald-600" : ""
-                    }`}
+                    className={`fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ${isOpen ? "rotate-180 text-emerald-600" : ""
+                      }`}
                   ></i>
                 </button>
                 {isOpen && (
@@ -345,24 +344,21 @@ export function AITutorClient({
             {messages.map((m, idx) => (
               <div
                 key={m.id || idx}
-                className={`flex flex-col ${
-                  m.role === "user" ? "items-end" : "items-start"
-                }`}
+                className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"
+                  }`}
               >
                 <div
-                  className={`max-w-2xl sm:max-w-3xl rounded-2xl p-4 sm:p-5 text-xs sm:text-sm border leading-relaxed ${
-                    m.role === "user"
+                  className={`max-w-2xl sm:max-w-3xl rounded-2xl p-4 sm:p-5 text-xs sm:text-sm border leading-relaxed ${m.role === "user"
                       ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
                       : "bg-slate-50/80 text-slate-800 border-slate-200/90 shadow-2xs"
-                  }`}
+                    }`}
                 >
                   {/* Sender Tag */}
                   <div
-                    className={`flex items-center space-x-2 mb-2 pb-1.5 border-b text-[11px] font-bold ${
-                      m.role === "user"
+                    className={`flex items-center space-x-2 mb-2 pb-1.5 border-b text-[11px] font-bold ${m.role === "user"
                         ? "border-emerald-500/40 text-emerald-100"
                         : "border-slate-200/80 text-emerald-700"
-                    }`}
+                      }`}
                   >
                     {m.role === "user" ? (
                       <>
@@ -377,9 +373,8 @@ export function AITutorClient({
                     )}
                     {m.createdAt && (
                       <span
-                        className={`text-[10px] font-normal ml-auto ${
-                          m.role === "user" ? "text-emerald-200" : "text-slate-400"
-                        }`}
+                        className={`text-[10px] font-normal ml-auto ${m.role === "user" ? "text-emerald-200" : "text-slate-400"
+                          }`}
                       >
                         {new Date(m.createdAt).toLocaleTimeString([], {
                           hour: "2-digit",
