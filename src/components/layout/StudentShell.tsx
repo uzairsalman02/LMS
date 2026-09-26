@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { Header } from "./Header";
 import { Sidebar } from "./Sidebar";
 import { MobileBottomNav } from "./MobileBottomNav";
-import { AITutorModal } from "../modals/AITutorModal";
 
 interface StudentShellProps {
   children: React.ReactNode;
@@ -27,7 +26,6 @@ export const StudentShell: React.FC<StudentShellProps> = ({
 }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rightPanelOpen, setRightPanelOpen] = useState(false);
-  const [aiTutorOpen, setAiTutorOpen] = useState(false);
 
   return (
     <div className="bg-white text-slate-800 font-sans antialiased flex flex-col min-h-screen relative">
@@ -35,7 +33,6 @@ export const StudentShell: React.FC<StudentShellProps> = ({
       <Header
         onToggleMenu={() => setSidebarOpen(!sidebarOpen)}
         onToggleRightPanel={() => setRightPanelOpen(!rightPanelOpen)}
-        onOpenAITutor={() => setAiTutorOpen(true)}
         title={pageTitle}
         badge={badge}
       />
@@ -46,7 +43,6 @@ export const StudentShell: React.FC<StudentShellProps> = ({
         <Sidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          onOpenAITutor={() => setAiTutorOpen(true)}
         />
 
         {/* Main Content Area */}
@@ -93,11 +89,6 @@ export const StudentShell: React.FC<StudentShellProps> = ({
         rightPanelIcon={rightPanelIcon}
         rightPanelLabel={rightPanelLabel}
       />
-
-      {/* AI Tutor Modal */}
-      {aiTutorOpen && (
-        <AITutorModal onClose={() => setAiTutorOpen(false)} studentName={studentName} />
-      )}
     </div>
   );
 };

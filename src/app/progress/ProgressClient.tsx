@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { StudentShell } from "@/components/layout/StudentShell";
 
@@ -45,10 +45,40 @@ export interface AIMentorRecommendation {
   actionHref?: string;
 }
 
+export interface BoardPacingMetric {
+  avgSecondsPerQ: number;
+  benchmarkSeconds: number;
+  status: "optimal" | "rushing" | "slow";
+  statusLabel: string;
+  detail: string;
+}
+
+export interface BoardBottleneck {
+  chapterNumber: number;
+  title: string;
+  accuracy: number;
+  mistakesCount: number;
+}
+
+export interface AIMentorPoint {
+  title: string;
+  detail: string;
+  badge?: string;
+}
+
 export interface AIMentorInsight {
   title: string;
   badge?: string;
-  description: string;
+  overallAdvice: string;
+  strengths: AIMentorPoint[];
+  weaknesses: AIMentorPoint[];
+  standingGrade?: string;
+  standingPct?: number;
+  pacing?: BoardPacingMetric;
+  bottleneck?: BoardBottleneck | null;
+  unattemptedCount?: number;
+  unresolvedMistakesCount?: number;
+  description?: string;
   recommendations?: AIMentorRecommendation[];
 }
 
@@ -149,7 +179,6 @@ export function ProgressClient({
 }: ProgressDataProps) {
   const [activeTab, setActiveTab] = useState<"syllabus" | "completion" | "history">("syllabus");
   const [syllabusFilter, setSyllabusFilter] = useState<"all" | "attention" | "active" | "not_started">("all");
-
   const totalPendingMistakes = chapterStats.reduce(
     (acc, c) => acc + (c.mistakesCount || 0),
     0
@@ -218,11 +247,13 @@ export function ProgressClient({
         </span>
       </div>
 
-      {/* 1. Compact Exam Readiness Strip */}
+      {/* 1. Exam Readiness Status Strip */}
       <div className="bg-gradient-to-br from-teal-50/70 to-emerald-50/40 p-3.5 rounded-3xl border border-teal-200/80 space-y-2 shadow-2xs">
         <div className="flex items-center justify-between text-xs">
           <span className="font-bold text-slate-700 text-xs">Exam Readiness</span>
-          <span className="font-extrabold text-teal-800 text-xs">{overallScorePct}% • Grade {overallGrade}</span>
+          <span className="font-extrabold text-teal-800 text-xs">
+            {overallScorePct}% • Grade {overallGrade}
+          </span>
         </div>
         <div className="w-full bg-teal-100/90 h-2.5 rounded-full overflow-hidden">
           <div
@@ -232,106 +263,125 @@ export function ProgressClient({
         </div>
       </div>
 
-      {/* 2. Full-Width Readable Curriculum Skill Matrix */}
-      <div className="bg-white border border-slate-200/80 p-4 rounded-3xl shadow-sm space-y-3 text-xs">
+      {/* 2. Punjab Board AI Mentor Advice Section */}
+      <div className="bg-white p-4 rounded-3xl border border-slate-200/90 shadow-2xs space-y-3.5">
+        {/* Advisory Header */}
         <div className="flex items-center justify-between">
-          <h4 className="font-bold text-slate-900 text-xs">Curriculum Skill Matrix</h4>
-          <span className="text-[10px] text-slate-400 font-semibold">11th Standard</span>
-        </div>
-        <div className="space-y-2.5">
-          {skillMatrix.map((item, idx) => (
-            <div key={idx} className="space-y-1">
-              <div className="flex justify-between font-medium text-slate-700 text-[11px]">
-                <span className="truncate max-w-[190px]" title={item.name}>
-                  {item.name}
-                </span>
-                <span className="font-bold text-slate-900">{item.percentage}%</span>
-              </div>
-              <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full ${item.color}`}
-                  style={{ width: `${item.percentage}%` }}
-                ></div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 3. Punjab Board AI Advisor (Readable Narrative with Bold Highlights & Detailed Suggestion Cards) */}
-      <div className="bg-gradient-to-br from-slate-50 via-teal-50/20 to-white p-4 rounded-3xl border border-slate-200/80 space-y-3 shadow-2xs">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2 text-teal-900 font-bold text-xs">
-            <div className="w-6 h-6 rounded-lg bg-teal-100/80 border border-teal-200 flex items-center justify-center text-teal-700 text-xs">
+          <div className="flex items-center space-x-2">
+            <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-teal-700 to-emerald-600 flex items-center justify-center text-white text-xs shadow-xs shrink-0">
               <i className="fa-solid fa-brain"></i>
             </div>
-            <span>{aiMentorInsight.title}</span>
+            <div>
+              <h4 className="font-bold text-slate-900 text-xs leading-none">
+                {aiMentorInsight.title || "Punjab Board AI Advisory"}
+              </h4>
+              <span className="text-[10px] text-slate-400 font-medium">Personalized Performance Mentor</span>
+            </div>
           </div>
           {aiMentorInsight.badge && (
-            <span className="text-[9.5px] font-bold text-teal-800 bg-white border border-teal-200/70 shadow-2xs px-2.5 py-0.5 rounded-full">
+            <span className="text-[9.5px] font-bold text-teal-800 bg-teal-50 border border-teal-200/80 px-2.5 py-0.5 rounded-full shadow-2xs">
               {aiMentorInsight.badge}
             </span>
           )}
         </div>
 
-        {/* Narrative Paragraph with Bold Color Highlights */}
-        <div className="text-[11px] text-slate-700 leading-relaxed bg-white/80 p-3 rounded-2xl border border-slate-200/70 shadow-2xs">
-          {renderAdvisoryText(aiMentorInsight.description)}
+        {/* Actionable Advice on How to Improve */}
+        <div className="bg-gradient-to-br from-teal-50/60 via-white to-slate-50 p-3 rounded-2xl border border-teal-200/70 space-y-1.5">
+          <div className="flex items-center space-x-1.5 text-xs font-bold text-teal-950">
+            <i className="fa-solid fa-lightbulb text-amber-500 text-xs"></i>
+            <span>Mentor Improvement Advice</span>
+          </div>
+          <p className="text-[11px] text-slate-700 leading-relaxed">
+            {aiMentorInsight.overallAdvice}
+          </p>
         </div>
 
-        {/* Optimized List-Form Recommendations with Dedicated Action Buttons */}
-        {aiMentorInsight.recommendations && aiMentorInsight.recommendations.length > 0 && (
-          <div className="space-y-2 pt-0.5">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-              Actionable Recommendations
-            </span>
-            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-2xs divide-y divide-slate-100 overflow-hidden">
-              {aiMentorInsight.recommendations.map((rec, rIdx) => {
-                let btnStyle = "bg-teal-50 hover:bg-teal-100 text-teal-800 border-teal-200/80";
-                let btnIcon = "fa-bolt";
-                if (rec.type === "mistakes") {
-                  btnStyle = "bg-rose-50 hover:bg-rose-100 text-rose-700 border-rose-200/80";
-                  btnIcon = "fa-triangle-exclamation";
-                } else if (rec.type === "pacing") {
-                  btnStyle = "bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200/80";
-                  btnIcon = "fa-stopwatch";
-                } else if (rec.type === "coverage") {
-                  btnStyle = "bg-sky-50 hover:bg-sky-100 text-sky-800 border-sky-200/80";
-                  btnIcon = "fa-book-open";
-                }
-
-                return (
-                  <div key={rIdx} className="p-3 space-y-1.5 hover:bg-slate-50/50 transition">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-5 h-5 rounded-md bg-slate-100 flex items-center justify-center shrink-0">
-                        <i className={`fa-solid ${rec.icon} ${rec.iconColor} text-[10px]`}></i>
-                      </div>
-                      <span className="font-bold text-slate-900 text-xs">
-                        {rec.label}
-                      </span>
+        {/* Strengths & Weaknesses Points */}
+        <div className="space-y-3 pt-0.5">
+          {/* Strengths as Points */}
+          {aiMentorInsight.strengths && aiMentorInsight.strengths.length > 0 && (
+            <div className="space-y-1.5">
+              <div className="flex items-center space-x-1.5 text-[11px] font-bold text-emerald-800">
+                <i className="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
+                <span>Academic Strengths</span>
+              </div>
+              <ul className="space-y-2 text-[11px] pl-1">
+                {aiMentorInsight.strengths.map((str, sIdx) => (
+                  <li key={sIdx} className="flex items-start space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0"></span>
+                    <div className="leading-snug">
+                      <span className="font-bold text-slate-900">{str.title}: </span>
+                      <span className="text-slate-600">{str.detail}</span>
+                      {str.badge && (
+                        <span className="ml-1.5 text-[9.5px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-1.5 py-0.2 rounded-md inline-block">
+                          {str.badge}
+                        </span>
+                      )}
                     </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-                    <p className="text-[11px] text-slate-600 leading-relaxed pl-7">
-                      {rec.detail}
-                    </p>
+          {/* Weaknesses as Points */}
+          {aiMentorInsight.weaknesses && aiMentorInsight.weaknesses.length > 0 && (
+            <div className="space-y-1.5 pt-1 border-t border-slate-100">
+              <div className="flex items-center space-x-1.5 text-[11px] font-bold text-rose-800">
+                <i className="fa-solid fa-triangle-exclamation text-rose-600 text-xs"></i>
+                <span>Weaknesses &amp; Focus Areas</span>
+              </div>
+              <ul className="space-y-2 text-[11px] pl-1">
+                {aiMentorInsight.weaknesses.map((wk, wIdx) => (
+                  <li key={wIdx} className="flex items-start space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></span>
+                    <div className="leading-snug">
+                      <span className="font-bold text-slate-900">{wk.title}: </span>
+                      <span className="text-slate-600">{wk.detail}</span>
+                      {wk.badge && (
+                        <span className="ml-1.5 text-[9.5px] font-bold text-rose-700 bg-rose-50 border border-rose-200/80 px-1.5 py-0.2 rounded-md inline-block">
+                          {wk.badge}
+                        </span>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
 
+        {/* Actionable Recommendations as Points */}
+        {aiMentorInsight.recommendations && aiMentorInsight.recommendations.length > 0 && (
+          <div className="space-y-2 pt-2 border-t border-slate-100">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              Recommended Next Steps
+            </span>
+            <ul className="space-y-2.5 text-[11px] pl-1">
+              {aiMentorInsight.recommendations.map((rec, rIdx) => (
+                <li key={rIdx} className="flex items-start space-x-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-600 mt-1.5 shrink-0"></span>
+                  <div className="flex-1 leading-snug space-y-1">
+                    <div>
+                      <span className="font-bold text-slate-900">{rec.label}: </span>
+                      <span className="text-slate-600">{rec.detail}</span>
+                    </div>
                     {rec.actionText && rec.actionHref && (
-                      <div className="pl-7 pt-1">
+                      <div>
                         <Link
                           href={rec.actionHref}
-                          className={`inline-flex items-center space-x-1.5 px-3 py-1 rounded-lg text-[10.5px] font-bold border transition cursor-pointer shadow-2xs ${btnStyle}`}
+                          className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-100 hover:bg-teal-50 hover:text-teal-700 text-slate-700 border border-slate-200/80 transition shadow-2xs cursor-pointer"
                         >
-                          <i className={`fa-solid ${btnIcon} text-[9px]`}></i>
+                          <i className={`fa-solid ${rec.icon || "fa-bolt"} text-[9px] text-teal-600`}></i>
                           <span>{rec.actionText}</span>
-                          <i className="fa-solid fa-arrow-right text-[8px] opacity-70"></i>
+                          <i className="fa-solid fa-arrow-right text-[7px] opacity-70"></i>
                         </Link>
                       </div>
                     )}
                   </div>
-                );
-              })}
-            </div>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
@@ -382,60 +432,60 @@ export function ProgressClient({
             </div>
           </div>
 
-          {/* 4 Info Summary Cards Grid - Real DB Data */}
+          {/* 4 Academic Summary Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             {/* Card 1: Overall Exam Score */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-xs flex items-center justify-between">
+            <div className="bg-gradient-to-br from-indigo-50/90 via-slate-50/40 to-violet-50/60 p-4 rounded-2xl border border-indigo-200/90 shadow-2xs hover:shadow-xs transition flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-0.5">
+                <span className="text-[10px] font-bold text-indigo-900 uppercase tracking-wider block mb-0.5">
                   Overall Score
                 </span>
                 <h3 className="text-xl sm:text-2xl font-black text-slate-900">{overallScorePct}%</h3>
-                <span className="text-[10px] text-teal-600 font-semibold">Grade {overallGrade} Standing</span>
+                <span className="text-[10px] text-indigo-700 font-bold">Grade {overallGrade} Standing</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center text-base shadow-inner">
+              <div className="w-11 h-11 rounded-2xl bg-indigo-500/10 text-indigo-700 flex items-center justify-center text-lg border border-indigo-200/60 shadow-inner">
                 <i className="fa-solid fa-award"></i>
               </div>
             </div>
 
             {/* Card 2: Tests Completed */}
-            <div className="bg-white p-4 rounded-2xl border border-teal-200/80 shadow-xs flex items-center justify-between">
+            <div className="bg-gradient-to-br from-blue-50/90 via-slate-50/40 to-sky-50/60 p-4 rounded-2xl border border-blue-200/90 shadow-2xs hover:shadow-xs transition flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-teal-600 uppercase tracking-wider block mb-0.5">
+                <span className="text-[10px] font-bold text-blue-900 uppercase tracking-wider block mb-0.5">
                   Tests Taken
                 </span>
-                <h3 className="text-xl sm:text-2xl font-black text-teal-700">{totalAttempts}</h3>
-                <span className="text-[10px] text-teal-600 font-medium">{passedAttempts} Passed tests</span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">{totalAttempts}</h3>
+                <span className="text-[10px] text-blue-700 font-bold">{passedAttempts} Passed tests</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center text-base shadow-inner">
+              <div className="w-11 h-11 rounded-2xl bg-blue-500/10 text-blue-700 flex items-center justify-center text-lg border border-blue-200/60 shadow-inner">
                 <i className="fa-solid fa-file-signature"></i>
               </div>
             </div>
 
             {/* Card 3: Questions Accuracy Rate */}
-            <div className="bg-white p-4 rounded-2xl border border-emerald-200/80 shadow-xs flex items-center justify-between">
+            <div className="bg-gradient-to-br from-emerald-50/90 via-slate-50/40 to-teal-50/60 p-4 rounded-2xl border border-emerald-200/90 shadow-2xs hover:shadow-xs transition flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block mb-0.5">
+                <span className="text-[10px] font-bold text-emerald-900 uppercase tracking-wider block mb-0.5">
                   Accuracy Rate
                 </span>
-                <h3 className="text-xl sm:text-2xl font-black text-emerald-700">{accuracyRate}%</h3>
-                <span className="text-[10px] text-emerald-600 font-medium">{totalAnswers} Questions answered</span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">{accuracyRate}%</h3>
+                <span className="text-[10px] text-emerald-700 font-bold">{totalAnswers} Solved MCQs</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-base shadow-inner">
+              <div className="w-11 h-11 rounded-2xl bg-emerald-500/10 text-emerald-700 flex items-center justify-center text-lg border border-emerald-200/60 shadow-inner">
                 <i className="fa-solid fa-bullseye"></i>
               </div>
             </div>
 
             {/* Card 4: Class 11 Units Covered */}
-            <div className="bg-white p-4 rounded-2xl border border-indigo-200/80 shadow-xs flex items-center justify-between">
+            <div className="bg-gradient-to-br from-purple-50/90 via-slate-50/40 to-fuchsia-50/60 p-4 rounded-2xl border border-purple-200/90 shadow-2xs hover:shadow-xs transition flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block mb-0.5">
+                <span className="text-[10px] font-bold text-purple-900 uppercase tracking-wider block mb-0.5">
                   Units Active
                 </span>
-                <h3 className="text-xl sm:text-2xl font-black text-indigo-700">{chaptersActive} / 10</h3>
-                <span className="text-[10px] text-indigo-600 font-medium">Class 11 Punjab Board</span>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">{chaptersActive} / 10</h3>
+                <span className="text-[10px] text-purple-700 font-bold">Class 11 Punjab Board</span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center text-base shadow-inner">
+              <div className="w-11 h-11 rounded-2xl bg-purple-500/10 text-purple-700 flex items-center justify-center text-lg border border-purple-200/60 shadow-inner">
                 <i className="fa-solid fa-book-open"></i>
               </div>
             </div>
@@ -652,11 +702,15 @@ export function ProgressClient({
                         <div className="flex items-center justify-between pt-1.5 text-[10px] text-slate-500 border-t border-slate-100/80">
                           <span>
                             {c.mistakesCount > 0 ? (
-                              <span className="text-amber-700 font-bold">
-                                ⚠️ {c.mistakesCount} logged error{c.mistakesCount > 1 ? "s" : ""}
+                              <span className="text-amber-700 font-bold inline-flex items-center">
+                                <i className="fa-solid fa-triangle-exclamation text-amber-600 text-[10px] mr-1"></i>
+                                {c.mistakesCount} logged error{c.mistakesCount > 1 ? "s" : ""}
                               </span>
                             ) : (
-                              <span className="text-emerald-700 font-medium">✓ No active errors</span>
+                              <span className="text-emerald-700 font-medium inline-flex items-center">
+                                <i className="fa-solid fa-check text-emerald-600 text-[10px] mr-1"></i>
+                                No active errors
+                              </span>
                             )}
                           </span>
                           <div className="flex items-center space-x-1.5">

@@ -93,8 +93,8 @@ export function MistakesClient({ initialMistakes, chapters }: MistakesClientProp
 
       showToast(
         newStatus
-          ? "🎉 Concept marked as Mastered & Cleared!"
-          : "⚠️ Mistake re-opened for targeted revision."
+          ? "Concept marked as Mastered & Cleared!"
+          : "Mistake re-opened for targeted revision."
       );
     } catch (err) {
       console.error("Error updating mistake resolution:", err);
@@ -102,7 +102,7 @@ export function MistakesClient({ initialMistakes, chapters }: MistakesClientProp
       setMistakes((prev) =>
         prev.map((m) => (m.id === mistakeId ? { ...m, resolved: currentResolved } : m))
       );
-      showToast("❌ Failed to update mistake status. Please try again.");
+      showToast("Failed to update mistake status. Please try again.");
     } finally {
       setUpdatingId(null);
     }
@@ -209,7 +209,7 @@ export function MistakesClient({ initialMistakes, chapters }: MistakesClientProp
               className="bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-md shadow-amber-600/20 flex items-center space-x-2 shrink-0 cursor-pointer"
             >
               <i className="fa-solid fa-bolt"></i>
-              <span>Start Drill ({unresolvedCount} Errors) 🎯</span>
+              <span>Start Drill ({unresolvedCount} Errors)</span>
             </Link>
           )}
         </div>
@@ -682,7 +682,7 @@ export function MistakesClient({ initialMistakes, chapters }: MistakesClientProp
                         setIsTestAnswerSubmitted(true);
                         const chosen = inspectingMistake.options.find((o) => o.id === selectedTestOptionId);
                         if (chosen?.isCorrect) {
-                          showToast("🎉 Excellent! You got the right answer!");
+                          showToast("Excellent! You got the right answer!");
                         }
                       }
                     }}

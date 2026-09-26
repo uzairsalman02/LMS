@@ -408,7 +408,10 @@ export function CurrentTestReportClient({
                   <div className="font-bold">Q{idx + 1}</div>
                   <div className="font-black text-xs">{icon}</div>
                   {hasPastPaper && (
-                    <div className="text-[8px] text-amber-700 font-bold truncate">🏛️ BISE</div>
+                    <div className="text-[8px] text-amber-700 font-bold truncate flex items-center justify-center space-x-0.5">
+                      <i className="fa-solid fa-building-columns text-[7px]"></i>
+                      <span>BISE</span>
+                    </div>
                   )}
                 </div>
               );
@@ -588,8 +591,9 @@ export function CurrentTestReportClient({
                     {/* Past Paper Note */}
                     {ans.pastPaperOccurrences && ans.pastPaperOccurrences.length > 0 && (
                       <div className="mb-2 flex flex-wrap items-center gap-1.5 text-xs">
-                        <span className="text-[10px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/80">
-                          🏛️ {ans.pastPaperOccurrences.map((occ) => `${occ.boardName} (${occ.year})`).join(", ")}
+                        <span className="text-[10px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/80 inline-flex items-center space-x-1">
+                          <i className="fa-solid fa-building-columns text-[8px] mr-1"></i>
+                          <span>{ans.pastPaperOccurrences.map((occ) => `${occ.boardName} (${occ.year})`).join(", ")}</span>
                         </span>
                         {ans.repeatCount > 1 && (
                           <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded border border-rose-200/70">

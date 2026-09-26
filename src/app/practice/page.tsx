@@ -141,7 +141,10 @@ export default async function PracticePage() {
                   title="Configure Mock Test"
                   className="bg-rose-600 hover:bg-rose-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-sm cursor-pointer"
                 >
-                  Configure Test 🚀
+                  <span className="flex items-center space-x-1.5">
+                    <span>Configure Test</span>
+                    <i className="fa-solid fa-sliders text-[10px]"></i>
+                  </span>
                 </Link>
               </div>
             </div>
@@ -165,7 +168,10 @@ export default async function PracticePage() {
                   title="Start Focus Session"
                   className="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-xl text-xs transition shadow-sm cursor-pointer inline-block"
                 >
-                  Practice Mistakes 🎯
+                  <span className="flex items-center space-x-1.5">
+                    <span>Practice Mistakes</span>
+                    <i className="fa-solid fa-crosshairs text-[10px]"></i>
+                  </span>
                 </Link>
               </div>
             </div>

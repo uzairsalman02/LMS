@@ -558,8 +558,9 @@ export function PastPapersClient({ papers, boards = [] }: PastPapersClientProps)
 
                     {/* District coverage hint */}
                     {details.description && (
-                      <p className="text-[11px] text-purple-700/80 font-medium mt-1">
-                        📍 {details.description}
+                      <p className="text-[11px] text-purple-700/80 font-medium mt-1 flex items-center">
+                        <i className="fa-solid fa-location-dot text-purple-600 text-[10px] mr-1.5"></i>
+                        <span>{details.description}</span>
                       </p>
                     )}
 

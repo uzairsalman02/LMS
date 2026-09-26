@@ -220,20 +220,20 @@ export default async function ProgressPage() {
 
   // Pacing status determination based on Punjab Board 80s/MCQ benchmark
   let pacingStatus: { label: string; detail: string; status: "optimal" | "rushing" | "slow" } = {
-    label: `Optimal Pacing (~${Math.round(avgSecondsPerQ)}s / MCQ)`,
-    detail: "Matches Punjab Board 1.3 min (80s) objective benchmark.",
+    label: "Optimal Tempo",
+    detail: "Matches Punjab Board standard (~80s/MCQ). Leaves ~2 min buffer for final bubble review.",
     status: "optimal",
   };
   if (avgSecondsPerQ < 35 && accuracyRate < 70) {
     pacingStatus = {
-      label: `Rushing Detected (~${Math.round(avgSecondsPerQ)}s / MCQ)`,
-      detail: "Rushing hurts accuracy. Read negative stems ('NOT', 'EXCEPT') carefully.",
+      label: "Rushing Detected",
+      detail: "Answering too quickly harms accuracy. Read negative stems ('NOT', 'EXCEPT') carefully.",
       status: "rushing",
     };
   } else if (avgSecondsPerQ > 95) {
     pacingStatus = {
-      label: `Pacing Warning (~${Math.round(avgSecondsPerQ)}s / MCQ)`,
-      detail: "Exceeds board objective time limit. Practice 20-min timed drills.",
+      label: "Pacing Warning",
+      detail: "Exceeds official 80s objective benchmark. Practice timed 20-min board drills.",
       status: "slow",
     };
   }
@@ -248,9 +248,9 @@ export default async function ProgressPage() {
       icon: "fa-crosshairs",
       iconColor: "text-rose-500",
       label: `Priority Unit ${weakestActiveChapter.chapterNumber}: ${weakestActiveChapter.title}`,
-      detail: `Lowest accuracy at ${weakestActiveChapter.accuracy}% with ${weakestActiveChapter.mistakesCount} logged errors.`,
+      detail: `Lowest accuracy at ${weakestActiveChapter.accuracy}% with ${weakestActiveChapter.mistakesCount} logged error${weakestActiveChapter.mistakesCount > 1 ? "s" : ""}.`,
       actionText: "Practice Unit",
-      actionHref: "/configure-test",
+      actionHref: `/configure-test?chapterId=${weakestActiveChapter.id}`,
     });
   }
 
@@ -261,7 +261,7 @@ export default async function ProgressPage() {
       type: "mistakes",
       icon: "fa-triangle-exclamation",
       iconColor: "text-amber-500",
-      label: `${totalUnresolvedMistakes} Pending Errors in Vault`,
+      label: `${totalUnresolvedMistakes} Active Errors in Vault`,
       detail: "Unresolved errors reappear in subsequent mock tests. Clear them to boost score.",
       actionText: "Fix Errors",
       actionHref: "/mistakes",
@@ -277,7 +277,7 @@ export default async function ProgressPage() {
       label: `${unattemptedChapters.length} Untested Units`,
       detail: `Board objective papers sample all 10 chapters. Start testing Unit ${unattemptedChapters[0].chapterNumber}.`,
       actionText: "Select Unit",
-      actionHref: "/configure-test",
+      actionHref: `/configure-test?chapterId=${unattemptedChapters[0].id}`,
     });
   } else {
     recommendations.push({
@@ -294,57 +294,109 @@ export default async function ProgressPage() {
     type: "pacing",
     icon: "fa-stopwatch",
     iconColor: pacingStatus.status === "optimal" ? "text-teal-600" : "text-amber-600",
-    label: pacingStatus.label,
+    label: `Objective Pace: ~${avgSecondsPerQ}s / MCQ`,
     detail: pacingStatus.detail,
     actionText: "Timed Exam Mode",
     actionHref: "/exam-mode",
   });
 
-  // Construct Primary Executive Insight Summary with Integrated Pacing Metrics
-  let primaryDescription = "";
-  let badgeLabel = "Board Advisory Active";
-  if (totalAttempts === 0) {
-    primaryDescription =
-      "Start your first mock test to calibrate your personalized Punjab Board performance analytics, pacing diagnostics, and target grading.";
-    badgeLabel = "Calibration Mode";
-  } else if (overallScorePct < 40) {
-    primaryDescription = `Across your **${totalAttempts} mock tests**, your standing is **${overallScorePct}%** with an average pacing of **~${Math.round(
-      avgSecondsPerQ
-    )}s per MCQ** (Punjab Board benchmark: **~80s**). Your primary academic bottleneck is **Unit ${
-      weakestActiveChapter ? weakestActiveChapter.chapterNumber : "1"
-    }: ${weakestActiveChapter ? weakestActiveChapter.title : "Core Topics"}** with **${
-      weakestActiveChapter ? weakestActiveChapter.accuracy : 0
-    }% accuracy**. Focus on high-weightage textbook topics and clear your **${totalUnresolvedMistakes} active mistakes** to secure a guaranteed passing grade.`;
-    badgeLabel = "Passing Target";
-  } else if (overallScorePct < 80) {
-    const paceComment =
-      pacingStatus.status === "optimal"
-        ? "optimal board tempo"
-        : pacingStatus.status === "rushing"
-        ? "rushing detected vs board standard"
-        : "slower than board 80s benchmark";
+  // Strengths determination
+  const strongestActiveChapter =
+    activeChaptersList.length > 0
+      ? [...activeChaptersList].sort((a, b) => b.accuracy - a.accuracy)[0]
+      : null;
 
-    primaryDescription = `Across your **${totalAttempts} mock assessments**, you hold a **Grade ${overallGrade} trajectory (${overallScorePct}%)** with a response pace of **~${Math.round(
-      avgSecondsPerQ
-    )}s per question** (${paceComment}). Your primary growth lever is **Unit ${
-      weakestActiveChapter ? weakestActiveChapter.chapterNumber : "5"
-    }: ${weakestActiveChapter ? weakestActiveChapter.title : "Hardware"}** where accuracy dropped to **${
+  const strengths = [];
+  if (strongestActiveChapter && strongestActiveChapter.accuracy >= 50) {
+    strengths.push({
+      title: `Unit ${strongestActiveChapter.chapterNumber}: ${strongestActiveChapter.title}`,
+      detail: `Strong conceptual grasp with ${strongestActiveChapter.accuracy}% accuracy across ${strongestActiveChapter.attemptedQuestions} practiced questions.`,
+      badge: `${strongestActiveChapter.accuracy}% Mastery`,
+    });
+  }
+  if (pacingStatus.status === "optimal") {
+    strengths.push({
+      title: "Board Objective Pacing",
+      detail: `Average response tempo of ~${avgSecondsPerQ}s / MCQ matches the Punjab Board 80s benchmark.`,
+      badge: "Optimal Tempo",
+    });
+  }
+  if (totalAttempts > 0) {
+    strengths.push({
+      title: "Assessment Consistency",
+      detail: `Completed ${totalAttempts} mock tests with an active ${streakDays}-day learning streak.`,
+      badge: `${streakDays}d Streak`,
+    });
+  }
+
+  // Weaknesses determination
+  const weaknesses = [];
+  if (weakestActiveChapter) {
+    weaknesses.push({
+      title: `Unit ${weakestActiveChapter.chapterNumber}: ${weakestActiveChapter.title}`,
+      detail: `Lowest retention at ${weakestActiveChapter.accuracy}% accuracy. High-frequency in Punjab Board Section A.`,
+      badge: `${weakestActiveChapter.accuracy}% Accuracy`,
+    });
+  }
+  if (totalUnresolvedMistakes > 0) {
+    weaknesses.push({
+      title: "Mistakes Vault Backlog",
+      detail: `${totalUnresolvedMistakes} active conceptual mistakes logged. Unresolved errors reappear on subsequent mock exams.`,
+      badge: `${totalUnresolvedMistakes} Errors`,
+    });
+  }
+  if (unattemptedChapters.length > 0) {
+    weaknesses.push({
+      title: "Curriculum Coverage Gaps",
+      detail: `${unattemptedChapters.length} of 10 syllabus chapters untested. Board exams sample questions across all units.`,
+      badge: `${unattemptedChapters.length} Untested`,
+    });
+  }
+
+  // Strategic Mentor Improvement Advice
+  let overallAdvice = "";
+  if (totalAttempts === 0) {
+    overallAdvice =
+      "Take your first diagnostic mock test to calibrate your personalized Punjab Board performance analytics, pacing diagnostics, and target grading.";
+  } else if (overallScorePct < 40) {
+    overallAdvice = `Your standing is currently ${overallScorePct}%, which is below the 40% Punjab Board passing mark. To secure a guaranteed passing grade, immediately focus on foundational topics in Unit ${
+      weakestActiveChapter ? weakestActiveChapter.chapterNumber : 1
+    } and clear all ${totalUnresolvedMistakes} active mistakes in your Vault.`;
+  } else if (overallScorePct < 80) {
+    overallAdvice = `You hold a solid Grade ${overallGrade} trajectory (${overallScorePct}%). To leap into the Grade A+ (80%+) distinction tier, prioritize Unit ${
+      weakestActiveChapter ? weakestActiveChapter.chapterNumber : 5
+    } (${weakestActiveChapter ? weakestActiveChapter.title : "Computer Architecture"}) where retention dropped to ${
       weakestActiveChapter ? weakestActiveChapter.accuracy : 33
-    }%**. Resolving your **${totalUnresolvedMistakes} pending mistakes** and testing your **${
-      unattemptedChapters.length
-    } unattempted units** is the fastest path to achieve **Grade A+ (80%+)**!`;
-    badgeLabel = `${overallGrade} Grade Track`;
+    }%, and clear all ${totalUnresolvedMistakes} active mistakes. Maintaining your ~${avgSecondsPerQ}s pacing will ensure a 2-minute buffer during the board objective exam.`;
   } else {
-    primaryDescription = `Outstanding work! Across **${totalAttempts} assessments**, you maintain a top-tier **Grade ${overallGrade} standing (${overallScorePct}%)** with a steady **~${Math.round(
-      avgSecondsPerQ
-    )}s per MCQ** pacing (matching Punjab Board 80s standard). Continue taking full-length timed board simulations in Exam Mode to preserve your speed and secure board topper positioning.`;
-    badgeLabel = "Topper Trajectory";
+    overallAdvice = `Outstanding performance! You maintain a top-tier Grade ${overallGrade} standing (${overallScorePct}%). Continue taking full-length timed board simulations in Exam Mode to preserve your ~${avgSecondsPerQ}s pacing and secure board topper positioning.`;
   }
 
   const aiMentorInsight: AIMentorInsight = {
-    title: "Punjab Board AI Advisor",
-    badge: badgeLabel,
-    description: primaryDescription,
+    title: "Punjab Board AI Advisory",
+    badge: "Active Mentor",
+    overallAdvice,
+    strengths,
+    weaknesses,
+    standingGrade: overallGrade,
+    standingPct: overallScorePct,
+    pacing: {
+      avgSecondsPerQ,
+      benchmarkSeconds: 80,
+      status: pacingStatus.status,
+      statusLabel: pacingStatus.label,
+      detail: pacingStatus.detail,
+    },
+    bottleneck: weakestActiveChapter
+      ? {
+          chapterNumber: weakestActiveChapter.chapterNumber,
+          title: weakestActiveChapter.title,
+          accuracy: weakestActiveChapter.accuracy,
+          mistakesCount: weakestActiveChapter.mistakesCount,
+        }
+      : null,
+    unattemptedCount: unattemptedChapters.length,
+    unresolvedMistakesCount: totalUnresolvedMistakes,
     recommendations,
   };
 

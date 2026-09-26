@@ -219,41 +219,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {renderNavLink("/progress", "fa-solid fa-chart-line", "Progress", "bg-teal-50 text-teal-700")}
               {renderNavLink("/revision", "fa-solid fa-rotate-right", "Revision", "bg-sky-50 text-sky-700")}
               {renderNavLink("/bookmark", "fa-solid fa-bookmark", "Bookmark", "bg-amber-50 text-amber-700")}
-
-              {/* AI Tutor Button */}
-              {isCollapsed ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (onClose) onClose();
-                    if (onOpenAITutor) onOpenAITutor();
-                  }}
-                  onMouseEnter={() => setHoveredTitle("AI Tutor")}
-                  onMouseLeave={() => setHoveredTitle(null)}
-                  title="AI Tutor"
-                  className="flex items-center justify-center w-10 h-10 mx-auto rounded-xl text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors cursor-pointer relative group"
-                >
-                  <i className="fa-solid fa-robot text-base"></i>
-                  {/* Clean title directly above the icon */}
-                  <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 px-2 py-0.5 bg-slate-800 text-white text-[11px] font-medium rounded-md shadow-sm opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity whitespace-nowrap z-50">
-                    AI Tutor
-                    <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></span>
-                  </span>
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (onClose) onClose();
-                    if (onOpenAITutor) onOpenAITutor();
-                  }}
-                  title="AI Tutor"
-                  className="w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-slate-600 hover:bg-purple-50 hover:text-purple-700 font-medium text-sm transition cursor-pointer text-left"
-                >
-                  <i className="fa-solid fa-robot w-4 text-center"></i>
-                  <span>AI Tutor</span>
-                </button>
-              )}
+              {renderNavLink("/ai-tutor", "fa-solid fa-graduation-cap", "AI Tutor", "bg-emerald-50 text-emerald-700")}
             </div>
           </div>
 

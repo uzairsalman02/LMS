@@ -263,7 +263,7 @@ export default async function MistakesPage() {
             href="/mock-test?mode=drill"
             className="block text-center bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-3 rounded-xl text-xs transition shadow-sm"
           >
-            Launch Mistakes Drill 🎯
+            Launch Mistakes Drill
           </Link>
         </div>
       )}
