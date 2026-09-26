@@ -164,107 +164,125 @@ export function AITutorClient({
     }
   };
 
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  const FAQS = [
+    {
+      q: "How does the AI Tutor generate answers?",
+      a: "It queries your local Punjab Textbook Board syllabus database in real time. It retrieves official definitions, rubric keywords, analogies, and examiner tips without using any external paid APIs.",
+    },
+    {
+      q: "Does it help with Board Exam preparation?",
+      a: "Yes. Every response is structured to follow BISE marking criteria, including key heading points, real-world examples, and examiner presentation tips to secure full marks in short and long questions.",
+    },
+    {
+      q: "Is my chat history saved?",
+      a: "Yes. Your conversation is securely stored in your student database session. You can continue anytime or click 'Clear History' to start fresh.",
+    },
+    {
+      q: "Can I ask questions from any unit?",
+      a: "You can ask about any topic across Units 1 to 10 of Class 11 Computer Science, including Software Engineering, Networks, Architecture, Data Communications, and MS Office.",
+    },
+  ];
+
   const rightPanelContent = (
-    <div className="space-y-5">
-      {/* Quick Inquiries Card */}
+    <div className="space-y-4">
+      {/* 1. AI Tutor Info Card */}
       <div className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
-        <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-          <div className="flex items-center space-x-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-              Frequent Board Topics
-            </h3>
+        <div className="flex items-center space-x-2.5 pb-2.5 mb-3 border-b border-slate-100">
+          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm border border-emerald-200/60">
+            <i className="fa-solid fa-circle-info"></i>
           </div>
-          <span className="text-[10px] text-slate-400 font-semibold">1-Click Ask</span>
+          <div>
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              About AI Syllabus Tutor
+            </h3>
+            <p className="text-[11px] text-slate-400 font-medium">What this tutor does</p>
+          </div>
         </div>
 
-        <div className="space-y-1.5">
-          {QUICK_INQUIRIES.map((item, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => handleSendMessage(item.query)}
-              disabled={loading}
-              className="w-full text-left p-2.5 rounded-xl border border-slate-100 hover:border-emerald-200 bg-slate-50/70 hover:bg-emerald-50/50 transition cursor-pointer group flex items-start space-x-2.5"
-            >
-              <div className="w-7 h-7 rounded-lg bg-emerald-100/60 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                <i className={`${item.icon} text-xs`}></i>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-800 group-hover:text-emerald-900 truncate">
-                    {item.label}
-                  </span>
-                  <span className="text-[9px] font-bold text-slate-400 bg-white px-1.5 py-0.5 rounded border border-slate-100 shrink-0 ml-1">
-                    {item.unit}
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 truncate mt-0.5">{item.query}</p>
-              </div>
-            </button>
-          ))}
+        <p className="text-xs text-slate-600 leading-relaxed font-medium mb-3">
+          Your dedicated academic assistant engineered specifically for Punjab Board (PCTB) Computer Science preparation.
+        </p>
+
+        <div className="space-y-2 text-xs">
+          <div className="flex items-start space-x-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <i className="fa-solid fa-book-bookmark text-emerald-600 text-xs mt-0.5 shrink-0"></i>
+            <div>
+              <p className="font-semibold text-slate-800 text-[11px]">Syllabus-Grounded Definitions</p>
+              <p className="text-[10px] text-slate-500">Provides textbook-accurate concepts and terminology.</p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <i className="fa-solid fa-pen-to-square text-emerald-600 text-xs mt-0.5 shrink-0"></i>
+            <div>
+              <p className="font-semibold text-slate-800 text-[11px]">Board Presentation Guidance</p>
+              <p className="text-[10px] text-slate-500">Guides how to structure answers and diagrams for full marks.</p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <i className="fa-solid fa-lightbulb text-emerald-600 text-xs mt-0.5 shrink-0"></i>
+            <div>
+              <p className="font-semibold text-slate-800 text-[11px]">Real-World Analogies</p>
+              <p className="text-[10px] text-slate-500">Translates complex technical ideas into everyday examples.</p>
+            </div>
+          </div>
+
+          <div className="flex items-start space-x-2.5 p-2 rounded-xl bg-slate-50 border border-slate-100">
+            <i className="fa-solid fa-shield-halved text-emerald-600 text-xs mt-0.5 shrink-0"></i>
+            <div>
+              <p className="font-semibold text-slate-800 text-[11px]">100% Local & Private</p>
+              <p className="text-[10px] text-slate-500">Runs offline against your curriculum database with zero delay.</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Syllabus Chapters Navigator */}
+      {/* 2. FAQs Section */}
       <div className="bg-white rounded-2xl border border-slate-200/80 p-4 shadow-xs">
-        <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-          <div className="flex items-center space-x-2">
-            <i className="fa-solid fa-book-open text-xs text-emerald-600"></i>
-            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-              Class 11 Curriculum
-            </h3>
+        <div className="flex items-center space-x-2.5 pb-2.5 mb-3 border-b border-slate-100">
+          <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-sm border border-teal-200/60">
+            <i className="fa-solid fa-circle-question"></i>
           </div>
-          <span className="text-[10px] font-bold text-slate-400">{chapters.length} Units</span>
+          <div>
+            <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+              Frequently Asked Questions
+            </h3>
+            <p className="text-[11px] text-slate-400 font-medium">Quick answers</p>
+          </div>
         </div>
 
-        <div className="space-y-1 max-h-56 overflow-y-auto no-scrollbar pr-1">
-          {chapters.map((ch) => (
-            <button
-              key={ch.id}
-              type="button"
-              onClick={() =>
-                handleSendMessage(`Explain key board concepts and questions from Unit ${ch.chapterNumber}: ${ch.title}`)
-              }
-              disabled={loading}
-              className="w-full text-left p-2 rounded-lg hover:bg-slate-50 text-slate-700 hover:text-emerald-800 text-xs font-medium transition flex items-center justify-between cursor-pointer border border-transparent hover:border-slate-200"
-            >
-              <span className="truncate pr-2">
-                <strong className="text-emerald-700">Unit {ch.chapterNumber}:</strong>{" "}
-                {ch.title.replace(/^Unit\s*\d+:\s*/i, "")}
-              </span>
-              <span className="text-[10px] font-semibold text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded shrink-0">
-                {ch._count.Topic} topics
-              </span>
-            </button>
-          ))}
+        <div className="space-y-2">
+          {FAQS.map((faq, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div
+                key={idx}
+                className="border border-slate-100 rounded-xl overflow-hidden bg-slate-50/60 transition"
+              >
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  className="w-full text-left px-3 py-2.5 flex items-center justify-between text-xs font-semibold text-slate-800 hover:text-emerald-700 transition cursor-pointer"
+                >
+                  <span className="pr-2">{faq.q}</span>
+                  <i
+                    className={`fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200 ${
+                      isOpen ? "rotate-180 text-emerald-600" : ""
+                    }`}
+                  ></i>
+                </button>
+                {isOpen && (
+                  <div className="px-3 pb-3 pt-0 text-[11px] text-slate-600 leading-relaxed border-t border-slate-100/80 mt-1 pt-2 font-medium">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
-      </div>
-
-      {/* Engine Specs Box */}
-      <div className="bg-slate-50 rounded-2xl border border-slate-200 p-4 text-xs text-slate-600">
-        <div className="flex items-center space-x-2 mb-2 text-slate-900 font-bold">
-          <i className="fa-solid fa-server text-emerald-600"></i>
-          <span>Engine Specifications</span>
-        </div>
-        <ul className="space-y-1.5 text-[11px] text-slate-600">
-          <li className="flex items-center justify-between">
-            <span>Architecture:</span>
-            <span className="font-semibold text-slate-900">Local Syllabus RAG</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span>External API / LLM:</span>
-            <span className="font-semibold text-emerald-700">None (100% Free)</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span>Grounding:</span>
-            <span className="font-semibold text-slate-900">PCTB Punjab Board</span>
-          </li>
-          <li className="flex items-center justify-between">
-            <span>Persistence:</span>
-            <span className="font-semibold text-slate-900">MySQL Database</span>
-          </li>
-        </ul>
       </div>
     </div>
   );
@@ -275,8 +293,8 @@ export function AITutorClient({
       badge="11th Standard"
       studentName={studentName}
       rightPanel={rightPanelContent}
-      rightPanelIcon="fa-list-check"
-      rightPanelLabel="Syllabus Topics"
+      rightPanelIcon="fa-circle-info"
+      rightPanelLabel="Tutor Info & FAQs"
     >
       <main className="flex-1 flex flex-col min-w-0 bg-slate-50/50 p-4 sm:p-6 lg:p-8 h-[calc(100vh-4rem)]">
         {/* Top Header Card */}
@@ -392,6 +410,26 @@ export function AITutorClient({
 
           {/* Sticky Chat Input Bar */}
           <div className="border-t border-slate-100 p-3 sm:p-4 bg-white">
+            {/* Quick Inquiry Suggestion Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2.5 pt-0.5">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider shrink-0 mr-1 flex items-center space-x-1">
+                <i className="fa-solid fa-sparkles text-[9px] text-emerald-600"></i>
+                <span>Suggested:</span>
+              </span>
+              {QUICK_INQUIRIES.map((item, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleSendMessage(item.query)}
+                  disabled={loading}
+                  className="px-2.5 py-1 rounded-lg bg-slate-100/80 hover:bg-emerald-50 hover:text-emerald-800 text-slate-700 text-[11px] font-medium transition shrink-0 border border-slate-200/80 cursor-pointer flex items-center space-x-1.5"
+                >
+                  <i className={`${item.icon} text-[10px] text-emerald-600`}></i>
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
